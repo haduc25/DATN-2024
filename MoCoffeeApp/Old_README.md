@@ -2,10 +2,6 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 # Getting Started
 
-# Thông tin về ứng dụng
-Đề tài: Xây dựng ứng dụng đặt đồ uống cho cửa hàng Mỡ coffee & tea tại tỉnh Bắc Kạn
-Địa chỉ: Tổ 1, TT. Chợ Mới, Chợ Mới, Bắc Kạn
-
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
