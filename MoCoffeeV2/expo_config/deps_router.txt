@@ -1,0 +1,36 @@
+#link
+https://docs.expo.dev/router/installation/
+
+`npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar`
+
+#package.json
+"main": "node_modules/expo/AppEntry.js",
+=> "main": "expo-router/entry"
+
+#app.json 
+(add more)
+=> "scheme": "your-app-scheme"
+=> "scheme": "mocoffeev2"
+
+#babel.config.js 
+=> SDK V50 nên giữ nguyên
+- trong video SDK 49 nên thêm `plugins: ['expo-router/babel']`
+
+#check expo version 
+npm show expo version => 50.0.7
+
+#expo location
+https://docs.expo.dev/versions/latest/sdk/location/
+
+`npx expo install expo-location`
+
+#location (add more)
+https://youtu.be/d7G0E_9FwyE?si=PoL0SOyqD2dysYG6
+https://raw.githubusercontent.com/chelseafarley/expo-location-tutorial/main/App.js
+
+#shortcut
+rnfes
+
+
+#start app
+npx expo start
