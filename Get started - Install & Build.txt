@@ -1,2 +1,5 @@
 # Khởi tạo dự án
 npx react-native init MoCoffee
+
+#V2 with expo
+npx create-expo-app MoCoffeeV2
