@@ -35,6 +35,10 @@ https://raw.githubusercontent.com/chelseafarley/expo-location-tutorial/main/App.
 #icon react github link (https://github.com/oblador/react-native-vector-icons)
 `react-native-vector-icons`
 
+#redux toolkit (https://redux-toolkit.js.org/introduction/getting-started)
+`npm install @reduxjs/toolkit`
+`npm install --save react-redux`
+
 #shortcut
 rnfes
 
