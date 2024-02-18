@@ -492,25 +492,25 @@ export default function App() {
     },
   ];
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const {data, error} = await supabase.from('hotels').select('*');
-        console.log('Data:', data);
-        if (error) {
-          console.error('Error fetching data:', error);
-        } else {
-          setData(data);
-        }
-      } catch (error) {
-        console.error('Error in fetchData:', error);
-      }
-    }
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const {data, error} = await supabase.from('hotels').select('*');
+  //       console.log('Data:', data);
+  //       if (error) {
+  //         console.error('Error fetching data:', error);
+  //       } else {
+  //         setData(data);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error in fetchData:', error);
+  //     }
+  //   }
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
-  console.log('data', data);
+  // console.log('data', data);
   // END: DATA
 
   return (

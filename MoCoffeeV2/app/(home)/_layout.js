@@ -7,8 +7,8 @@ export default function Layout() {
     // <Provider store={store}>
     <Stack screenOptions={{headerShown: false}}>
       <Stack.Screen name="index" />
-      {/* <Stack.Screen name="hotel" />
-        <Stack.Screen name="cart" />
+      <Stack.Screen name="hotel" />
+      {/* <Stack.Screen name="cart" />
         <Stack.Screen name="order" /> */}
     </Stack>
     // </Provider>
