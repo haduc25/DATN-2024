@@ -28,6 +28,13 @@ https://docs.expo.dev/versions/latest/sdk/location/
 https://youtu.be/d7G0E_9FwyE?si=PoL0SOyqD2dysYG6
 https://raw.githubusercontent.com/chelseafarley/expo-location-tutorial/main/App.js
 
+#slider (https://www.npmjs.com/package/react-native-image-slider-box)
+`npm i react-native-image-slider-box`
+
+#Ionicons (https://ionic.io/ionicons)
+#icon react github link (https://github.com/oblador/react-native-vector-icons)
+`react-native-vector-icons`
+
 #shortcut
 rnfes
 
