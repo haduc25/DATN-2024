@@ -1,18 +1,18 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {FontAwesome} from '@expo/vector-icons';
-// import {useDispatch} from 'react-redux';
-// import {
-//   addToCart,
-//   decrementQuantity,
-//   incrementQuantity,
-//   removeFromCart,
-// } from '../redux/CartReducer';
+import {useDispatch} from 'react-redux';
+import {
+  addToCart,
+  decrementQuantity,
+  incrementQuantity,
+  removeFromCart,
+} from '../redux/CartReducer';
 
 const MenuItem = ({item}) => {
-  //   const [additems, setAddItems] = useState(0);
-  //   const [selected, setSelected] = useState(false);
-  //   const dispatch = useDispatch();
+  const [additems, setAddItems] = useState(0);
+  const [selected, setSelected] = useState(false);
+  const dispatch = useDispatch();
   return (
     <View>
       <Pressable
@@ -57,7 +57,7 @@ const MenuItem = ({item}) => {
             style={{width: 120, height: 120, borderRadius: 8}}
             source={{uri: item?.image}}
           />
-          {/* {selected ? (
+          {selected ? (
             <Pressable
               style={{
                 position: 'absolute',
@@ -142,7 +142,7 @@ const MenuItem = ({item}) => {
                 ADD
               </Text>
             </Pressable>
-          )} */}
+          )}
         </Pressable>
       </Pressable>
     </View>

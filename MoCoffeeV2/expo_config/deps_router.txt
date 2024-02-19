@@ -39,6 +39,10 @@ https://raw.githubusercontent.com/chelseafarley/expo-location-tutorial/main/App.
 `npm install @reduxjs/toolkit`
 `npm install --save react-redux`
 
+#Modal - (https://github.com/react-native-modal/react-native-modal)
+`npm i react-native-modal`
+=> giống alert msg
+
 #shortcut
 rnfes
 

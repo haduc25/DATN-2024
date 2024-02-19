@@ -115,7 +115,7 @@ const Hotel = ({item, menu}) => {
           color="#1F75FE"
         />
         <Text style={{marginLeft: 2, color: '#1F75FE', fontWeight: '500'}}>
-          20% OFF up to Rs 100
+          GIẢM GIÁ 20% lên tới 100 vnđ
         </Text>
       </View>
     </Pressable>
