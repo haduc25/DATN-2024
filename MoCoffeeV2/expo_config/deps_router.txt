@@ -43,6 +43,12 @@ https://raw.githubusercontent.com/chelseafarley/expo-location-tutorial/main/App.
 `npm i react-native-modal`
 => giống alert msg
 
+#moment - (https://www.npmjs.com/package/moment)
+`npm i moment`
+
+#Map - (https://github.com/react-native-maps/react-native-maps)
+`npm i react-native-maps`
+
 #shortcut
 rnfes
 
