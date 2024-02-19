@@ -18,47 +18,31 @@ const register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State để xác định xem mật khẩu có nên được hiển thị hay không
   const router = useRouter();
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword); // Đảo ngược trạng thái hiển thị mật khẩu
-  };
-
   async function signUpNewUser() {
-    if (!name || !email || !password) {
-      Alert.alert('Vui lòng điền đầy đủ thông tin');
-      return;
-    }
-
     const {data, error} = await supabase.auth.signUp({
       name: name,
       email: email,
       password: password,
     });
 
-    if (error) {
-      console.error('Lỗi đăng ký:', error.message);
-      Alert.alert('Đã xảy ra lỗi khi đăng ký', 'Vui lòng thử lại');
-      return;
-    }
-
-    if (data?.user?.role === 'authenticated') {
-      console.log('Đăng ký thành công');
+    if (data?.user?.role == 'authenticated') {
       Alert.alert(
-        'Bạn đã đăng ký thành công',
-        'Vui lòng kiểm tra email của bạn để xác nhận',
+        'You have been successfully registered',
+        'please check your email for confirmation',
       );
-      router.replace('./login');
+    }
+    if (error) {
+      Alert.alert('Error while registering', 'please try again');
     }
   }
-
   return (
     <SafeAreaView
       style={{flex: 1, backgroundColor: 'white', alignItems: 'center'}}>
       <View style={{marginTop: 50}}>
         <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
-          Food App
+          Mỡ Cooffee & Tea
         </Text>
       </View>
 
@@ -71,7 +55,7 @@ const register = () => {
               marginTop: 12,
               color: 'red',
             }}>
-            Register to your account
+            Đăng ký tài khoản
           </Text>
         </View>
 
@@ -142,18 +126,9 @@ const register = () => {
             <TextInput
               value={password}
               onChangeText={text => setPassword(text)}
-              secureTextEntry={!showPassword} // Sử dụng secureTextEntry để ẩn mật khẩu nếu showPassword là false
               style={{color: 'gray', marginVertical: 10, width: 300}}
               placeholder="enter your password"
             />
-            {/* Nút để hiển thị/ẩn mật khẩu */}
-            <Pressable onPress={toggleShowPassword} style={{padding: 10}}>
-              {showPassword ? (
-                <MaterialIcons name="visibility-off" size={24} color="gray" />
-              ) : (
-                <MaterialIcons name="visibility" size={24} color="gray" />
-              )}
-            </Pressable>
           </View>
         </View>
 
@@ -175,7 +150,7 @@ const register = () => {
               fontSize: 16,
               color: 'white',
             }}>
-            Register
+            ĐĂNG KÝ
           </Text>
         </Pressable>
 
@@ -183,7 +158,7 @@ const register = () => {
           onPress={() => router.replace('./login')}
           style={{marginTop: 15}}>
           <Text style={{textAlign: 'center', color: 'gray', fontSize: 16}}>
-            Already have an Account? Sign In
+            Bạn đã có tài khoản? Đăng nhập
           </Text>
         </Pressable>
       </KeyboardAvoidingView>

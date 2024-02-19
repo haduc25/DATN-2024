@@ -49,6 +49,12 @@ https://raw.githubusercontent.com/chelseafarley/expo-location-tutorial/main/App.
 #Map - (https://github.com/react-native-maps/react-native-maps)
 `npm i react-native-maps`
 
+#databse - (https://www.npmjs.com/package/@supabase/supabase-js)
+`npm i @supabase/supabase-js`
+
+#url - (https://www.npmjs.com/package/react-native-url-polyfill)
+`npm i react-native-url-polyfill`
+
 #shortcut
 rnfes
 

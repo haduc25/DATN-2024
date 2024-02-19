@@ -370,6 +370,10 @@ const hotel = () => {
               params: {
                 name: params.name,
               },
+              options: {
+                gestureEnabled: false,
+                gestureDirection: 'horizontal',
+              },
             })
           }
           style={{

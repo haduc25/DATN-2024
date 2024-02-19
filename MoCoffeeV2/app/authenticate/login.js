@@ -11,8 +11,8 @@ import React, {useEffect, useState} from 'react';
 import {MaterialIcons} from '@expo/vector-icons';
 import {AntDesign} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
-// import {supabase} from '../../supabase';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import {supabase} from '../../supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const login = () => {
   const [email, setEmail] = useState('');
@@ -20,24 +20,38 @@ const login = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // const checkLogin = async () => {
-    //   try {
-    //     const token = await AsyncStorage.getItem('authToken');
-    //     if (token) {
-    //       router.replace('/(home)');
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-    // checkLogin();
+    const checkLogin = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (token) {
+          router.replace('/home');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkLogin();
   }, []);
 
   async function signUpWithEmail() {
+    if (!email || !password) {
+      console.log('Vui lòng nhập email và mật khẩu');
+      alert('Vui lòng nhập email và mật khẩu');
+      return;
+    }
+
     const {data, error} = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
+
+    if (error) {
+      console.error('Đăng nhập không thành công:', error.message);
+      alert('Đăng nhập không thành công:', error.message);
+      return;
+    }
+
     if (data) {
       const token = data?.session?.access_token;
       AsyncStorage.setItem('authToken', token);
@@ -50,7 +64,7 @@ const login = () => {
       style={{flex: 1, backgroundColor: 'white', alignItems: 'center'}}>
       <View style={{marginTop: 50}}>
         <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
-          Mỡ Cooffee & Tea
+          Food App
         </Text>
       </View>
 
@@ -63,7 +77,7 @@ const login = () => {
               marginTop: 12,
               color: 'red',
             }}>
-            Đăng nhập vào tài khoản của bạn
+            Log in to your account
           </Text>
         </View>
 
@@ -125,7 +139,7 @@ const login = () => {
             marginTop: 12,
           }}>
           <Text>Keep me Logged In</Text>
-          <Text>Quên mật khẩu</Text>
+          <Text>Forgot Password</Text>
         </View>
 
         <Pressable
@@ -151,11 +165,10 @@ const login = () => {
         </Pressable>
 
         <Pressable
-          // onPress={() => router.replace('/register')}
           onPress={() => router.replace('./register')}
           style={{marginTop: 15}}>
           <Text style={{textAlign: 'center', color: 'gray', fontSize: 16}}>
-            Bạn chưa có tài khoản? Đăng ký
+            Don't have an Account? Sign Up
           </Text>
         </Pressable>
       </KeyboardAvoidingView>
