@@ -7,6 +7,7 @@ import {
   TextInput,
   Pressable,
 } from 'react-native';
+import Checkbox from 'expo-checkbox';
 import React, {useEffect, useState} from 'react';
 import {MaterialIcons} from '@expo/vector-icons';
 import {AntDesign} from '@expo/vector-icons';
@@ -19,6 +20,8 @@ const login = () => {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false); // State để xác định xem mật khẩu có nên được hiển thị hay không
+  // Lưu tài khoản
+  const [isSaveAccount, setIsSaveAccount] = useState(true);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword); // Đảo ngược trạng thái hiển thị mật khẩu
@@ -156,8 +159,13 @@ const login = () => {
             justifyContent: 'space-between',
             marginTop: 12,
           }}>
-          <Text>Lưu tài khoản</Text>
-          <Text>Quên mật khẩu</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Checkbox value={isSaveAccount} onValueChange={setIsSaveAccount} />
+            <Text style={{marginLeft: 10}}>
+              Lưu tài khoản {isSaveAccount ? '👍' : '👎'}
+            </Text>
+          </View>
+          <Text>Quên mật khẩu?</Text>
         </View>
 
         <Pressable

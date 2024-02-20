@@ -5,7 +5,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const index = () => {
   // AsyncStorage.clear();
-  return <Redirect href="/(authenticate)/login" />;
+  // return <Redirect href="/(authenticate)/login" />;
+  return <Redirect href="/(authenticate)/register" />;
 };
 
 export default index;

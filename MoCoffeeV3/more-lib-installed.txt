@@ -1,0 +1,2 @@
+#Checkbox for react-native
+npm install @react-native-community/checkbox
