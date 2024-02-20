@@ -7,6 +7,7 @@ import {
   Pressable,
   TextInput,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import * as Location from 'expo-location';
@@ -18,7 +19,12 @@ import Categories from '../../components/Categories';
 import Hotel from '../../components/Hotel';
 import {supabase} from '../../supabase';
 
+import {useRouter} from 'expo-router';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const index = () => {
+  const router = useRouter();
   const [locationServicesEnabled, setLocationServicesEnabled] = useState(false);
   const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
     'fetching your location ...',
@@ -84,6 +90,7 @@ const index = () => {
   //   }
   // };
   console.log('my address', displayCurrentAddress);
+
   const recommended = [
     {
       id: 0,
@@ -127,6 +134,7 @@ const index = () => {
       type: 'North Indian',
     },
   ];
+
   const items = [
     {
       id: '0',
@@ -153,6 +161,7 @@ const index = () => {
       image: 'https://cdn-icons-png.flaticon.com/128/415/415744.png',
     },
   ];
+
   const hotels = [
     {
       id: '0',
@@ -511,6 +520,36 @@ const index = () => {
 
   console.log('data', data);
 
+  // Đăng xuất
+  const handleDangXuat = async () => {
+    try {
+      // Hiển thị hộp thoại xác nhận trước khi đăng xuất
+      Alert.alert(
+        'Xác nhận đăng xuất',
+        'Bạn có muốn đăng xuất không?',
+        [
+          {
+            text: 'Hủy',
+            style: 'cancel',
+          },
+          {
+            text: 'Đăng xuất',
+            onPress: async () => {
+              // Xóa token xác thực khỏi AsyncStorage
+              await AsyncStorage.removeItem('authToken');
+
+              // Chuyển người dùng đến màn hình đăng nhập (hoặc màn hình khác tùy theo yêu cầu của ứng dụng)
+              router.replace('/login');
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    } catch (error) {
+      console.error('Đã xảy ra lỗi khi đăng xuất:', error);
+    }
+  };
+
   return (
     <ScrollView style={{flex: 1, backgroundColor: '#f8f8f8'}}>
       <View
@@ -536,7 +575,9 @@ const index = () => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text>S</Text>
+          <TouchableOpacity onPress={handleDangXuat}>
+            <Text>MD</Text>
+          </TouchableOpacity>
         </Pressable>
       </View>
 

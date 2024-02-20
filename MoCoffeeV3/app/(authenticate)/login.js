@@ -18,6 +18,12 @@ const login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false); // State để xác định xem mật khẩu có nên được hiển thị hay không
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword); // Đảo ngược trạng thái hiển thị mật khẩu
+  };
+
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -32,11 +38,24 @@ const login = () => {
 
     checkLogin();
   }, []);
+
   async function signUpWithEmail() {
+    if (!email || !password) {
+      console.log('Vui lòng nhập email và mật khẩu');
+      alert('Vui lòng nhập email và mật khẩu');
+      return;
+    }
+
     const {data, error} = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
+
+    if (error) {
+      // console.error('Đăng nhập không thành công:', error.message);
+      alert('Đăng nhập không thành công:', error.message);
+      return;
+    }
 
     if (data) {
       const token = data?.session?.access_token;
@@ -48,12 +67,13 @@ const login = () => {
       router.replace('/(home)');
     }
   }
+
   return (
     <SafeAreaView
       style={{flex: 1, backgroundColor: 'white', alignItems: 'center'}}>
       <View style={{marginTop: 50}}>
         <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
-          Food App
+          Mỡ Coffee & Tea
         </Text>
       </View>
 
@@ -66,7 +86,7 @@ const login = () => {
               marginTop: 12,
               color: 'red',
             }}>
-            Log in to your account
+            Đăng nhập vào tài khoản của bạn
           </Text>
         </View>
 
@@ -91,7 +111,7 @@ const login = () => {
               value={email}
               onChangeText={text => setEmail(text)}
               style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder="enter your Email"
+              placeholder="Nhập địa chỉ E-mail"
             />
           </View>
 
@@ -115,8 +135,17 @@ const login = () => {
               value={password}
               onChangeText={text => setPassword(text)}
               style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder="enter your password"
+              placeholder="Nhập mật khẩu"
+              secureTextEntry={!showPassword} // Sử dụng secureTextEntry để ẩn mật khẩu nếu showPassword là false
             />
+            {/* Nút để hiển thị/ẩn mật khẩu */}
+            <Pressable onPress={toggleShowPassword} style={{padding: 10}}>
+              {showPassword ? (
+                <MaterialIcons name="visibility-off" size={24} color="gray" />
+              ) : (
+                <MaterialIcons name="visibility" size={24} color="gray" />
+              )}
+            </Pressable>
           </View>
         </View>
 
@@ -127,8 +156,8 @@ const login = () => {
             justifyContent: 'space-between',
             marginTop: 12,
           }}>
-          <Text>Keep me Logged In</Text>
-          <Text>Forgot Password</Text>
+          <Text>Lưu tài khoản</Text>
+          <Text>Quên mật khẩu</Text>
         </View>
 
         <Pressable
@@ -149,7 +178,7 @@ const login = () => {
               fontSize: 16,
               color: 'white',
             }}>
-            Login
+            ĐĂNG NHẬP
           </Text>
         </Pressable>
 
@@ -157,7 +186,7 @@ const login = () => {
           onPress={() => router.replace('/register')}
           style={{marginTop: 15}}>
           <Text style={{textAlign: 'center', color: 'gray', fontSize: 16}}>
-            Don't have an Account? Sign Up
+            Bạn chưa có tài khoản? Đăng ký ngay
           </Text>
         </Pressable>
       </KeyboardAvoidingView>
