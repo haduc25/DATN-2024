@@ -7,7 +7,7 @@ import {useRouter} from 'expo-router';
 const Hotel = ({item, menu}) => {
   const router = useRouter();
   const menuItems = JSON.stringify(menu);
-
+  console.log('menuItems: ', menu);
   return (
     <Pressable
       onPress={() =>
@@ -91,7 +91,7 @@ const Hotel = ({item, menu}) => {
           <Text style={{textAlign: 'center', color: 'white'}}>
             {item?.aggregate_rating}
           </Text>
-          <Ionicons name="star" size={15} color="white" />
+          <Ionicons name="ios-star" size={15} color="white" />
         </View>
       </View>
       <View
@@ -116,7 +116,7 @@ const Hotel = ({item, menu}) => {
           color="#1F75FE"
         />
         <Text style={{marginLeft: 2, color: '#1F75FE', fontWeight: '500'}}>
-          GIẢM GIÁ 20% lên tới 100 vnđ
+          20% OFF up to Rs 100
         </Text>
       </View>
     </Pressable>

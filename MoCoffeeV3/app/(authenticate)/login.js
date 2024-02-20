@@ -6,53 +6,48 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
-  Alert,
 } from 'react-native';
-import React, {useState} from 'react';
-import {MaterialIcons, Ionicons} from '@expo/vector-icons';
+import React, {useEffect, useState} from 'react';
+import {MaterialIcons} from '@expo/vector-icons';
 import {AntDesign} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 import {supabase} from '../../supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const register = () => {
-  const [name, setName] = useState('');
+const login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State để xác định xem mật khẩu có nên được hiển thị hay không
   const router = useRouter();
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (token) {
+          router.replace('/(home)');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword); // Đảo ngược trạng thái hiển thị mật khẩu
-  };
-
-  async function signUpNewUser() {
-    if (!name || !email || !password) {
-      Alert.alert('Vui lòng điền đầy đủ thông tin');
-      return;
-    }
-
-    const {data, error} = await supabase.auth.signUp({
-      name: name,
+    checkLogin();
+  }, []);
+  async function signUpWithEmail() {
+    const {data, error} = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
 
-    if (error) {
-      console.error('Lỗi đăng ký:', error.message);
-      Alert.alert('Đã xảy ra lỗi khi đăng ký', 'Vui lòng thử lại');
-      return;
-    }
-
-    if (data?.user?.role === 'authenticated') {
-      console.log('Đăng ký thành công');
-      Alert.alert(
-        'Bạn đã đăng ký thành công',
-        'Vui lòng kiểm tra email của bạn để xác nhận',
-      );
-      router.replace('/login');
+    if (data) {
+      const token = data?.session?.access_token;
+      if (token) {
+        AsyncStorage.setItem('authToken', token);
+      } else {
+        AsyncStorage.removeItem('authToken'); // Xóa khóa nếu token là null hoặc undefined
+      }
+      router.replace('/(home)');
     }
   }
-
   return (
     <SafeAreaView
       style={{flex: 1, backgroundColor: 'white', alignItems: 'center'}}>
@@ -71,34 +66,11 @@ const register = () => {
               marginTop: 12,
               color: 'red',
             }}>
-            Register to your account
+            Log in to your account
           </Text>
         </View>
 
         <View style={{marginTop: 70}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
-              backgroundColor: '#E0E0E0',
-              paddingVertical: 5,
-              borderRadius: 5,
-              marginTop: 30,
-            }}>
-            <Ionicons
-              name="person"
-              size={24}
-              color="gray"
-              style={{marginLeft: 8}}
-            />
-            <TextInput
-              value={name}
-              onChangeText={text => setName(text)}
-              style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder="enter your Name"
-            />
-          </View>
           <View
             style={{
               flexDirection: 'row',
@@ -142,23 +114,25 @@ const register = () => {
             <TextInput
               value={password}
               onChangeText={text => setPassword(text)}
-              secureTextEntry={!showPassword} // Sử dụng secureTextEntry để ẩn mật khẩu nếu showPassword là false
               style={{color: 'gray', marginVertical: 10, width: 300}}
               placeholder="enter your password"
             />
-            {/* Nút để hiển thị/ẩn mật khẩu */}
-            <Pressable onPress={toggleShowPassword} style={{padding: 10}}>
-              {showPassword ? (
-                <MaterialIcons name="visibility-off" size={24} color="gray" />
-              ) : (
-                <MaterialIcons name="visibility" size={24} color="gray" />
-              )}
-            </Pressable>
           </View>
         </View>
 
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: 12,
+          }}>
+          <Text>Keep me Logged In</Text>
+          <Text>Forgot Password</Text>
+        </View>
+
         <Pressable
-          onPress={signUpNewUser}
+          onPress={signUpWithEmail}
           style={{
             width: 200,
             backgroundColor: '#fd5c63',
@@ -175,15 +149,15 @@ const register = () => {
               fontSize: 16,
               color: 'white',
             }}>
-            Register
+            Login
           </Text>
         </Pressable>
 
         <Pressable
-          onPress={() => router.replace('/login')}
+          onPress={() => router.replace('/register')}
           style={{marginTop: 15}}>
           <Text style={{textAlign: 'center', color: 'gray', fontSize: 16}}>
-            Already have an Account? Sign In
+            Don't have an Account? Sign Up
           </Text>
         </Pressable>
       </KeyboardAvoidingView>
@@ -191,6 +165,6 @@ const register = () => {
   );
 };
 
-export default register;
+export default login;
 
 const styles = StyleSheet.create({});
