@@ -1,4 +1,3 @@
-import {StatusBar} from 'expo-status-bar';
 import {
   Alert,
   StyleSheet,
@@ -9,83 +8,82 @@ import {
   TextInput,
   Image,
 } from 'react-native';
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import * as Location from 'expo-location';
+import * as LocationGeocoding from 'expo-location';
 import {Octicons, Ionicons} from '@expo/vector-icons';
 import {AntDesign} from '@expo/vector-icons';
-
-// components
 import Carousel from '../../components/Carousel';
 import Categories from '../../components/Categories';
 import Hotel from '../../components/Hotel';
-
-// db
 import {supabase} from '../../supabase';
 
-export default function App() {
-  const [location, setLocation] = useState();
-  const [address, setAddress] = useState();
-  const [viTriHienTai, setViTriHienTai] = useState(
-    'Đang tìm vị trí của bạn...',
+const index = () => {
+  const [locationServicesEnabled, setLocationServicesEnabled] = useState(false);
+  const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
+    'fetching your location ...',
   );
-  const [permissionsGranted, setPermissionsGranted] = useState(false); // Thêm biến cờ để check quyền đc cấp thì mới chạy
   const [data, setData] = useState([]);
 
-  Location.setGoogleApiKey('AIzaSyD5GUOMMrDY5Ml8JOQ5j7z7p9f8GaGCDBg');
+  // useEffect(() => {
+  //   CheckIfLocationEnabled();
+  //   GetCurrentLocation();
+  // }, []);
 
-  useEffect(() => {
-    const getPermissions = async () => {
-      let {status} = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Please grant location permissions');
-        return;
-      }
+  const CheckIfLocationEnabled = async () => {
+    let enabled = await Location.hasServicesEnabledAsync();
 
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      // console.log('Location (vị trí): ', currentLocation);
-      setPermissionsGranted(true); // Đặt cờ thành true sau khi quyền đã được cấp
-    };
-    getPermissions();
-
-    // tu chay
-    // reverseGeocode();
-  }, []);
-
-  useEffect(() => {
-    if (permissionsGranted) {
-      reverseGeocode(); // Gọi reverseGeocode chỉ khi quyền đã được cấp
+    if (!enabled) {
+      Alert.alert(
+        'Location Services not enabled',
+        'Please enable your location services to continue',
+        [{text: 'OK'}],
+        {cancelable: false},
+      );
+    } else {
+      setLocationServicesEnabled(true);
     }
-  }, [permissionsGranted]); // Sử dụng permissionsGranted làm dependency
-
-  const reverseGeocode = async () => {
-    console.log('\n\n=======================================\n\n');
-    // console.log('location: ', location);
-    const reverseGeocodedAddress = await Location.reverseGeocodeAsync({
-      longitude: location.coords.longitude,
-      latitude: location.coords.latitude,
-    });
-
-    const [{district, name, subregion, city, region, country, isoCountryCode}] =
-      reverseGeocodedAddress;
-
-    const xa = district || name;
-    const huyen = subregion || city;
-    const tinh = region;
-    const quocGia = country || isoCountryCode;
-
-    const viTri = xa + ', ' + huyen + ', ' + tinh + ', ' + quocGia;
-    setViTriHienTai(viTri);
-
-    // console.log(
-    //   'Reverse Geocoded (Mã hóa địa lý đảo ngược): ',
-    //   reverseGeocodedAddress,
-    // );
   };
 
-  // console.log('Địa chỉ của tôi: ' + viTriHienTai);
+  // const GetCurrentLocation = async () => {
+  //   let {status} = await Location.requestBackgroundPermissionsAsync();
 
-  // START: DATA
+  //   if (status !== 'granted') {
+  //     Alert.alert(
+  //       'Permission not granted',
+  //       'Allow the app to use the location service',
+  //       [{text: 'OK'}],
+  //       {cancelable: false},
+  //     );
+  //   }
+
+  //   const location = await Location.getCurrentPositionAsync({
+  //     accuracy: Location.Accuracy.High,
+  //   });
+  //   console.log(location);
+  //   let {coords} = await Location.getCurrentPositionAsync();
+  //   if (coords) {
+  //     const {latitude, longitude} = coords;
+
+  //     let response = await Location.reverseGeocodeAsync({
+  //       latitude,
+  //       longitude,
+  //     });
+
+  //     const address = await LocationGeocoding.reverseGeocodeAsync({
+  //       latitude,
+  //       longitude,
+  //     });
+
+  //     const streetAddress = address[0].name;
+  //     for (let item of response) {
+  //       let address = `${item.name}, ${item?.postalCode}, ${item?.city}`;
+
+  //       setDisplayCurrentAddress(address);
+  //     }
+  //   }
+  // };
+  console.log('my address', displayCurrentAddress);
   const recommended = [
     {
       id: 0,
@@ -129,7 +127,6 @@ export default function App() {
       type: 'North Indian',
     },
   ];
-
   const items = [
     {
       id: '0',
@@ -156,7 +153,6 @@ export default function App() {
       image: 'https://cdn-icons-png.flaticon.com/128/415/415744.png',
     },
   ];
-
   const hotels = [
     {
       id: '0',
@@ -499,7 +495,7 @@ export default function App() {
     async function fetchData() {
       try {
         const {data, error} = await supabase.from('hotels').select('*');
-        console.log('home/index.js => Data:', data);
+        console.log('Data:', data);
         if (error) {
           console.error('Error fetching data:', error);
         } else {
@@ -513,12 +509,10 @@ export default function App() {
     fetchData();
   }, []);
 
-  console.log('home/index.js => data: ', data);
-  // END: DATA
+  console.log('data', data);
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: '#f8f8f8'}}>
-      {/* START: HEADER LOCATION */}
       <View
         style={{
           flexDirection: 'row',
@@ -528,9 +522,9 @@ export default function App() {
         }}>
         <Octicons name="location" size={24} color="#E52850" />
         <View style={{flex: 1}}>
-          <Text style={{fontSize: 15, fontWeight: '500'}}>Giao hàng tới</Text>
+          <Text style={{fontSize: 15, fontWeight: '500'}}>Deliver To</Text>
           <Text style={{color: 'gray', fontSize: 16, marginTop: 3}}>
-            {viTriHienTai}
+            {displayCurrentAddress}
           </Text>
         </View>
         <Pressable
@@ -542,40 +536,35 @@ export default function App() {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text>MD</Text>
+          <Text>S</Text>
         </Pressable>
       </View>
-      {/* END: HEADER LOCATION */}
 
-      {/* START: SEARCH */}
-      <Carousel>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderWidth: 1,
-            borderColor: '#C0C0C0',
-            paddingVertical: 8,
-            paddingHorizontal: 10,
-            borderRadius: 11,
-            marginTop: 10,
-            marginHorizontal: 10,
-          }}>
-          <TextInput placeholder="Tìm kiếm cà phê, trà sữa..." />
-          <AntDesign name="search1" size={24} color="#E52B50" />
-        </View>
-      </Carousel>
-      {/* END: SEARCH */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderWidth: 1,
+          borderColor: '#C0C0C0',
+          paddingVertical: 8,
+          paddingHorizontal: 10,
+          borderRadius: 11,
+          marginTop: 10,
+          marginHorizontal: 10,
+        }}>
+        <TextInput placeholder="Search for food, hotels" />
+        <AntDesign name="search1" size={24} color="#E52B50" />
+      </View>
 
-      {/* START: CATEGORIES */}
+      {/* <Carousel /> */}
+
       <Categories />
-      {/* END: CATEGORIES */}
 
-      {/* START: RECOMENDED CATEGORIES  */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {recommended?.map((item, index) => (
           <View
+            key={index}
             style={{
               backgroundColor: 'white',
               flexDirection: 'row',
@@ -610,14 +599,13 @@ export default function App() {
 
               <View
                 style={{flexDirection: 'row', alignItems: 'center', gap: 3}}>
-                <Ionicons name="time" size={24} color="green" />
+                <Ionicons name="ios-time" size={24} color="green" />
                 <Text>{item?.time} mins</Text>
               </View>
             </View>
           </View>
         ))}
       </ScrollView>
-      {/* END: RECOMENDED CATEGORIES  */}
 
       <Text
         style={{
@@ -627,10 +615,9 @@ export default function App() {
           marginBottom: 5,
           color: 'gray',
         }}>
-        KHÁM PHÁ
+        EXPLORE
       </Text>
 
-      {/* START: ITEMS CATEGORIES  */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {items?.map((item, index) => (
           <View
@@ -663,7 +650,6 @@ export default function App() {
           </View>
         ))}
       </ScrollView>
-      {/* END: ITEMS CATEGORIES  */}
 
       <Text
         style={{
@@ -673,21 +659,18 @@ export default function App() {
           marginBottom: 5,
           color: 'gray',
         }}>
-        TẤT CẢ NHÀ HÀNG
+        ALL RESTAURANTS
       </Text>
 
-      {/* START: HOTEL  */}
       <View style={{marginHorizontal: 8}}>
-        {/* hotels: dữ liệu cứng */}
-        {/* data: dữ liệu từ db */}
-        {/* {data?.map((item, index) => ( */}
-        {hotels?.map((item, index) => (
+        {data?.map((item, index) => (
           <Hotel key={index} item={item} menu={item?.menu} />
         ))}
       </View>
-      {/* END: HOTEL  */}
     </ScrollView>
   );
-}
+};
+
+export default index;
 
 const styles = StyleSheet.create({});
