@@ -655,7 +655,7 @@ const index = () => {
         style={{
           textAlign: 'center',
           marginTop: 7,
-          letterSpacing: 4,
+          letterSpacing: 9,
           marginBottom: 5,
           color: 'gray',
         }}>
