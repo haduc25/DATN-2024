@@ -1,2 +1,6 @@
 #Checkbox for react-native
 npm install @react-native-community/checkbox
+
+#change database from `supabase` to `firebase`
+#install firebase
+`npm i firebase`
