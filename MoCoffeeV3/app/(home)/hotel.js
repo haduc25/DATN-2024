@@ -291,7 +291,7 @@ const hotel = () => {
         ))}
       </ScrollView>
 
-      <View style={{flexDirection: 'row', backgroundColor: 'white'}}>
+      <View style={{flexDirection: 'row', backgroundColor: '#fff'}}>
         {/* {recievedMenu?.map((item, index) => ( */}
         {recievedMenu.items.map((item, index) => (
           <Pressable
@@ -385,43 +385,40 @@ const hotel = () => {
         </View>
       </Modal>
 
-      {cart?.length > 0 && (
-        <Pressable
-          onPress={() =>
-            router.push({
-              pathname: '/cart',
-              params: {
-                name: params.name,
-              },
-            })
-          }
-          style={{
-            backgroundColor: '#fd5c63',
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text
+      <View style={{backgroundColor: '#fff'}}>
+        {cart?.length > 0 && (
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: '/cart',
+                params: {
+                  name: params.name,
+                },
+              })
+            }
             style={{
-              textAlign: 'center',
-              color: 'white',
-              fontSize: 15,
-              fontWeight: '600',
+              backgroundColor: '#fd5c63',
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft: 20,
+              marginRight: 20,
+              borderRadius: '15%',
             }}>
-            {cart.length} items added
-          </Text>
-          <Text
-            style={{
-              textAlign: 'center',
-              color: 'white',
-              marginTop: 5,
-              fontWeight: '600',
-            }}>
-            Add items(s) worth 240 to reduce surge fee by Rs 35.
-          </Text>
-        </Pressable>
-      )}
+            <Text
+              style={{
+                paddingVertical: 10,
+                textAlign: 'center',
+                color: 'white',
+                fontSize: 15,
+                fontWeight: '600',
+              }}>
+              Đã thêm {cart.length} sản phẩm
+            </Text>
+          </Pressable>
+        )}
+      </View>
     </>
   );
 };

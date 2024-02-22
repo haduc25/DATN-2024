@@ -1,6 +1,6 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {FontAwesome} from '@expo/vector-icons';
+import {FontAwesome, Ionicons} from '@expo/vector-icons';
 import {useDispatch} from 'react-redux';
 import {
   addToCart,
@@ -30,7 +30,7 @@ const MenuItem = ({item}) => {
             {item?.name}
           </Text>
           <Text style={{marginTop: 4, fontSize: 15, fontWeight: '500'}}>
-            {item?.price} vnđ
+            {item?.price}.000 ₫
           </Text>
           <Text
             style={{
@@ -66,12 +66,14 @@ const MenuItem = ({item}) => {
               style={{
                 position: 'absolute',
                 top: 95,
-                left: 20,
+                left: 10,
                 backgroundColor: '#fd5c63',
                 flexDirection: 'row',
                 paddingHorizontal: 10,
+                paddingVertical: 2,
                 alignItems: 'center',
                 borderRadius: 5,
+                minWidth: 100,
               }}>
               <Pressable
                 onPress={() => {
@@ -87,6 +89,7 @@ const MenuItem = ({item}) => {
                 <Text
                   style={{
                     fontSize: 25,
+                    fontWeight: '700',
                     color: 'white',
                     paddingHorizontal: 6,
                   }}>
@@ -94,17 +97,22 @@ const MenuItem = ({item}) => {
                 </Text>
               </Pressable>
 
+              {/* số lượng sp */}
               <Pressable>
                 <Text
                   style={{
                     color: 'white',
                     paddingHorizontal: 6,
                     fontSize: 15,
+                    fontWeight: '700',
+                    minWidth: 30,
+                    textAlign: 'center',
                   }}>
                   {additems}
                 </Text>
               </Pressable>
 
+              {/* Dấu + */}
               <Pressable
                 onPress={() => {
                   setAddItems(c => c + 1);
@@ -112,7 +120,8 @@ const MenuItem = ({item}) => {
                 }}>
                 <Text
                   style={{
-                    fontSize: 17,
+                    fontSize: 20,
+                    fontWeight: '700',
                     color: 'white',
                     paddingHorizontal: 6,
                   }}>
@@ -132,19 +141,32 @@ const MenuItem = ({item}) => {
               style={{
                 position: 'absolute',
                 top: 95,
-                left: 20,
-                borderColor: '#E32636',
-                borderWidth: 1,
+                // left: 10,
+                left: 42,
+                // borderColor: '#E32636',
+                // borderWidth: 1,
                 flexDirection: 'row',
-                paddingHorizontal: 25,
-                paddingVertical: 5,
+                // paddingHorizontal: 33,
+                paddingHorizontal: 2,
+                paddingVertical: 4,
                 alignItems: 'center',
-                backgroundColor: 'white',
+                backgroundColor: '#fd5c63',
                 borderRadius: 5,
               }}>
-              <Text style={{fontSize: 18, fontWeight: '600', color: '#fd5c63'}}>
-                ADD
-              </Text>
+              {/* Dấu + ban đầu */}
+              <View>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: '900',
+                    color: 'white',
+                    // paddingHorizontal: 12,
+                    paddingHorizontal: 12,
+                    paddingVertical: 3,
+                  }}>
+                  +
+                </Text>
+              </View>
             </Pressable>
           )}
         </Pressable>
