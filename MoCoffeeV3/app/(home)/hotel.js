@@ -196,13 +196,21 @@ const hotel = () => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <Ionicons
+          {/* <Ionicons
             onPress={() => router.back()}
             style={{padding: 5}}
             name="arrow-back"
             size={24}
             color="black"
+          /> */}
+          <Ionicons
+            onPress={() => router.canGoBack() && router.back()}
+            style={{padding: 5}}
+            name="arrow-back"
+            size={24}
+            color="black"
           />
+
           <View
             style={{
               flexDirection: 'row',
@@ -235,7 +243,7 @@ const hotel = () => {
               fontSize: 15,
             }}>
             {' '}
-            North Indian • Fast Food • 160 for one
+            {/* Bắc Kạn • Coffee & Tea • ♥ */}♥ • Coffee & Tea • ♥
           </Text>
           <View
             style={{
@@ -260,7 +268,7 @@ const hotel = () => {
               <Ionicons name="ios-star" size={15} color="white" />
             </View>
             <Text style={{fontSize: 15, fontWeight: '500', marginLeft: 5}}>
-              3.2K Ratings
+              3.2K Đánh giá
             </Text>
           </View>
           <View
@@ -273,7 +281,7 @@ const hotel = () => {
               paddingVertical: 5,
               marginTop: 12,
             }}>
-            <Text>30 - 40 mins • 6 km | Bangalore</Text>
+            <Text>30 - 40 phút • 6 km | Bắc Kạn</Text>
           </View>
         </View>
 
