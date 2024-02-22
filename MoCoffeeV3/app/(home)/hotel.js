@@ -175,6 +175,17 @@ const hotel = () => {
 
   // const recievedMenu = JSON.parse(params?.menu);
   const recievedMenu = params?.menu ? JSON.parse(params.menu) : [];
+  console.log('recievedMenu: ', recievedMenu);
+  console.log('Type o recievedMenu: ', typeof recievedMenu);
+
+  // return (
+  //   <View>
+  //     {recievedMenu.items.map((item, index) => (
+  //       <FoodItem key={index} item={item} />
+  //     ))}
+  //   </View>
+  // );
+
   return (
     <>
       <ScrollView ref={scrollViewRef} style={{backgroundColor: 'white'}}>
@@ -266,13 +277,23 @@ const hotel = () => {
           </View>
         </View>
 
-        {recievedMenu?.map((item, index) => (
+        {/* {recievedMenu?.map((item, index) => (
+          <FoodItem key={index} item={item} />
+        ))} */}
+
+        {/* {Array.isArray(recievedMenu) &&
+          recievedMenu.map((item, index) => (
+            <FoodItem key={index} item={item} />
+          ))} */}
+
+        {recievedMenu.items.map((item, index) => (
           <FoodItem key={index} item={item} />
         ))}
       </ScrollView>
 
       <View style={{flexDirection: 'row', backgroundColor: 'white'}}>
-        {recievedMenu?.map((item, index) => (
+        {/* {recievedMenu?.map((item, index) => ( */}
+        {recievedMenu.items.map((item, index) => (
           <Pressable
             key={index}
             onPress={() => scrollToCategory(index)}

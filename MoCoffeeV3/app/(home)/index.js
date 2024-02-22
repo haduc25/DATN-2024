@@ -18,6 +18,8 @@ import Carousel from '../../components/Carousel';
 import Categories from '../../components/Categories';
 import Hotel from '../../components/Hotel';
 import {supabase} from '../../supabase';
+import {collection, getDocs} from 'firebase/firestore';
+import {db} from '../../firebase';
 
 // firebase
 
@@ -503,25 +505,44 @@ const index = () => {
   ];
 
   // Supabase
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const {data, error} = await supabase.from('hotels').select('*');
+  //       console.log('Data:', data);
+  //       if (error) {
+  //         console.error('Error fetching data:', error);
+  //       } else {
+  //         setData(data);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error in fetchData:', error);
+  //     }
+  //   }
+
+  //   fetchData();
+  // }, []);
+
+  // Firebase
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       try {
-        const {data, error} = await supabase.from('hotels').select('*');
-        console.log('Data:', data);
-        if (error) {
-          console.error('Error fetching data:', error);
-        } else {
-          setData(data);
-        }
+        const querySnapshot = await getDocs(collection(db, 'CoffeeTeaMenu'));
+        const fetchedData = [];
+        querySnapshot.forEach(doc => {
+          fetchedData.push({id: doc.id, ...doc.data()});
+        });
+        console.log('Data1:', fetchedData);
+        setData(fetchedData);
       } catch (error) {
-        console.error('Error in fetchData:', error);
+        console.error('Error fetching data:', error);
       }
-    }
+    };
 
     fetchData();
   }, []);
 
-  console.log('data', data);
+  console.log('data1', data);
 
   // Đăng xuất
   const handleDangXuat = async () => {
@@ -708,7 +729,12 @@ const index = () => {
 
       <View style={{marginHorizontal: 8}}>
         {data?.map((item, index) => (
-          <Hotel key={index} item={item} menu={item?.menu} />
+          <Hotel
+            key={index}
+            item={item}
+            menu={item?.menu}
+            listItems={item?.listItems}
+          />
         ))}
       </View>
     </ScrollView>

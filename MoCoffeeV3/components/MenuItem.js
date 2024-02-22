@@ -13,6 +13,9 @@ const MenuItem = ({item}) => {
   const [additems, setAddItems] = useState(0);
   const [selected, setSelected] = useState(false);
   const dispatch = useDispatch();
+
+  console.log('\n\n ================== \n\n');
+  console.log('item: ', item);
   return (
     <View>
       <Pressable
@@ -27,7 +30,7 @@ const MenuItem = ({item}) => {
             {item?.name}
           </Text>
           <Text style={{marginTop: 4, fontSize: 15, fontWeight: '500'}}>
-            ₹{item?.price}
+            {item?.price} vnđ
           </Text>
           <Text
             style={{
@@ -39,6 +42,7 @@ const MenuItem = ({item}) => {
                 // key={`${food.id}-${i}`}
                 key={i}
                 style={{paddingHorizontal: 3}}
+                // name={i < Math.floor(item.rating) ? 'star' : 'star-o'}
                 name={i < Math.floor(item.rating) ? 'star' : 'star-o'}
                 size={15}
                 color="#FFD700"

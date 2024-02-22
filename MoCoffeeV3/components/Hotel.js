@@ -4,23 +4,59 @@ import {Ionicons} from '@expo/vector-icons';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 
-const Hotel = ({item, menu}) => {
+const Hotel = ({item, menu, listItems}) => {
   const router = useRouter();
-  const menuItems = JSON.stringify(menu);
-  console.log('menuItems: ', menu);
+  // const menuItems = JSON.stringify(menu);
+
+  // // workflow
+  // const menuItems = JSON.stringify(menu);
+  // console.log('menu: ', menu);
+  // console.log('typeof menu: ', typeof menu); //object
+  // console.log('menuItems: ', menuItems);
+  // console.log('typeof menuItems: ', typeof menuItems); //string
+
+  // workflow
+  const menuItems = JSON.stringify(listItems);
+  console.log('listItems: ', listItems);
+  console.log('typeof listItems: ', typeof listItems); //object
+  console.log('menuItems: ', menuItems);
+  console.log('typeof menuItems: ', typeof menuItems); //string
+
+  // console.log('typeof menuItems: ', typeof menuItems);
+
+  // try {
+  //   const menuItems = JSON.parse(menu);
+  //   console.log('menuItems: ', menuItems);
+  //   console.log('typeof menuItems: ', typeof menuItems);
+  // } catch (error) {
+  //   console.error('Error parsing JSON:', error);
+  // }
+
+  // console.log('menuItems: ', menu);
+  // console.log('item._id: ', item._id);
+  // console.log('item.name: ', item.drink_name);
+  // console.log('item.adress: ', item.adress);
+  // console.log('item.smalladress: ', item.smalladress);
+  // console.log('item.cuisines: ', item.cuisines);
+  // console.log('aggregate_rating: ', item.aggregate_rating);
+  // console.log('menu: ', menu);
+  // console.log('typeof menu: ', typeof menu);
+  console.log('ListItem: ', listItems);
+  console.log('typeof listItems: ', typeof listItems);
   return (
     <Pressable
       onPress={() =>
         router.push({
           pathname: '/hotel',
           params: {
-            id: item.id,
-            name: item.name,
+            id: item._id,
+            name: item.drink_name,
             adress: item.adress,
             smalladress: item.smalladress,
             cuisines: item.cuisines,
             aggregate_rating: item.aggregate_rating,
             menu: menuItems,
+            // menu: listItems,
           },
         })
       }
@@ -53,7 +89,7 @@ const Hotel = ({item, menu}) => {
               fontSize: 16,
               fontWeight: '600',
             }}>
-            {item?.name}
+            {item?.drink_name}
           </Text>
           <Text
             style={{
@@ -63,7 +99,7 @@ const Hotel = ({item, menu}) => {
               fontWeight: '500',
               color: 'gray',
             }}>
-            {item?.description}
+            {item?.drink_description}
           </Text>
           <Text
             style={{

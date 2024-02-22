@@ -5,6 +5,13 @@ import MenuItem from './MenuItem';
 
 const FoodItem = ({item}) => {
   const data = [item];
+
+  console.log('\n\n =============================== \n\n');
+  console.log('item: ', item);
+  console.log('data: ', data);
+  console.log('item?.items?.length: ', item?.items?.length);
+  console.log('item?.items?: ', item?.items);
+  console.log('typeof item: ', typeof item);
   return (
     <View>
       {data?.map((item, index) => (
@@ -17,12 +24,14 @@ const FoodItem = ({item}) => {
               justifyContent: 'space-between',
             }}>
             <Text style={{fontSize: 19, fontWeight: 'bold'}}>
-              {item?.name} ({item?.items?.length})
+              {/* {item?.name} ({item?.items?.length}) */}
+              {item?.name} ({data?.length})
             </Text>
             <AntDesign name="down" size={20} color="black" />
           </Pressable>
 
-          {item?.items?.map((item, subIndex) => (
+          {/* {item?.items?.map((item, subIndex) => ( */}
+          {data?.map((item, subIndex) => (
             <MenuItem key={subIndex} item={item} />
           ))}
         </React.Fragment>
