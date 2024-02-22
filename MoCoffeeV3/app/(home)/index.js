@@ -31,7 +31,7 @@ const index = () => {
   const router = useRouter();
   const [locationServicesEnabled, setLocationServicesEnabled] = useState(false);
   const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
-    'fetching your location ...',
+    'Đang tìm vị trí của bạn...',
   );
   const [data, setData] = useState([]);
 
@@ -98,52 +98,53 @@ const index = () => {
   const recommended = [
     {
       id: 0,
-      name: 'Nandhana Palace',
+      name: 'Cà phê đen',
       image:
         'https://b.zmtcdn.com/data/pictures/chains/3/50713/81d0735ce259a6bf800e16bb54cb9e5e.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
       time: '35 - 45',
-      type: 'Andhra',
+      type: 'Coffee',
     },
     {
       id: 0,
-      name: 'GFC Biriyani',
+      name: 'Cà phê sữa đá',
       image:
         'https://b.zmtcdn.com/data/pictures/0/20844770/f9582144619b80d30566f497a02e2c8d.jpg?output-format=webp&fit=around|771.75:416.25&crop=771.75:416.25;*,*',
       time: '10 - 35',
-      type: 'North Indian',
+      type: 'Coffee',
     },
     {
       id: 0,
-      name: 'Happiness Dhaba',
+      name: 'Cappuccino',
       image:
         'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
       time: '20 - 25',
-      type: 'North Indian',
+      type: 'Coffee',
     },
 
     {
       id: 0,
-      name: 'Happiness Dhaba',
+      name: 'Trà sữa đá',
       image:
         'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
       time: '20 - 25',
-      type: 'North Indian',
+      type: 'Tea',
     },
     {
       id: 0,
-      name: 'Happiness Dhaba',
+      name: 'Trà chanh',
       image:
         'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
       time: '20 - 25',
-      type: 'North Indian',
+      type: 'Tea',
     },
   ];
 
   const items = [
     {
       id: '0',
-      name: 'Offers',
-      description: 'Upto 50% off',
+      name: 'Ưu đãi',
+      description: 'GIẢM GIÁ 50%',
+      // description: 'GIẢM GIÁ lên tới 50%',
       image: 'https://cdn-icons-png.flaticon.com/128/9356/9356378.png',
     },
     {
@@ -585,7 +586,7 @@ const index = () => {
         }}>
         <Octicons name="location" size={24} color="#E52850" />
         <View style={{flex: 1}}>
-          <Text style={{fontSize: 15, fontWeight: '500'}}>Deliver To</Text>
+          <Text style={{fontSize: 15, fontWeight: '500'}}>Giao hàng tới</Text>
           <Text style={{color: 'gray', fontSize: 16, marginTop: 3}}>
             {displayCurrentAddress}
           </Text>
@@ -618,7 +619,7 @@ const index = () => {
           marginTop: 10,
           marginHorizontal: 10,
         }}>
-        <TextInput placeholder="Search for food, hotels" />
+        <TextInput placeholder="Tìm kiếm cà phê, trà sữa..." />
         <AntDesign name="search1" size={24} color="#E52B50" />
       </View>
 
@@ -665,7 +666,8 @@ const index = () => {
               <View
                 style={{flexDirection: 'row', alignItems: 'center', gap: 3}}>
                 <Ionicons name="ios-time" size={24} color="green" />
-                <Text>{item?.time} mins</Text>
+                {/* Có thể thay chỗ này là giá tiền or đánh giá */}
+                <Text>{item?.time} phút</Text>
               </View>
             </View>
           </View>
@@ -680,7 +682,7 @@ const index = () => {
           marginBottom: 5,
           color: 'gray',
         }}>
-        EXPLORE
+        KHÁM PHÁ
       </Text>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -724,7 +726,7 @@ const index = () => {
           marginBottom: 5,
           color: 'gray',
         }}>
-        ALL RESTAURANTS
+        TẤT CẢ SẢN PHẨM
       </Text>
 
       <View style={{marginHorizontal: 8}}>

@@ -152,7 +152,7 @@ const Hotel = ({item, menu, listItems}) => {
           color="#1F75FE"
         />
         <Text style={{marginLeft: 2, color: '#1F75FE', fontWeight: '500'}}>
-          20% OFF up to 100.000 ₫
+          GIẢM GIÁ 20% lên tới 100.000 ₫
         </Text>
       </View>
     </Pressable>
