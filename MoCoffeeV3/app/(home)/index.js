@@ -19,6 +19,8 @@ import Categories from '../../components/Categories';
 import Hotel from '../../components/Hotel';
 import {supabase} from '../../supabase';
 
+// firebase
+
 import {useRouter} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -500,6 +502,7 @@ const index = () => {
     },
   ];
 
+  // Supabase
   useEffect(() => {
     async function fetchData() {
       try {

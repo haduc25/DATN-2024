@@ -5,6 +5,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
@@ -16,6 +17,7 @@ const crud_firebase = () => {
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [userdata, setUserData] = useState(null);
 
   console.log('username: ', username);
   console.log('email: ', email);
@@ -36,6 +38,48 @@ const crud_firebase = () => {
         console.log('error: ', error);
         alert('error: ', error);
       });
+  };
+
+  // //   Read
+  // const read = () => {
+  //   // Lấy dữ liệu của tài liệu có id '_user1' từ bộ sưu tập 'users'
+  //   getDoc(doc(db, 'users', 'Z1CiYg2f3seIJZPYsauJ'))
+  //     .then(docSnap => {
+  //       if (docSnap.exists()) {
+  //         // Tài liệu tồn tại, truy cập dữ liệu của tài liệu
+  //         console.log('Document data:', docSnap.data());
+
+  //         // data is obj =>
+
+  //         alert('Document data:', docSnap.data());
+  //       } else {
+  //         // Tài liệu không tồn tại
+  //         console.log('Document does not exist');
+  //         alert('Document does not exist');
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.log('Error getting document:', error);
+  //       alert('Error getting document:', error);
+  //     });
+  // };
+
+  const read = async () => {
+    try {
+      const docSnap = await getDoc(doc(db, 'users', 'Z1CiYg2f3seIJZPYsauJ'));
+      if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data());
+        setUserData(docSnap.data());
+      } else {
+        console.log('Document does not exist');
+        alert('Document does not exist');
+        setUserData(null);
+      }
+    } catch (error) {
+      console.log('Error getting document:', error);
+      alert('Error getting document:', error);
+      setUserData(null);
+    }
   };
 
   //   Create2
@@ -114,6 +158,13 @@ const crud_firebase = () => {
         />
         <Button title="Create a new user" onPress={create} />
         <Button title="Create a new user2" onPress={create2} />
+        <Button title="Read data from firebase" onPress={read} />
+        {userdata && (
+          <View>
+            <Text>username: {userdata.username}</Text>
+            <Text>email: {userdata.email}</Text>
+          </View>
+        )}
         <Button title="Update a user" onPress={update} />
         <Button title="Delete a user" onPress={deleteDocs} />
         <Button
