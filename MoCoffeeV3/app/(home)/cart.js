@@ -152,10 +152,10 @@ const cart = () => {
                   justifyContent: 'space-between',
                 }}>
                 <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-                  ₹{item.price * item.quantity}
+                  {item.price * item.quantity}.000 ₫
                 </Text>
                 <Text style={{fontSize: 15, fontWeight: '500'}}>
-                  Quantity : {item?.quantity}
+                  Số lượng: {item?.quantity}
                 </Text>
               </View>
             </Pressable>
@@ -268,7 +268,7 @@ const cart = () => {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}>
-                <Text>Feeding India Donation</Text>
+                <Text>Nuôi dưỡng quyên góp</Text>
                 <AntDesign name="checksquare" size={24} color="#fd5c63" />
               </View>
               <View
@@ -279,9 +279,9 @@ const cart = () => {
                   marginTop: 10,
                 }}>
                 <Text style={{color: 'gray'}}>
-                  Working towards a manlutrition-free India
+                  Hướng tới một VN không có con người sdd
                 </Text>
-                <Text>Rs 3</Text>
+                <Text>3.000 ₫</Text>
               </View>
             </View>
           </View>
@@ -309,7 +309,7 @@ const cart = () => {
                 </Text>
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  ₹{total}
+                  {total}.000 ₫
                 </Text>
               </View>
               <View
@@ -321,11 +321,11 @@ const cart = () => {
                 }}>
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  Delivery Fee
+                  Phí vận chuyển
                 </Text>
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  ₹15.00
+                  15.000 ₫
                 </Text>
               </View>
               <View
@@ -336,11 +336,11 @@ const cart = () => {
                 }}>
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  Delivery Partner Fee
+                  Phí đối tác giao hàng
                 </Text>
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  ₹75
+                  75.000 ₫
                 </Text>
               </View>
 
@@ -353,7 +353,7 @@ const cart = () => {
                     marginVertical: 8,
                   }}>
                   <Text style={{fontWeight: 'bold', fontSize: 15}}>To pay</Text>
-                  <Text>₹{total + 90}</Text>
+                  <Text>{total + 90}.000 ₫</Text>
                 </View>
               </View>
             </View>
@@ -372,9 +372,11 @@ const cart = () => {
           }}>
           <View>
             <Text style={{fontSize: 16, fontWeight: '600'}}>
-              Pay Using Cash
+              Thanh toán bằng thẻ
             </Text>
-            <Text style={{marginTop: 7, fontSize: 15}}>Cash on Delivery</Text>
+            <Text style={{marginTop: 7, fontSize: 15}}>
+              Thanh toán khi nhận hàng
+            </Text>
           </View>
 
           <Pressable
@@ -398,9 +400,6 @@ const cart = () => {
               gap: 10,
             }}>
             <View>
-              <Text style={{color: 'white', fontSize: 15, fontWeight: 'bold'}}>
-                {total + 95}
-              </Text>
               <Text
                 style={{
                   fontSize: 15,
@@ -408,11 +407,14 @@ const cart = () => {
                   fontWeight: '500',
                   marginTop: 3,
                 }}>
-                TOTAL
+                TỔNG CỘNG
+              </Text>
+              <Text style={{color: 'white', fontSize: 15, fontWeight: 'bold'}}>
+                {total + 95}.000 ₫
               </Text>
             </View>
             <Text style={{fontSize: 16, fontWeight: '500', color: 'white'}}>
-              Place Order
+              Đặt hàng
             </Text>
           </Pressable>
         </Pressable>
