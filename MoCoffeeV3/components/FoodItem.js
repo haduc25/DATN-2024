@@ -23,6 +23,7 @@ const FoodItem = ({item}) => {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
+            {/* Title */}
             <Text style={{fontSize: 19, fontWeight: 'bold'}}>
               {/* {item?.name} ({item?.items?.length}) */}
               {item?.name} ({data?.length})

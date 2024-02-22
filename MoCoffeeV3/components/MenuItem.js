@@ -1,4 +1,11 @@
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState} from 'react';
 import {FontAwesome, Ionicons} from '@expo/vector-icons';
 import {useDispatch} from 'react-redux';
@@ -8,24 +15,47 @@ import {
   incrementQuantity,
   removeFromCart,
 } from '../redux/CartReducer';
+import {useRouter} from 'expo-router';
 
 const MenuItem = ({item}) => {
   const [additems, setAddItems] = useState(0);
   const [selected, setSelected] = useState(false);
   const dispatch = useDispatch();
 
+  const router = useRouter();
+
   console.log('\n\n ================== \n\n');
   console.log('item: ', item);
   return (
     <View>
-      <Pressable
+      <TouchableOpacity
+        // onPress={() => alert(123)}
+        // sang page `detail sp`
+        onPress={() =>
+          router.push({
+            pathname: '/detailItem',
+            // params: {
+            //   id: item._id,
+            //   name: item.drink_name,
+            //   adress: item.adress,
+            //   smalladress: item.smalladress,
+            //   cuisines: item.cuisines,
+            //   aggregate_rating: item.aggregate_rating,
+            //   menu: menuItems,
+            //   // menu: listItems,
+            // },
+          })
+        }
         style={{
           margin: 10,
           flexDirection: 'row',
           justifyContent: 'space-between',
           marginVertical: 15,
+          // borderWidth: 1,
+          // borderColor: '#000',
         }}>
         <View>
+          {/* Title sp */}
           <Text style={{fontSize: 18, fontWeight: '600', width: 220}}>
             {item?.name}
           </Text>
@@ -170,7 +200,7 @@ const MenuItem = ({item}) => {
             </Pressable>
           )}
         </Pressable>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };

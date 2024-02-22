@@ -6,6 +6,7 @@ import {
   Pressable,
   Animated,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import {useLocalSearchParams, useRouter} from 'expo-router';
@@ -299,10 +300,11 @@ const hotel = () => {
         ))}
       </ScrollView>
 
+      {/* Hiện ở dưới bottom */}
       <View style={{flexDirection: 'row', backgroundColor: '#fff'}}>
         {/* {recievedMenu?.map((item, index) => ( */}
         {recievedMenu.items.map((item, index) => (
-          <Pressable
+          <TouchableOpacity
             key={index}
             onPress={() => scrollToCategory(index)}
             style={{
@@ -317,11 +319,11 @@ const hotel = () => {
               borderWidth: 1,
             }}>
             <Text>{item?.name}</Text>
-          </Pressable>
+          </TouchableOpacity>
         ))}
       </View>
 
-      <Pressable
+      {/* <Pressable
         onPress={() => setModalVisible(!modalVisible)}
         style={{
           width: 60,
@@ -350,9 +352,9 @@ const hotel = () => {
           }}>
           MENU
         </Text>
-      </Pressable>
+      </Pressable> */}
 
-      <Modal
+      {/* <Modal
         isVisible={modalVisible}
         onBackdropPress={() => setModalVisible(!modalVisible)}>
         <View
@@ -391,7 +393,7 @@ const hotel = () => {
             />
           </View>
         </View>
-      </Modal>
+      </Modal> */}
 
       <View style={{backgroundColor: '#fff'}}>
         {cart?.length > 0 && (

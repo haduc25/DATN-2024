@@ -45,7 +45,12 @@ const Hotel = ({item, menu, listItems}) => {
   console.log('typeof listItems: ', typeof listItems);
   return (
     <Pressable
-      onPress={() =>
+      onPress={() => {
+        if (!listItems) {
+          alert('Chưa cập nhật menu trên database!!!');
+          return;
+        }
+
         router.push({
           pathname: '/hotel',
           params: {
@@ -58,8 +63,8 @@ const Hotel = ({item, menu, listItems}) => {
             menu: menuItems,
             // menu: listItems,
           },
-        })
-      }
+        });
+      }}
       style={{
         marginHorizontal: 6,
         marginVertical: 12,
