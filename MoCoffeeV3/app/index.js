@@ -1,18 +1,29 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {Redirect} from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {NavigationContainer} from '@react-navigation/native';
 
-const index = () => {
-  // AsyncStorage.clear();
-  return <Redirect href="/(authenticate)/login" />;
-  // return <Redirect href="/(authenticate)/register" />;
+const Index = () => {
+  return (
+    <View
+      style={{
+        backgroundColor: 'red',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+      }}>
+      <Text>123</Text>
+    </View>
+  );
+  // return (
+  //   <NavigationContainer independent>
+  //     {/* <Redirect href="/(home)/BottomNavigationBar" /> */}
+  //   </NavigationContainer>
+  // );
   // return <Redirect href="/(home)/crud_firebase" />;
 };
 
-export default index;
+export default Index;
 
 const styles = StyleSheet.create({});
-
-// -> "/"
-// -> "/home"

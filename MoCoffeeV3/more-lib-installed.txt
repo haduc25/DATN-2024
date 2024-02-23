@@ -4,3 +4,7 @@ npm install @react-native-community/checkbox
 #change database from `supabase` to `firebase`
 #install firebase
 `npm i firebase`
+
+
+#Thanh điều hướng bên dưới - page home
+`npm install @react-navigation/bottom-tabs`
