@@ -8,3 +8,7 @@ npm install @react-native-community/checkbox
 
 #Thanh điều hướng bên dưới - page home
 `npm install @react-navigation/bottom-tabs`
+
+
+#Thay đổi router (expo router => React Navigation)
+`npm i @react-navigation/native`
