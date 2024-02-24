@@ -57,6 +57,9 @@ export default function App() {
             }
             return <Ionicons name={iconName} size={size} color={color} />;
           },
+          // tabBarActiveTintColor: '#e91e63',
+          tabBarActiveTintColor: '#7EC7E7', //màu icon khi active
+          tabBarInactiveTintColor: '#7EC7E7', //màu chữ các thứ
         })}>
         <BottomTab.Screen
           name={homeName}

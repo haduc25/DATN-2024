@@ -17,7 +17,7 @@ import {AntDesign} from '@expo/vector-icons';
 
 // Components
 import Categories from '../components/Categories';
-import Hotel from '../components/Hotel';
+import Products from '../components/Products';
 
 // Database
 import {supabase} from '../supabase';
@@ -327,9 +327,13 @@ export default function HomeScreen({navigation}) {
         TẤT CẢ SẢN PHẨM
       </Text>
 
-      <View style={{marginHorizontal: 8}}>
+      <View
+        style={{
+          marginHorizontal: 8,
+          paddingBottom: 50, //dưới (khoảng cách từ item vs TabBar)
+        }}>
         {data?.map((item, index) => (
-          <Hotel
+          <Products
             key={index}
             item={item}
             menu={item?.menu}

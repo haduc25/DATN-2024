@@ -7,7 +7,7 @@ import {useRouter} from 'expo-router';
 // Navigation
 import {useNavigation} from '@react-navigation/native';
 
-const Hotel = ({item, menu, listItems}) => {
+const Products = ({item, menu, listItems}) => {
   const router = useRouter();
   const router2 = useNavigation();
 
@@ -174,6 +174,6 @@ const Hotel = ({item, menu, listItems}) => {
   );
 };
 
-export default Hotel;
+export default Products;
 
 const styles = StyleSheet.create({});
