@@ -4,8 +4,13 @@ import {Ionicons} from '@expo/vector-icons';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 
+// Navigation
+import {useNavigation} from '@react-navigation/native';
+
 const Hotel = ({item, menu, listItems}) => {
   const router = useRouter();
+  const router2 = useNavigation();
+
   // const menuItems = JSON.stringify(menu);
 
   // // workflow
@@ -51,19 +56,24 @@ const Hotel = ({item, menu, listItems}) => {
           return;
         }
 
-        router.push({
-          pathname: '/hotel',
-          params: {
-            id: item._id,
-            name: item.drink_name,
-            adress: item.adress,
-            smalladress: item.smalladress,
-            cuisines: item.cuisines,
-            aggregate_rating: item.aggregate_rating,
-            menu: menuItems,
-            // menu: listItems,
-          },
-        });
+        // router.push({
+        //   pathname: '/hotel',
+        //   params: {
+        //     id: item._id,
+        //     name: item.drink_name,
+        //     adress: item.adress,
+        //     smalladress: item.smalladress,
+        //     cuisines: item.cuisines,
+        //     aggregate_rating: item.aggregate_rating,
+        //     menu: menuItems,
+        //     // menu: listItems,
+        //   },
+        // });
+
+        console.log('Current router: ', router2.getState().routeNames);
+
+        // router2.navigate('Đơn hàng');
+        router2.navigate('Cart');
       }}
       style={{
         marginHorizontal: 6,

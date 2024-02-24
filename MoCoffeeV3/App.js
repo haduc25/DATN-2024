@@ -1,103 +1,95 @@
 import {StatusBar} from 'expo-status-bar';
+import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-
-// Navigation: Thanh điều hướng
 import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Ionicons} from '@expo/vector-icons';
+
+// Import các màn hình
+import HomeScreen from './screens/HomeScreen';
+import OrdersScreen from './screens/OrdersScreen';
+import FavouriteScreen from './screens/FavouriteScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import CartScreen from './screens/CartScreen';
+
+// Khởi tạo Stack Navigator
 const Stack = createNativeStackNavigator();
 
-// Bottom Tab
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+// Khởi tạo Bottom Tab Navigator
 const BottomTab = createBottomTabNavigator();
 
-// Components
-import HomeScreen from './components/HomeScreen';
-import OrdersScreen from './components/OrdersScreen';
-import FavouriteScreen from './components/FavouriteScreen';
-import ProfileScreen from './components/ProfileScreen';
-
-// Icons
-import {Ionicons} from '@expo/vector-icons';
+// Hàm tạo Stack Navigator cho một màn hình
+function createScreenStack(ScreenComponent) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name={ScreenComponent.name}
+        component={ScreenComponent}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
 
 //Screen names
 const homeName = 'Trang chủ';
 const ordersName = 'Đơn hàng';
 const favouriteName = 'Yêu thích';
-// const profileName = 'Tôi';
-// const profileName = 'Trang cá nhân';
 const profileName = 'Tài khoản';
 
 export default function App() {
   return (
-    // <View style={styles.container}>
-    //   <Text>Open up App.js to start working on your app!</Text>
-    //   <StatusBar style="auto" />
-    // </View>
     <NavigationContainer>
-      {/* <Stack.Navigator initialRouteName="SplashScreen">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="OrdersScreen" component={OrdersScreen} />
-        <Stack.Screen name="Settings" component={ProfileScreen} />
-      </Stack.Navigator> */}
       <BottomTab.Navigator
-        initialRouteName="SplashScreen"
+        initialRouteName={homeName}
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, color, size}) => {
             let iconName;
-            let rn = route.name;
-
-            if (rn === homeName) {
+            if (route.name === homeName) {
               iconName = focused ? 'home' : 'home-outline';
-            } else if (rn === ordersName) {
+            } else if (route.name === ordersName) {
               iconName = focused ? 'list' : 'list-outline';
-            } else if (rn === favouriteName) {
+            } else if (route.name === favouriteName) {
               iconName = focused ? 'heart' : 'heart-outline';
-            } else if (rn === profileName) {
+            } else if (route.name === profileName) {
               iconName = focused ? 'person' : 'person-outline';
             }
-
-            // You can return any component that you like here!
-            return (
-              <Ionicons
-                name={iconName}
-                size={size}
-                color={color}
-                // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
-              />
-            );
+            return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}>
         <BottomTab.Screen
           name={homeName}
-          component={HomeScreen}
+          children={() => createScreenStack(HomeScreen)}
           options={{headerShown: false}}
         />
         <BottomTab.Screen
           name={ordersName}
-          component={OrdersScreen}
+          children={() => createScreenStack(OrdersScreen)}
           options={{headerShown: false}}
         />
         <BottomTab.Screen
           name={favouriteName}
-          component={FavouriteScreen}
+          children={() => createScreenStack(FavouriteScreen)}
           options={{headerShown: false}}
         />
         <BottomTab.Screen
           name={profileName}
-          component={ProfileScreen}
+          children={() => createScreenStack(ProfileScreen)}
           options={{headerShown: false}}
+        />
+
+        {/* HIDE - SCREEN & HIDE TASKBAR */}
+        <BottomTab.Screen
+          name={'Cart'}
+          children={() => createScreenStack(CartScreen)}
+          options={{
+            headerShown: false,
+            // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+            tabBarButton: () => null,
+          }}
         />
       </BottomTab.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'red',
-  },
-});
