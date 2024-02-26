@@ -16,13 +16,15 @@ import {
   removeFromCart,
 } from '../redux/CartReducer';
 import {useRouter} from 'expo-router';
+import {useNavigation} from '@react-navigation/native';
 
 const MenuItem = ({item}) => {
   const [additems, setAddItems] = useState(0);
   const [selected, setSelected] = useState(false);
   const dispatch = useDispatch();
 
-  const router = useRouter();
+  // const router = useRouter();
+  const navi = useNavigation();
 
   console.log('\n\n ================== \n\n');
   console.log('item: ', item);
@@ -34,18 +36,9 @@ const MenuItem = ({item}) => {
         // onPress={() => alert(123)}
         // sang page `detail sp`
         onPress={() =>
-          router.push({
-            pathname: '/detailItem',
-            // params: {
-            //   id: item._id,
-            //   name: item.drink_name,
-            //   adress: item.adress,
-            //   smalladress: item.smalladress,
-            //   cuisines: item.cuisines,
-            //   aggregate_rating: item.aggregate_rating,
-            //   menu: menuItems,
-            //   // menu: listItems,
-            // },
+          navi.navigate('DetailScreen', {
+            name: item?.name,
+            price: item?.price,
           })
         }
         style={{

@@ -39,7 +39,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
 
   // console.log('menuItems: ', menu);
   // console.log('item._id: ', item._id);
-  // console.log('item.name: ', item.drink_name);
+  // console.log('item.name: ', item.drink_type);
   // console.log('item.adress: ', item.adress);
   // console.log('item.smalladress: ', item.smalladress);
   // console.log('item.cuisines: ', item.cuisines);
@@ -60,7 +60,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
         //   pathname: '/hotel',
         //   params: {
         //     id: item._id,
-        //     name: item.drink_name,
+        //     name: item.drink_type,
         //     adress: item.adress,
         //     smalladress: item.smalladress,
         //     cuisines: item.cuisines,
@@ -84,7 +84,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
         // });
 
         router2.navigate('ProductTypeScreen', {
-          name: item.drink_name,
+          name: item.drink_type,
           adress: item.adress,
           smalladress: item.smalladress,
           cuisines: item.cuisines,
@@ -121,7 +121,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
               fontSize: 16,
               fontWeight: '600',
             }}>
-            {item?.drink_name}
+            {item?.drink_type}
           </Text>
           <Text
             style={{

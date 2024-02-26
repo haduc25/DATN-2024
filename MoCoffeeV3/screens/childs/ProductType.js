@@ -202,10 +202,15 @@ export default function ProductType({navigation}) {
           <FoodItem key={index} item={item} />
           // <Text key={index}>123</Text>
         ))}
+        {/* Đệm dưới */}
+        <View style={{height: 40}}></View>
       </ScrollView>
 
       {/* Hiện ở dưới bottom */}
-      <View style={{flexDirection: 'row', backgroundColor: '#fff'}}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{flexDirection: 'row', backgroundColor: '#fff'}}>
         {/* {recievedMenu?.map((item, index) => ( */}
         {/* {recievedMenu.items.map((item, index) => ( */}
         {dataMenu.map((item, index) => (
@@ -215,18 +220,19 @@ export default function ProductType({navigation}) {
             style={{
               paddingHorizontal: 7,
               borderRadius: 4,
-              paddingVertical: 5,
+              paddingVertical: 6,
               marginVertical: 10,
               marginHorizontal: 10,
               alignItems: 'center',
               justifyContent: 'center',
               borderColor: '#181818',
               borderWidth: 1,
+              height: 30,
             }}>
-            <Text>{item?.name}</Text>
+            <Text>♥_{item?.name}_♥</Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
 
       <View style={{backgroundColor: '#fff', paddingBottom: 40}}>
         {cart?.length > 0 && (

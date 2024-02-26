@@ -12,6 +12,7 @@ import FavouriteScreen from './screens/FavouriteScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import CartScreen from './screens/CartScreen';
 import ProductType from './screens/childs/ProductType';
+import DetailScreen from './screens/DetailScreen';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -27,6 +28,7 @@ const favouriteName = 'Yêu thích';
 const profileName = 'Tài khoản';
 const cartName = 'Cart';
 const productTypeName = 'ProductTypeScreen';
+const detailName = 'DetailScreen';
 
 export default function App() {
   return (
@@ -92,6 +94,15 @@ export default function App() {
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          <BottomTab.Screen
+            name={detailName}
+            component={DetailScreen}
+            options={{
+              headerShown: false,
+              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
               tabBarButton: () => null,
             }}
           />
