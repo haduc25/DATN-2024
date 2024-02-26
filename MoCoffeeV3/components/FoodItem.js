@@ -9,9 +9,16 @@ const FoodItem = ({item}) => {
   console.log('\n\n =============================== \n\n');
   console.log('item: ', item);
   console.log('data: ', data);
+  console.log('data?.length: ', data?.length);
   console.log('item?.items?.length: ', item?.items?.length);
   console.log('item?.items?: ', item?.items);
   console.log('typeof item: ', typeof item);
+
+  // return (
+  //   <View>
+  //     <Text>meow</Text>
+  //   </View>
+  // );
   return (
     <View>
       {data?.map((item, index) => (

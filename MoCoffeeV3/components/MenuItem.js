@@ -26,6 +26,8 @@ const MenuItem = ({item}) => {
 
   console.log('\n\n ================== \n\n');
   console.log('item: ', item);
+
+  console.log('additems: ', additems);
   return (
     <View>
       <TouchableOpacity

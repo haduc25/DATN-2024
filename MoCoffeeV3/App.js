@@ -13,6 +13,10 @@ import ProfileScreen from './screens/ProfileScreen';
 import CartScreen from './screens/CartScreen';
 import ProductType from './screens/childs/ProductType';
 
+// Redux
+import {Provider} from 'react-redux';
+import store from './redux/store';
+
 // Khởi tạo Bottom Tab Navigator
 const BottomTab = createBottomTabNavigator();
 
@@ -26,72 +30,73 @@ const productTypeName = 'ProductTypeScreen';
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <BottomTab.Navigator
-        // initialRouteName={homeName}
-        initialRouteName={productTypeName}
-        // initialRouteName={cartName}
-        screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color, size}) => {
-            let iconName;
-            if (route.name === homeName) {
-              iconName = focused ? 'home' : 'home-outline';
-            } else if (route.name === ordersName) {
-              iconName = focused ? 'list' : 'list-outline';
-            } else if (route.name === favouriteName) {
-              iconName = focused ? 'heart' : 'heart-outline';
-            } else if (route.name === profileName) {
-              iconName = focused ? 'person' : 'person-outline';
-            }
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          // tabBarActiveTintColor: '#e91e63',
-          tabBarActiveTintColor: '#7EC7E7', //màu icon khi active
-          tabBarInactiveTintColor: '#7EC7E7', //màu chữ các thứ
-        })}>
-        <BottomTab.Screen
-          name={homeName}
-          component={HomeScreen}
-          options={{headerShown: false}}
-        />
-        <BottomTab.Screen
-          name={ordersName}
-          component={OrdersScreen}
-          options={{headerShown: false}}
-        />
-        <BottomTab.Screen
-          name={favouriteName}
-          component={FavouriteScreen}
-          options={{headerShown: false}}
-        />
-        <BottomTab.Screen
-          name={profileName}
-          component={ProfileScreen}
-          options={{headerShown: false}}
-        />
+    <Provider store={store}>
+      <NavigationContainer>
+        <BottomTab.Navigator
+          initialRouteName={homeName}
+          // initialRouteName={productTypeName}
+          // initialRouteName={cartName}
+          screenOptions={({route}) => ({
+            tabBarIcon: ({focused, color, size}) => {
+              let iconName;
+              if (route.name === homeName) {
+                iconName = focused ? 'home' : 'home-outline';
+              } else if (route.name === ordersName) {
+                iconName = focused ? 'list' : 'list-outline';
+              } else if (route.name === favouriteName) {
+                iconName = focused ? 'heart' : 'heart-outline';
+              } else if (route.name === profileName) {
+                iconName = focused ? 'person' : 'person-outline';
+              }
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            // tabBarActiveTintColor: '#e91e63',
+            tabBarActiveTintColor: '#7EC7E7', //màu icon khi active
+            tabBarInactiveTintColor: '#7EC7E7', //màu chữ các thứ
+          })}>
+          <BottomTab.Screen
+            name={homeName}
+            component={HomeScreen}
+            options={{headerShown: false}}
+          />
+          <BottomTab.Screen
+            name={ordersName}
+            component={OrdersScreen}
+            options={{headerShown: false}}
+          />
+          <BottomTab.Screen
+            name={favouriteName}
+            component={FavouriteScreen}
+            options={{headerShown: false}}
+          />
+          <BottomTab.Screen
+            name={profileName}
+            component={ProfileScreen}
+            options={{headerShown: false}}
+          />
 
-        {/* HIDE - SCREEN & HIDE TASKBAR */}
-        <BottomTab.Screen
-          name={cartName}
-          component={CartScreen}
-          initialParams={{name: 'haduc25'}}
-          options={{
-            headerShown: false,
-            // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
-            tabBarButton: () => null,
-          }}
-        />
-        <BottomTab.Screen
-          name={productTypeName}
-          component={ProductType}
-          initialParams={{cat: 'meow'}}
-          options={{
-            headerShown: false,
-            // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
-            tabBarButton: () => null,
-          }}
-        />
-      </BottomTab.Navigator>
-    </NavigationContainer>
+          {/* HIDE - SCREEN & HIDE TASKBAR */}
+          <BottomTab.Screen
+            name={cartName}
+            component={CartScreen}
+            initialParams={{name: 'haduc25'}}
+            options={{
+              headerShown: false,
+              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          <BottomTab.Screen
+            name={productTypeName}
+            component={ProductType}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+        </BottomTab.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }

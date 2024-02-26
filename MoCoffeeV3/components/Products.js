@@ -84,8 +84,12 @@ const Products = ({naviagation, item, menu, listItems}) => {
         // });
 
         router2.navigate('ProductTypeScreen', {
-          itemId: 86,
-          otherParam: 'anything you want here',
+          name: item.drink_name,
+          adress: item.adress,
+          smalladress: item.smalladress,
+          cuisines: item.cuisines,
+          aggregate_rating: item.aggregate_rating,
+          menu: menuItems,
         });
       }}
       style={{
