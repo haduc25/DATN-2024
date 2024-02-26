@@ -3,6 +3,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Ionicons} from '@expo/vector-icons';
 
 // Import các màn hình
@@ -13,8 +14,25 @@ import ProfileScreen from './screens/ProfileScreen';
 import CartScreen from './screens/CartScreen';
 import ProductType from './screens/childs/ProductType';
 
+// Khởi tạo Stack Navigator
+const Stack = createNativeStackNavigator();
+
 // Khởi tạo Bottom Tab Navigator
 const BottomTab = createBottomTabNavigator();
+
+// Hàm tạo Stack Navigator cho một màn hình
+function createScreenStack(ScreenComponent) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name={ScreenComponent.name}
+        component={ScreenComponent}
+        options={{headerShown: false}}
+        initialParams={{cat2: 'meowww'}}
+      />
+    </Stack.Navigator>
+  );
+}
 
 //Screen names
 const homeName = 'Trang chủ';
@@ -30,7 +48,6 @@ export default function App() {
       <BottomTab.Navigator
         // initialRouteName={homeName}
         initialRouteName={productTypeName}
-        // initialRouteName={cartName}
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, color, size}) => {
             let iconName;
@@ -51,30 +68,29 @@ export default function App() {
         })}>
         <BottomTab.Screen
           name={homeName}
-          component={HomeScreen}
+          children={() => createScreenStack(HomeScreen)}
           options={{headerShown: false}}
         />
         <BottomTab.Screen
           name={ordersName}
-          component={OrdersScreen}
+          children={() => createScreenStack(OrdersScreen)}
           options={{headerShown: false}}
         />
         <BottomTab.Screen
           name={favouriteName}
-          component={FavouriteScreen}
+          children={() => createScreenStack(FavouriteScreen)}
           options={{headerShown: false}}
         />
         <BottomTab.Screen
           name={profileName}
-          component={ProfileScreen}
+          children={() => createScreenStack(ProfileScreen)}
           options={{headerShown: false}}
         />
 
         {/* HIDE - SCREEN & HIDE TASKBAR */}
         <BottomTab.Screen
           name={cartName}
-          component={CartScreen}
-          initialParams={{name: 'haduc25'}}
+          children={() => createScreenStack(CartScreen)}
           options={{
             headerShown: false,
             // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
@@ -83,7 +99,7 @@ export default function App() {
         />
         <BottomTab.Screen
           name={productTypeName}
-          component={ProductType}
+          children={() => createScreenStack(ProductType)}
           initialParams={{cat: 'meow'}}
           options={{
             headerShown: false,

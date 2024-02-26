@@ -7,7 +7,7 @@ import {useRouter} from 'expo-router';
 // Navigation
 import {useNavigation} from '@react-navigation/native';
 
-const Products = ({item, menu, listItems}) => {
+const Products = ({naviagation, item, menu, listItems}) => {
   const router = useRouter();
   const router2 = useNavigation();
 
@@ -73,7 +73,20 @@ const Products = ({item, menu, listItems}) => {
         console.log('Current router: ', router2.getState().routeNames);
 
         // router2.navigate('Đơn hàng');
-        router2.navigate('Cart');
+        // router2.navigate('Cart');
+
+        // go to ProductType Screen
+        // router2.navigate('ProductTypeScreen', {
+        //   data: 'Dữ liệu được truyền từ ProductScreen',
+        // });
+        // router2.navigate('ProductTypeScreen', {
+        //   bigData: 'Dữ liệu được truyền từ ProductScreen',
+        // });
+
+        router2.navigate('ProductTypeScreen', {
+          itemId: 86,
+          otherParam: 'anything you want here',
+        });
       }}
       style={{
         marginHorizontal: 6,
