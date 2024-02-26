@@ -13,6 +13,8 @@ import ProfileScreen from './screens/ProfileScreen';
 import CartScreen from './screens/CartScreen';
 import ProductType from './screens/childs/ProductType';
 import DetailScreen from './screens/DetailScreen';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -29,15 +31,19 @@ const profileName = 'Tài khoản';
 const cartName = 'Cart';
 const productTypeName = 'ProductTypeScreen';
 const detailName = 'DetailScreen';
+const loginName = 'LoginScreen';
+const registerName = 'RegisterScreen';
 
 export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
         <BottomTab.Navigator
-          initialRouteName={homeName}
+          // initialRouteName={homeName}
           // initialRouteName={productTypeName}
           // initialRouteName={cartName}
+          // initialRouteName={registerName}
+          initialRouteName={registerName}
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;
@@ -103,6 +109,25 @@ export default function App() {
             options={{
               headerShown: false,
               // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          {/* LOGIN & REGISTER */}
+          <BottomTab.Screen
+            name={loginName}
+            component={LoginScreen}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          <BottomTab.Screen
+            name={registerName}
+            component={RegisterScreen}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
               tabBarButton: () => null,
             }}
           />

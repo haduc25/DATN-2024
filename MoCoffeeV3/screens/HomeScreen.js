@@ -72,8 +72,9 @@ export default function HomeScreen({navigation}) {
               // Xóa token xác thực khỏi AsyncStorage
               await AsyncStorage.removeItem('authToken');
 
-              // Chuyển người dùng đến màn hình đăng nhập (hoặc màn hình khác tùy theo yêu cầu của ứng dụng)
-              router.replace('/login');
+              // Chuyển người dùng đến màn hình đăng nhập
+
+              // router.replace('/login');
             },
           },
         ],

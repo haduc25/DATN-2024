@@ -1,6 +1,12 @@
 // Import the functions you need from the SDKs you need
 import {initializeApp} from 'firebase/app';
 import {getFirestore} from 'firebase/firestore';
+import {
+  getAuth,
+  initializeAuth,
+  getReactNativePersistence,
+} from 'firebase/auth'; // Thêm import này
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Thêm import này
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -20,3 +26,17 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore
 export const db = getFirestore(app);
+
+// // Khởi tạo Auth và cung cấp AsyncStorage
+// const auth = getAuth(app);
+// initializeAuth(auth, {
+//   persistence: 'local', // hoặc 'session' tùy thuộc vào nhu cầu của bạn
+//   asyncStorage: AsyncStorage,
+// });
+
+// initialize Firebase Auth for that app immediately
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+
+export {app, auth, getAuth};
