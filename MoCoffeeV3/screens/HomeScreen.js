@@ -20,15 +20,21 @@ import Categories from '../components/Categories';
 import Products from '../components/Products';
 
 // Database
-import {supabase} from '../supabase';
+// import {supabase} from '../supabase';
 import {collection, getDocs} from 'firebase/firestore';
 import {db} from '../firebase';
+
+// navigation
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen({navigation}) {
   // Location
   const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
     'Đang tìm vị trí của bạn...',
   );
+
+  const navi = useNavigation();
 
   // fecth data from db
   const [data, setData] = useState([]);
@@ -74,7 +80,10 @@ export default function HomeScreen({navigation}) {
 
               // Chuyển người dùng đến màn hình đăng nhập
 
-              // router.replace('/login');
+              navi.reset({
+                index: 0,
+                routes: [{name: 'LoginScreen'}],
+              });
             },
           },
         ],
@@ -173,8 +182,8 @@ export default function HomeScreen({navigation}) {
         backgroundColor: '#fff',
         paddingTop: 40,
         // marginTop: 40,
-        borderWidth: 1,
-        borderColor: '#000',
+        // borderWidth: 1,
+        // borderColor: '#000',
       }}>
       <View
         style={{

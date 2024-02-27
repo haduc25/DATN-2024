@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Alert, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
 // import {getAuth} from 'firebase/auth';
 import {auth, storage} from '../firebase';
-import {ref, getDownloadURL} from 'firebase/storage';
 
 // navigation
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen({navigation}) {
-  const [imageURI, setImageURI] = useState(null);
   console.log('storage: ', storage);
 
   const [displayName, setDisplayName] = useState(null);
@@ -18,6 +16,8 @@ export default function ProfileScreen({navigation}) {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [userPhotoURL, setUserPhotoURL] = useState(null);
   const [userId, setUserId] = useState(null);
+
+  const [imageURL, setImageURL] = useState(null);
 
   const navi = useNavigation();
 
@@ -81,38 +81,19 @@ export default function ProfileScreen({navigation}) {
   };
 
   useEffect(() => {
-    const fetchImageURI = async () => {
+    const getImage = async () => {
       try {
-        getDownloadURL(ref(storage, 'IMG_6691.JPG'))
-          .then(url => {
-            // `url` is the download URL for 'images/stars.jpg'
-
-            // This can be downloaded directly:
-            const xhr = new XMLHttpRequest();
-            xhr.responseType = 'blob';
-            xhr.onload = event => {
-              const blob = xhr.response;
-            };
-            xhr.open('GET', url);
-            xhr.send();
-
-            // // Or inserted into an <img> element
-            console.log('url: ', url);
-            setImageURI(url);
-          })
-          .catch(error => {
-            // Handle any errors
-            console.log('error2: ', error);
-          });
+        // const imageRef = storage.ref('IMG_6691.JPG');
+        const imageRef = storage.ref().child('IMG_6691.JPG');
+        const url = await imageRef.getDownloadURL();
+        setImageURL(url);
       } catch (error) {
-        console.error('Error fetching image:', error);
+        console.error('Error getting download URL:', error);
       }
     };
 
-    fetchImageURI();
+    getImage();
   }, []);
-
-  console.log('image URI: ', imageURI);
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -127,9 +108,6 @@ export default function ProfileScreen({navigation}) {
       {phoneNumber && <Text>Số điện thoại: {phoneNumber}</Text>}
       {userPhotoURL && <img src={userPhotoURL} alt="User" />}
       {userId && <Text>UserID: {userId}</Text>}
-      {imageURI && (
-        <Image source={{uri: imageURI}} style={{width: 200, height: 200}} />
-      )}
 
       <TouchableOpacity
         style={{paddingVertical: 10, marginTop: 80}}

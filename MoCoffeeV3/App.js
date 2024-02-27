@@ -42,8 +42,8 @@ export default function App() {
           // initialRouteName={homeName}
           // initialRouteName={productTypeName}
           // initialRouteName={cartName}
-          // initialRouteName={registerName}
           initialRouteName={registerName}
+          // initialRouteName={loginName}
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;

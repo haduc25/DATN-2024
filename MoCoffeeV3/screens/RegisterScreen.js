@@ -13,10 +13,12 @@ import {MaterialIcons, Ionicons, AntDesign} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 
 import {
-  getAuth,
+  // getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth';
+import {auth} from '../firebase';
+import {getDownloadURL} from 'firebase/storage';
 
 export default function RegisterScreen({navigation}) {
   const [name, setName] = useState('');
@@ -25,13 +27,25 @@ export default function RegisterScreen({navigation}) {
   const [showPassword, setShowPassword] = useState(false); // State để xác định xem mật khẩu có nên được hiển thị hay không
   const navi = useNavigation();
 
-  const auth = getAuth();
+  // const auth = getAuth();
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword); // Đảo ngược trạng thái hiển thị mật khẩu
   };
 
   async function signUpNewUser(email, password, name) {
+    if (!name) {
+      console.log('Vui lòng nhập tên hiển thị');
+      alert('Vui lòng nhập tên hiển thị');
+      return;
+    }
+
+    if (!email || !password) {
+      console.log('Vui lòng nhập email và mật khẩu');
+      alert('Vui lòng nhập email và mật khẩu');
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -43,6 +57,13 @@ export default function RegisterScreen({navigation}) {
       await updateProfile(userCredential.user, {
         displayName: name,
       });
+
+      // Lấy URL của ảnh mặc định từ Firebase Storage
+      const defaultAvatarUrl = await getDownloadURL(
+        'gs://mo-coffee-tea.appspot.com/IMG_6691.JPG',
+      );
+
+      console.log('defaultAvatarUrl: ', defaultAvatarUrl);
 
       // Chờ một khoảng thời gian ngắn (ví dụ: 1 giây) để đảm bảo thông tin hồ sơ được cập nhật
       await new Promise(resolve => setTimeout(resolve, 3000));
@@ -212,15 +233,30 @@ export default function RegisterScreen({navigation}) {
 
         <Pressable
           onPress={() => signUpNewUser(email, password, name)}
-          style={{
-            width: 200,
-            backgroundColor: '#fd5c63',
-            borderRadius: 6,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: 15,
-            marginTop: 50,
-          }}>
+          android_ripple={{color: 'rgba(0, 0, 0, 0.1)'}} // Hiệu ứng opacity cho Android
+          // style={{
+          //   width: 200,
+          //   backgroundColor: '#fd5c63',
+          //   borderRadius: 6,
+          //   marginLeft: 'auto',
+          //   marginRight: 'auto',
+          //   padding: 15,
+          //   marginTop: 50,
+          // }}>
+          style={({pressed}) => [
+            {
+              opacity: pressed ? 0.5 : 1, // Thay đổi opacity khi nhấn
+            },
+            {
+              width: 200,
+              backgroundColor: '#fd5c63',
+              borderRadius: 6,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              padding: 15,
+              marginTop: 50,
+            },
+          ]}>
           <Text
             style={{
               textAlign: 'center',

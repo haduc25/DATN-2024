@@ -14,7 +14,9 @@ import {useNavigation} from '@react-navigation/native';
 import {db} from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+// import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import {signInWithEmailAndPassword} from 'firebase/auth';
+import {auth} from '../firebase';
 
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
@@ -23,7 +25,7 @@ export default function LoginScreen({navigation}) {
 
   const navi = useNavigation();
 
-  const auth = getAuth();
+  // const auth = getAuth();
 
   // Lưu tài khoản
   const [isSaveAccount, setIsSaveAccount] = useState(true);
@@ -33,17 +35,20 @@ export default function LoginScreen({navigation}) {
   };
 
   useEffect(() => {
-    // const checkLogin = async () => {
-    //   try {
-    //     const token = await AsyncStorage.getItem('authToken');
-    //     if (token) {
-    //       router.replace('/(home)');
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-    // checkLogin();
+    const checkLogin = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (token) {
+          // router.replace('/(home)');
+          // navigation.navigate('Trang chủ');
+          navigation.navigate('Tài khoản');
+        }
+      } catch (error) {
+        alert('error: ', error);
+        console.log(error);
+      }
+    };
+    checkLogin();
   }, []);
 
   const signInWithEmail = async (email, password) => {
@@ -65,7 +70,7 @@ export default function LoginScreen({navigation}) {
       // Lưu thông tin người dùng vào AsyncStorage
       // await AsyncStorage.setItem('user', JSON.stringify(user));
       // Lưu token vào AsyncStorage
-      // await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('authToken', token);
 
       console.log('user: ', user);
       console.log('token: ', token);
@@ -73,7 +78,7 @@ export default function LoginScreen({navigation}) {
 
       console.log('success sign-in user: ', user.email);
       // Chuyển hướng đến màn hình khác sau khi đăng nhập thành công
-      // navigation.navigate('Home');
+      navigation.navigate('Trang chủ');
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -181,15 +186,30 @@ export default function LoginScreen({navigation}) {
 
         <Pressable
           onPress={() => signInWithEmail(email, password)}
-          style={{
-            width: 200,
-            backgroundColor: '#fd5c63',
-            borderRadius: 6,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: 15,
-            marginTop: 50,
-          }}>
+          android_ripple={{color: 'rgba(0, 0, 0, 0.1)'}} // Hiệu ứng opacity cho Android
+          // style={{
+          //   width: 200,
+          //   backgroundColor: '#fd5c63',
+          //   borderRadius: 6,
+          //   marginLeft: 'auto',
+          //   marginRight: 'auto',
+          //   padding: 15,
+          //   marginTop: 50,
+          // }}>
+          style={({pressed}) => [
+            {
+              opacity: pressed ? 0.5 : 1, // Thay đổi opacity khi nhấn
+            },
+            {
+              width: 200,
+              backgroundColor: '#fd5c63',
+              borderRadius: 6,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              padding: 15,
+              marginTop: 50,
+            },
+          ]}>
           <Text
             style={{
               textAlign: 'center',
