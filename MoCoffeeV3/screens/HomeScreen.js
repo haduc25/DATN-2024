@@ -18,6 +18,7 @@ import {AntDesign} from '@expo/vector-icons';
 // Components
 import Categories from '../components/Categories';
 import Products from '../components/Products';
+import Carousel from '../components/Carousel';
 
 // Database
 // import {supabase} from '../supabase';
@@ -28,6 +29,9 @@ import {db} from '../firebase';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// fetch Image
+import {auth, storage} from '../firebase';
+
 export default function HomeScreen({navigation}) {
   // Location
   const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
@@ -35,6 +39,9 @@ export default function HomeScreen({navigation}) {
   );
 
   const navi = useNavigation();
+
+  // user photo
+  const [userPhotoURL, setUserPhotoURL] = useState(null);
 
   // fecth data from db
   const [data, setData] = useState([]);
@@ -56,9 +63,12 @@ export default function HomeScreen({navigation}) {
     };
 
     fetchData();
+
+    // get user photo
+    if (auth.currentUser) setUserPhotoURL(auth.currentUser.photoURL);
   }, []);
 
-  console.log('data1', data);
+  // console.log('data1', data);
 
   // Đăng xuất
   const handleDangXuat = async () => {
@@ -180,11 +190,10 @@ export default function HomeScreen({navigation}) {
         flex: 1,
         // backgroundColor: '#f8f8f8',
         backgroundColor: '#fff',
-        paddingTop: 40,
-        // marginTop: 40,
-        // borderWidth: 1,
-        // borderColor: '#000',
+        // paddingTop: 40,
+        marginTop: -10, //nếu cho `Carousel` lên đầu
       }}>
+      <Carousel />
       <View
         style={{
           flexDirection: 'row',
@@ -199,7 +208,7 @@ export default function HomeScreen({navigation}) {
             {displayCurrentAddress}
           </Text>
         </View>
-        <Pressable
+        {/* <Pressable
           style={{
             backgroundColor: '#6CB4EE',
             width: 40,
@@ -211,7 +220,17 @@ export default function HomeScreen({navigation}) {
           <TouchableOpacity onPress={handleDangXuat}>
             <Text>MD</Text>
           </TouchableOpacity>
-        </Pressable>
+        </Pressable> */}
+        {userPhotoURL && (
+          <Image
+            source={{uri: userPhotoURL}}
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+            }}
+          />
+        )}
       </View>
 
       <View

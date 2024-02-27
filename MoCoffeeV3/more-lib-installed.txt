@@ -15,3 +15,6 @@ npm install @react-native-community/checkbox
 
 #Fetch image from `Storage` firebase
 docs `https://firebase.google.com/docs/storage/web/download-files`
+
+#slider
+https://www.npmjs.com/package/react-native-image-slider-box
