@@ -12,7 +12,13 @@ import React, {useState} from 'react';
 import {MaterialIcons, Ionicons, AntDesign} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {
+  // getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from 'firebase/auth';
+import {auth} from '../firebase';
+import {getDownloadURL} from 'firebase/storage';
 
 export default function RegisterScreen({navigation}) {
   const [name, setName] = useState('');
@@ -21,19 +27,47 @@ export default function RegisterScreen({navigation}) {
   const [showPassword, setShowPassword] = useState(false); // State để xác định xem mật khẩu có nên được hiển thị hay không
   const navi = useNavigation();
 
-  const auth = getAuth();
+  // const auth = getAuth();
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword); // Đảo ngược trạng thái hiển thị mật khẩu
   };
 
-  async function signUpNewUser() {
+  async function signUpNewUser(email, password, name) {
+    if (!name) {
+      console.log('Vui lòng nhập tên hiển thị');
+      alert('Vui lòng nhập tên hiển thị');
+      return;
+    }
+
+    if (!email || !password) {
+      console.log('Vui lòng nhập email và mật khẩu');
+      alert('Vui lòng nhập email và mật khẩu');
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password,
       );
+
+      // Thêm role cho người dùng
+      await updateProfile(userCredential.user, {
+        displayName: name,
+        photoURL: `https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Favatars%2Fno-avatar.jpg?alt=media&token=85996ccb-5864-4608-8917-6b4a16ef4b12`, // ảnh mặc định
+      });
+
+      // Lấy URL của ảnh mặc định từ Firebase Storage
+      const defaultAvatarUrl = await getDownloadURL(
+        'gs://mo-coffee-tea.appspot.com/IMG_6691.JPG',
+      );
+
+      console.log('defaultAvatarUrl: ', defaultAvatarUrl);
+
+      // Chờ một khoảng thời gian ngắn (ví dụ: 1 giây) để đảm bảo thông tin hồ sơ được cập nhật
+      await new Promise(resolve => setTimeout(resolve, 3000));
       const user = userCredential.user;
       console.log('success created user: ', user.email);
       alert('ĐĂNG KÝ THÀNH CÔNG!');
@@ -199,16 +233,31 @@ export default function RegisterScreen({navigation}) {
         </View>
 
         <Pressable
-          onPress={signUpNewUser}
-          style={{
-            width: 200,
-            backgroundColor: '#fd5c63',
-            borderRadius: 6,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: 15,
-            marginTop: 50,
-          }}>
+          onPress={() => signUpNewUser(email, password, name)}
+          android_ripple={{color: 'rgba(0, 0, 0, 0.1)'}} // Hiệu ứng opacity cho Android
+          // style={{
+          //   width: 200,
+          //   backgroundColor: '#fd5c63',
+          //   borderRadius: 6,
+          //   marginLeft: 'auto',
+          //   marginRight: 'auto',
+          //   padding: 15,
+          //   marginTop: 50,
+          // }}>
+          style={({pressed}) => [
+            {
+              opacity: pressed ? 0.5 : 1, // Thay đổi opacity khi nhấn
+            },
+            {
+              width: 200,
+              backgroundColor: '#fd5c63',
+              borderRadius: 6,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              padding: 15,
+              marginTop: 50,
+            },
+          ]}>
           <Text
             style={{
               textAlign: 'center',

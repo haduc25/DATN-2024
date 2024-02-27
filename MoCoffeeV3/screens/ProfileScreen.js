@@ -125,7 +125,9 @@ export default function ProfileScreen({navigation}) {
       {userEmail && <Text>Email: {userEmail}</Text>}
       {emailVerified && <Text>Email đã xác thực</Text>}
       {phoneNumber && <Text>Số điện thoại: {phoneNumber}</Text>}
-      {userPhotoURL && <img src={userPhotoURL} alt="User" />}
+      {userPhotoURL && (
+        <Image source={{uri: userPhotoURL}} style={{width: 200, height: 200}} />
+      )}
       {userId && <Text>UserID: {userId}</Text>}
       {imageURI && (
         <Image source={{uri: imageURI}} style={{width: 200, height: 200}} />

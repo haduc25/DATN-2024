@@ -12,3 +12,6 @@ npm install @react-native-community/checkbox
 
 #Thay đổi router (expo router => React Navigation)
 `npm i @react-navigation/native`
+
+#Fetch image from `Storage` firebase
+docs `https://firebase.google.com/docs/storage/web/download-files`
