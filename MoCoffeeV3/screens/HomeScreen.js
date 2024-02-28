@@ -9,6 +9,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 
 // Icons
@@ -31,6 +32,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // fetch Image
 import {auth, storage} from '../firebase';
+
+//
+import {
+  SafeAreaView,
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 export default function HomeScreen({navigation}) {
   // Location
@@ -184,192 +192,241 @@ export default function HomeScreen({navigation}) {
   ];
   // END: RECOMMENDED DATA
 
+  // START: TESTING
+  const CustomStatusBar = ({
+    backgroundColor,
+    barStyle = 'dark-content',
+    //add more props StatusBar
+  }) => {
+    const insets = useSafeAreaInsets();
+
+    return (
+      <View
+        style={{
+          height: insets.top,
+          backgroundColor,
+          // borderWidth: 1,
+          // borderColor: '#000',
+        }}>
+        <StatusBar
+          animated={true}
+          backgroundColor={backgroundColor}
+          barStyle={barStyle}
+        />
+      </View>
+    );
+  };
+
+  // const numbers = [];
+  // for (let i = 0; i < 1000; i++) {
+  //   numbers.push(i);
+  // }
+  // return (
+  //   <SafeAreaProvider>
+  //     <CustomStatusBar backgroundColor="#fff" />
+  //     <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
+  //       {/* Sử dụng map để render các số từ mảng */}
+  //       {numbers.map((number, index) => (
+  //         <Text key={index}>{number}</Text>
+  //       ))}
+  //     </ScrollView>
+  //   </SafeAreaProvider>
+  // );
+
   return (
-    <ScrollView
-      style={{
-        flex: 1,
-        // backgroundColor: '#f8f8f8',
-        backgroundColor: '#fff',
-        // paddingTop: 40,
-        marginTop: -10, //nếu cho `Carousel` lên đầu
-      }}>
-      <Carousel />
-      <View
+    <SafeAreaProvider>
+      <CustomStatusBar backgroundColor="#fff" />
+      <ScrollView
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 12,
-          padding: 10,
+          flex: 1,
+          // backgroundColor: '#f8f8f8',
+          backgroundColor: '#fff',
+          // paddingTop: 40,
         }}>
-        <Octicons name="location" size={24} color="#E52850" />
-        <View style={{flex: 1}}>
-          <Text style={{fontSize: 15, fontWeight: '500'}}>Giao hàng tới</Text>
-          <Text style={{color: 'gray', fontSize: 16, marginTop: 3}}>
-            {displayCurrentAddress}
-          </Text>
-        </View>
-        {/* <Pressable
+        {/* <StatusBar
+          animated={true}
+          backgroundColor={'fff'}
+          barStyle={'dark-content'}
+        /> */}
+
+        {/* <Carousel /> */}
+        <View
           style={{
-            backgroundColor: '#6CB4EE',
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            justifyContent: 'center',
+            flexDirection: 'row',
             alignItems: 'center',
+            gap: 12,
+            padding: 10,
           }}>
-          <TouchableOpacity onPress={handleDangXuat}>
-            <Text>MD</Text>
-          </TouchableOpacity>
-        </Pressable> */}
-        {userPhotoURL && (
-          <Image
-            source={{uri: userPhotoURL}}
+          <Octicons name="location" size={24} color="#E52850" />
+          <View style={{flex: 1}}>
+            <Text style={{fontSize: 15, fontWeight: '500'}}>Giao hàng tới</Text>
+            <Text style={{color: 'gray', fontSize: 16, marginTop: 3}}>
+              {displayCurrentAddress}
+            </Text>
+          </View>
+          {/* <Pressable
             style={{
-              width: 50,
-              height: 50,
-              borderRadius: 25,
-            }}
-          />
-        )}
-      </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderWidth: 1,
-          borderColor: '#C0C0C0',
-          paddingVertical: 8,
-          paddingHorizontal: 10,
-          borderRadius: 11,
-          marginTop: 10,
-          marginHorizontal: 10,
-        }}>
-        <TextInput placeholder="Tìm kiếm cà phê, trà sữa..." />
-        <AntDesign name="search1" size={24} color="#E52B50" />
-      </View>
-
-      {/* <Carousel /> */}
-
-      <Categories />
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {recommended?.map((item, index) => (
-          <View
-            key={index}
-            style={{
-              backgroundColor: 'white',
-              flexDirection: 'row',
-              margin: 10,
-              borderRadius: 8,
+              backgroundColor: '#6CB4EE',
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            <View>
-              <Image
-                style={{
-                  width: 100,
-                  height: 100,
-                  resizeMode: 'cover',
-                  borderTopLeftRadius: 8,
-                  borderBottomLeftRadius: 7,
-                }}
-                source={{uri: item?.image}}
-              />
-            </View>
-            <View style={{padding: 10, flexDirection: 'column'}}>
-              <Text style={{fontSize: 15, fontWeight: '500'}}>
-                {item?.name}
-              </Text>
-              <Text
-                style={{
-                  flex: 1,
-                  marginTop: 3,
-                  color: 'gray',
-                  fontWeight: '500',
-                }}>
-                {item?.type}
-              </Text>
+            <TouchableOpacity onPress={handleDangXuat}>
+              <Text>MD</Text>
+            </TouchableOpacity>
+          </Pressable> */}
+          {userPhotoURL && (
+            <Image
+              source={{uri: userPhotoURL}}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+              }}
+            />
+          )}
+        </View>
 
-              <View
-                style={{flexDirection: 'row', alignItems: 'center', gap: 3}}>
-                <Ionicons name="ios-time" size={24} color="green" />
-                {/* Có thể thay chỗ này là giá tiền or đánh giá */}
-                <Text>{item?.time} phút</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderWidth: 1,
+            borderColor: '#C0C0C0',
+            paddingVertical: 8,
+            paddingHorizontal: 10,
+            borderRadius: 11,
+            marginTop: 10,
+            marginHorizontal: 10,
+          }}>
+          <TextInput placeholder="Tìm kiếm cà phê, trà sữa, nước hoa quả..." />
+          <AntDesign name="search1" size={24} color="#E52B50" />
+        </View>
+
+        <Carousel />
+
+        <Categories />
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {recommended?.map((item, index) => (
+            <View
+              key={index}
+              style={{
+                backgroundColor: 'white',
+                flexDirection: 'row',
+                margin: 10,
+                borderRadius: 8,
+              }}>
+              <View>
+                <Image
+                  style={{
+                    width: 100,
+                    height: 100,
+                    resizeMode: 'cover',
+                    borderTopLeftRadius: 8,
+                    borderBottomLeftRadius: 7,
+                  }}
+                  source={{uri: item?.image}}
+                />
+              </View>
+              <View style={{padding: 10, flexDirection: 'column'}}>
+                <Text style={{fontSize: 15, fontWeight: '500'}}>
+                  {item?.name}
+                </Text>
+                <Text
+                  style={{
+                    flex: 1,
+                    marginTop: 3,
+                    color: 'gray',
+                    fontWeight: '500',
+                  }}>
+                  {item?.type}
+                </Text>
+
+                <View
+                  style={{flexDirection: 'row', alignItems: 'center', gap: 3}}>
+                  <Ionicons name="ios-time" size={24} color="green" />
+                  {/* Có thể thay chỗ này là giá tiền or đánh giá */}
+                  <Text>{item?.time} phút</Text>
+                </View>
               </View>
             </View>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
 
-      <Text
-        style={{
-          textAlign: 'center',
-          marginTop: 7,
-          letterSpacing: 4,
-          marginBottom: 5,
-          color: 'gray',
-        }}>
-        KHÁM PHÁ
-      </Text>
+        <Text
+          style={{
+            textAlign: 'center',
+            marginTop: 7,
+            letterSpacing: 4,
+            marginBottom: 5,
+            color: 'gray',
+          }}>
+          KHÁM PHÁ
+        </Text>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {items?.map((item, index) => (
-          <View
-            key={index}
-            style={{
-              width: 90,
-              borderColor: '#E0E0E0',
-              borderWidth: 1,
-              paddingVertical: 5,
-              paddingHorizontal: 1,
-              borderRadius: 5,
-              marginLeft: 10,
-              marginVertical: 10,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'white',
-            }}>
-            <Image
-              style={{width: 50, height: 50}}
-              source={{uri: item?.image}}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {items?.map((item, index) => (
+            <View
+              key={index}
+              style={{
+                width: 90,
+                borderColor: '#E0E0E0',
+                borderWidth: 1,
+                paddingVertical: 5,
+                paddingHorizontal: 1,
+                borderRadius: 5,
+                marginLeft: 10,
+                marginVertical: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'white',
+              }}>
+              <Image
+                style={{width: 50, height: 50}}
+                source={{uri: item?.image}}
+              />
+
+              <Text style={{fontSize: 13, fontWeight: '500', marginTop: 6}}>
+                {item?.name}
+              </Text>
+
+              <Text style={{fontSize: 12, color: 'gray', marginTop: 3}}>
+                {item?.description}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
+
+        <Text
+          style={{
+            textAlign: 'center',
+            marginTop: 7,
+            letterSpacing: 9,
+            marginBottom: 5,
+            color: 'gray',
+          }}>
+          TẤT CẢ SẢN PHẨM
+        </Text>
+
+        <View
+          style={{
+            marginHorizontal: 8,
+            paddingBottom: 50, //dưới (khoảng cách từ item vs TabBar)
+          }}>
+          {data?.map((item, index) => (
+            <Products
+              key={index}
+              item={item}
+              menu={item?.menu}
+              listItems={item?.listItems}
             />
-
-            <Text style={{fontSize: 13, fontWeight: '500', marginTop: 6}}>
-              {item?.name}
-            </Text>
-
-            <Text style={{fontSize: 12, color: 'gray', marginTop: 3}}>
-              {item?.description}
-            </Text>
-          </View>
-        ))}
+          ))}
+        </View>
       </ScrollView>
-
-      <Text
-        style={{
-          textAlign: 'center',
-          marginTop: 7,
-          letterSpacing: 9,
-          marginBottom: 5,
-          color: 'gray',
-        }}>
-        TẤT CẢ SẢN PHẨM
-      </Text>
-
-      <View
-        style={{
-          marginHorizontal: 8,
-          paddingBottom: 50, //dưới (khoảng cách từ item vs TabBar)
-        }}>
-        {data?.map((item, index) => (
-          <Products
-            key={index}
-            item={item}
-            menu={item?.menu}
-            listItems={item?.listItems}
-          />
-        ))}
-      </View>
-    </ScrollView>
+    </SafeAreaProvider>
   );
 }

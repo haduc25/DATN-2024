@@ -8,11 +8,20 @@ LogBox.ignoreLogs(['ViewPropTypes will be removed from React Native']);
 
 const Carousel = () => {
   const images = [
-    'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://res.cloudinary.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_508,h_320,c_fill/lhnwo9ezxo7mpkpvtdcy',
-    'https://c0.wallpaperflare.com/preview/390/550/388/beverage-caffeine-close-up-coffee-thumbnail.jpg',
-    'https://www.crushpixel.com/big-static16/preview4/coffee-cup-with-morning-sunlight-2465397.jpg',
-    'https://img.freepik.com/premium-photo/hot-latte-art-coffee-wood-table-relax-time-made-by-aiartificial-intelligence_41969-14374.jpg',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fcafe-photo-banner-1.jpg?alt=media&token=7de07bd0-9e9d-492b-976b-f2361e6ad1a2',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fcafe-photo-banner-2.jpg?alt=media&token=1ccd6b46-0953-46eb-b87e-0892d354b4bc',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fjuice-banner-1.jpg?alt=media&token=b27e0902-4391-41b5-b313-f0c4ab1622db',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fjuice-banner-2.jpg?alt=media&token=934f71a7-d85e-439b-8572-148a80d3c30d',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fkem-banner-2.jpg?alt=media&token=70bd6615-e3a3-46fa-a57b-4a7c084cf0d9',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fmatcha-banner-1.jpg?alt=media&token=fcfa6b4e-a307-49e0-bb0c-3cdab5b4c05e',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fsmoothie-banner-1.jpg?alt=media&token=f39cba9a-e22a-4ff4-8833-f4f8ffc706e0',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fsmoothie-banner-2.jpg?alt=media&token=0d4b5b94-3321-480b-9a05-8b4b0445eb5a',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fsmoothie-banner-3.jpg?alt=media&token=f7846743-e570-4f72-9747-348fa6129f62',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fsmoothie-banner-4.jpg?alt=media&token=6dfce047-7007-4946-8ee2-2096ca9d1a3a',
+    // 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Ftea-banner-1.jpg?alt=media&token=c4228d28-3fb6-4f68-98da-c992780fbc85',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Ftea-banner-2.jpg?alt=media&token=5f478c5a-76ff-4eca-897a-25d9632c5881',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Ftra-sua-banner-1.jpg?alt=media&token=88f9c4cd-afb8-41a5-9ebd-609073c0f01e',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Ftra-sua-banner-2.jpg?alt=media&token=7362daad-e384-440e-ae39-535955b77a91',
   ];
   return (
     <View>
@@ -24,8 +33,8 @@ const Carousel = () => {
         inactiveDotColor="#90A4AE"
         ImageComponentStyle={{
           borderRadius: 6,
-          // width: '94%',
-          width: '100%', //nếu cho lên đầu
+          width: '94%',
+          // width: '100%', //nếu cho lên đầu
           marginTop: 10,
         }}
       />

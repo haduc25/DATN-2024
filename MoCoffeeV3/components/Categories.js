@@ -5,7 +5,7 @@ const Categories = () => {
   const items = [
     {
       id: '1',
-      name: 'Giao hàng nhanh nhất',
+      name: 'Giao hàng nhanh',
     },
     {
       id: '2',

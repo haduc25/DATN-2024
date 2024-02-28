@@ -93,10 +93,28 @@ const Products = ({naviagation, item, menu, listItems}) => {
         });
       }}
       style={{
+        // marginHorizontal: 6,
+        // marginVertical: 12,
+        // // borderRadius: 20,
+        // borderTopLeftRadius: 6,
+        // borderTopRightRadius: 6,
+        // borderBottomLeftRadius: 20,
+        // borderBottomRightRadius: 20,
+        // backgroundColor: 'white',
+        // borderWidth: 0.5,
+
         marginHorizontal: 6,
         marginVertical: 12,
-        borderRadius: 20,
+        borderTopLeftRadius: 6,
+        borderTopRightRadius: 6,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
         backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2}, // Giảm độ lớn của bóng theo chiều dọc
+        shadowOpacity: 0.2, // Giảm độ đậm của bóng
+        shadowRadius: 5,
+        elevation: 2, // Giảm độ lớn của bóng trên Android
       }}>
       <Image
         style={{
@@ -181,10 +199,15 @@ const Products = ({naviagation, item, menu, listItems}) => {
         <MaterialCommunityIcons
           name="brightness-percent"
           size={24}
-          color="#1F75FE"
+          color="#5C472A"
         />
-        <Text style={{marginLeft: 2, color: '#1F75FE', fontWeight: '500'}}>
-          GIẢM GIÁ 20% lên tới 100.000 ₫
+        <Text
+          style={{
+            marginLeft: 2,
+            color: '#5C472A',
+            fontWeight: '500',
+          }}>
+          GIẢM GIÁ 20%
         </Text>
       </View>
     </Pressable>
