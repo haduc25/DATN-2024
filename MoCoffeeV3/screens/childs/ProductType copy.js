@@ -7,9 +7,8 @@ import {
   Animated,
   Image,
   TouchableOpacity,
-  FlatList,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 
 // Icons
 import {Ionicons} from '@expo/vector-icons';
@@ -25,11 +24,6 @@ import {useSelector} from 'react-redux';
 // Navigation router
 import {useRoute} from '@react-navigation/native';
 
-// get data from firestore
-import {collection, query, where, getDocs} from 'firebase/firestore';
-// Import `db` từ file firebase.js
-import {db} from '../../firebase';
-
 // export default function ProductType({navigation, route}) {
 export default function ProductType({navigation}) {
   //
@@ -42,7 +36,8 @@ export default function ProductType({navigation}) {
   console.log('navigation: ', navigation);
   // console.log('route: ', route);
 
-  const {name, category} = route.params || {};
+  const {name, adress, smalladress, cuisines, aggregate_rating, menu} =
+    route.params || {};
 
   console.log('route: ', route);
   // console.log('route.params: ', route.params);
@@ -61,53 +56,27 @@ export default function ProductType({navigation}) {
     scrollViewRef.current.scrollTo({y: yOffset, animated: true});
   };
 
-  // category item
-  const [categoryItems, setCategoryItems] = useState([]);
-
-  useEffect(() => {
-    const {category} = route.params || {};
-    console.log('category__: ', category);
-
-    const fetchTeaItems = async () => {
-      try {
-        const q = query(
-          collection(db, 'MenuMoC&T'),
-          where('category', '==', category), // Đảm bảo chuỗi so sánh là 'tea' hoặc 'Tea'
-        );
-        const querySnapshot = await getDocs(q);
-        const categoryItemsData = [];
-        querySnapshot.forEach(doc => {
-          categoryItemsData.push({id: doc.id, ...doc.data()});
-        });
-        console.log('Tea Items Data:', categoryItemsData);
-        setCategoryItems(categoryItemsData); // Cập nhật state với dữ liệu đã lấy được
-      } catch (error) {
-        console.error('Error fetching tea items:', error);
-      }
-    };
-
-    fetchTeaItems();
-  }, [category]);
-
   // return (
   //   <View style={{paddingTop: 40}}>
   //     <Text>name: {name}</Text>
-  //     <Text>category: {category}</Text>
-  //     <View>
-  //       <Text>Tea Items</Text>
-  //       <FlatList
-  //         data={categoryItems}
-  //         keyExtractor={(item, index) => index.toString()}
-  //         renderItem={({item}) => (
-  //           <View>
-  //             <Text>{item.name}</Text>
-  //             <Text>{item.description}</Text>
-  //           </View>
-  //         )}
-  //       />
-  //     </View>
+  //     <Text>adress: {adress}</Text>
+  //     <Text>smalladress: {smalladress}</Text>
+  //     <Text>cuisines: {cuisines}</Text>
+  //     <Text>aggregate_rating: {aggregate_rating}</Text>
+  //     <Text>menu: {menu}</Text>
   //   </View>
   // );
+
+  console.log('menu: ', menu);
+  console.log('typeof menu: ', typeof menu);
+
+  const recievedMenu = menu ? JSON.parse(menu) : [];
+
+  // new
+  const dataMenu = JSON.parse(menu).items;
+
+  console.log('recievedMenu: ', recievedMenu);
+  console.log('typeof recievedMenu: ', typeof recievedMenu);
 
   return (
     <>
@@ -194,8 +163,7 @@ export default function ProductType({navigation}) {
                 gap: 4,
               }}>
               <Text style={{color: 'white', fontSize: 14, fontWeight: 'bold'}}>
-                {/* {aggregate_rating} */}
-                10
+                {aggregate_rating}
               </Text>
               <Ionicons name="ios-star" size={15} color="white" />
             </View>
@@ -230,11 +198,7 @@ export default function ProductType({navigation}) {
           // <FoodItem key={index} item={item} />
           <Text key={index}>123</Text>
         ))} */}
-        {/* {dataMenu.map((item, index) => (
-          <FoodItem key={index} item={item} />
-          // <Text key={index}>123</Text>
-        ))} */}
-        {categoryItems.map((item, index) => (
+        {dataMenu.map((item, index) => (
           <FoodItem key={index} item={item} />
           // <Text key={index}>123</Text>
         ))}
@@ -243,20 +207,13 @@ export default function ProductType({navigation}) {
       </ScrollView>
 
       {/* Hiện ở dưới bottom */}
-      <View
-        // horizontal
-        // showsHorizontalScrollIndicator={false}
-        style={{
-          flexDirection: 'row',
-          // alignItems: 'center',
-          backgroundColor: '#fff',
-          // borderWidth: 1,
-          // height: 5,
-          width: '100%',
-        }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{flexDirection: 'row', backgroundColor: '#fff'}}>
         {/* {recievedMenu?.map((item, index) => ( */}
         {/* {recievedMenu.items.map((item, index) => ( */}
-        {/* {dataMenu.map((item, index) => (
+        {dataMenu.map((item, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => scrollToCategory(index)}
@@ -274,29 +231,8 @@ export default function ProductType({navigation}) {
             }}>
             <Text>♥_{item?.name}_♥</Text>
           </TouchableOpacity>
-        ))} */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {categoryItems.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => scrollToCategory(index)}
-              style={{
-                paddingHorizontal: 7,
-                borderRadius: 4,
-                paddingVertical: 6,
-                marginVertical: 10,
-                marginHorizontal: 12,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderColor: '#181818',
-                borderWidth: 1,
-                height: 30,
-              }}>
-              <Text>♥_{item?.name}_♥</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+        ))}
+      </ScrollView>
 
       <View style={{backgroundColor: '#fff', paddingBottom: 40}}>
         {cart?.length > 0 && (

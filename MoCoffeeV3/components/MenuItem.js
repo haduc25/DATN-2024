@@ -84,7 +84,7 @@ const MenuItem = ({item}) => {
         <Pressable style={{marginRight: 10}}>
           <Image
             style={{width: 120, height: 120, borderRadius: 8}}
-            source={{uri: item?.image}}
+            source={{uri: item?.featured_image}}
           />
           {selected ? (
             <Pressable

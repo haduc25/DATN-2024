@@ -17,14 +17,18 @@ const Categories = () => {
     },
     {
       id: '4',
-      name: 'Coffee',
+      name: 'Phổ biến',
     },
     {
       id: '5',
-      name: 'Tea',
+      name: 'Mới nhất',
     },
     {
       id: '6',
+      name: 'Bán chạy',
+    },
+    {
+      id: '7',
       name: 'VIP PRO MAX',
     },
   ];

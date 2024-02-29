@@ -726,7 +726,7 @@ const index = () => {
           marginBottom: 5,
           color: 'gray',
         }}>
-        TẤT CẢ SẢN PHẨM
+        SẢN PHẨM
       </Text>
 
       <View style={{marginHorizontal: 8}}>

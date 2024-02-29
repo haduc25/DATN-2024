@@ -58,8 +58,7 @@ export default function HomeScreen({navigation}) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'MenuMoC&T'));
-        // const querySnapshot = await getDocs(collection(db, 'CoffeeTeaMenu'));
+        const querySnapshot = await getDocs(collection(db, 'CoffeeTeaMenu'));
         const fetchedData = [];
         querySnapshot.forEach(doc => {
           fetchedData.push({id: doc.id, ...doc.data()});
@@ -77,7 +76,7 @@ export default function HomeScreen({navigation}) {
     if (auth.currentUser) setUserPhotoURL(auth.currentUser.photoURL);
   }, []);
 
-  console.log('data1', data);
+  // console.log('data1', data);
 
   // Đăng xuất
   const handleDangXuat = async () => {
@@ -119,47 +118,42 @@ export default function HomeScreen({navigation}) {
       id: 0,
       name: 'Cà phê đen',
       image:
-        // 'https://b.zmtcdn.com/data/pictures/chains/3/50713/81d0735ce259a6bf800e16bb54cb9e5e.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-        'https://changibakery.com/wp-content/uploads/2023/05/CAFE-DEN-GHEP-ANH-scaled.jpg',
+        'https://b.zmtcdn.com/data/pictures/chains/3/50713/81d0735ce259a6bf800e16bb54cb9e5e.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
       time: '35 - 45',
-      type: 'Cà phê',
+      type: 'Coffee',
     },
     {
       id: 0,
       name: 'Cà phê sữa đá',
       image:
-        // 'https://b.zmtcdn.com/data/pictures/0/20844770/f9582144619b80d30566f497a02e2c8d.jpg?output-format=webp&fit=around|771.75:416.25&crop=771.75:416.25;*,*',
-        'https://bonjourcoffee.vn/blog/wp-content/uploads/2020/11/cac-luu-y-cafe-sua-tuoi.jpg',
+        'https://b.zmtcdn.com/data/pictures/0/20844770/f9582144619b80d30566f497a02e2c8d.jpg?output-format=webp&fit=around|771.75:416.25&crop=771.75:416.25;*,*',
       time: '10 - 35',
-      type: 'Cà phê',
+      type: 'Coffee',
     },
     {
       id: 0,
       name: 'Cappuccino',
       image:
-        // 'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-        'https://bonjourcoffee.vn/blog/wp-content/uploads/2020/11/Caramel-Macchiato-da-xay.jpg',
+        'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
       time: '20 - 25',
-      type: 'Cà phê',
+      type: 'Coffee',
     },
 
     {
       id: 0,
       name: 'Trà sữa đá',
       image:
-        // 'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-        'https://cdn.tgdd.vn/2021/07/CookRecipe/GalleryStep/thanh-pham-959.jpg',
+        'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
       time: '20 - 25',
-      type: 'Trà',
+      type: 'Tea',
     },
     {
       id: 0,
       name: 'Trà chanh',
       image:
-        // 'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-        'https://thienthanhtea.com/wp-content/uploads/2022/10/cach-lam-hong-tra-trai-cay-giai-nhiet-sau-mot-ngay-met-moi-5f3-6620628.jpg',
+        'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
       time: '20 - 25',
-      type: 'Trà',
+      type: 'Tea',
     },
   ];
 
@@ -175,28 +169,25 @@ export default function HomeScreen({navigation}) {
       id: '1',
       // name: 'Legends',
       // description: 'Across India',
-      name: 'Trà sữa',
-      description: 'THƠM NGON',
-      // image: 'https://cdn-icons-png.flaticon.com/128/8302/8302686.png',
-      image: 'https://cdn-icons-png.flaticon.com/512/5825/5825361.png',
+      name: '111',
+      description: '111111',
+      image: 'https://cdn-icons-png.flaticon.com/128/8302/8302686.png',
     },
     {
       id: '2',
       // name: 'Gourmet',
       // description: 'Selections',
-      name: 'Sinh tố',
-      description: 'MÁT LẠNH',
-      image: 'https://cdn-icons-png.flaticon.com/512/4080/4080639.png',
-      // image: 'https://cdn-icons-png.flaticon.com/512/5848/5848527.png',
+      name: '222',
+      description: '222222',
+      image: 'https://cdn-icons-png.flaticon.com/128/1065/1065715.png',
     },
     {
       id: '3',
       // name: 'Healthy',
       // description: 'Curated dishes',
-      name: 'Cà phê',
-      description: 'ĐẬM ĐÀ',
-      // image: 'https://cdn-icons-png.flaticon.com/512/1047/1047503.png',
-      image: 'https://cdn-icons-png.flaticon.com/512/10771/10771316.png',
+      name: '333',
+      description: '333333',
+      image: 'https://cdn-icons-png.flaticon.com/128/415/415744.png',
     },
   ];
   // END: RECOMMENDED DATA
@@ -418,7 +409,7 @@ export default function HomeScreen({navigation}) {
             marginBottom: 5,
             color: 'gray',
           }}>
-          SẢN PHẨM THỊNH HÀNH
+          TẤT CẢ SẢN PHẨM
         </Text>
 
         <View

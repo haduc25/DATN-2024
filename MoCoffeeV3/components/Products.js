@@ -22,10 +22,10 @@ const Products = ({naviagation, item, menu, listItems}) => {
 
   // workflow
   const menuItems = JSON.stringify(listItems);
-  console.log('listItems: ', listItems);
-  console.log('typeof listItems: ', typeof listItems); //object
-  console.log('menuItems: ', menuItems);
-  console.log('typeof menuItems: ', typeof menuItems); //string
+  // console.log('listItems: ', listItems);
+  // console.log('typeof listItems: ', typeof listItems); //object
+  // console.log('menuItems: ', menuItems);
+  // console.log('typeof menuItems: ', typeof menuItems); //string
 
   // console.log('typeof menuItems: ', typeof menuItems);
 
@@ -46,15 +46,17 @@ const Products = ({naviagation, item, menu, listItems}) => {
   // console.log('aggregate_rating: ', item.aggregate_rating);
   // console.log('menu: ', menu);
   // console.log('typeof menu: ', typeof menu);
-  console.log('ListItem: ', listItems);
-  console.log('typeof listItems: ', typeof listItems);
+
+  // console.log('ListItem: ', listItems);
+  // console.log('typeof listItems: ', typeof listItems);
   return (
     <Pressable
       onPress={() => {
-        if (!listItems) {
-          alert('Chưa cập nhật menu trên database!!!');
-          return;
-        }
+        // if (!listItems) {
+        //   alert('Chưa cập nhật menu trên database!!!');
+        //   console.log('item__: ', item);
+        //   return;
+        // }
 
         // router.push({
         //   pathname: '/hotel',
@@ -84,12 +86,8 @@ const Products = ({naviagation, item, menu, listItems}) => {
         // });
 
         router2.navigate('ProductTypeScreen', {
-          name: item.drink_type,
-          adress: item.adress,
-          smalladress: item.smalladress,
-          cuisines: item.cuisines,
-          aggregate_rating: item.aggregate_rating,
-          menu: menuItems,
+          name: item.name,
+          category: item.category,
         });
       }}
       style={{
@@ -109,6 +107,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
         borderTopRightRadius: 6,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
+        paddingBottom: 8,
         backgroundColor: 'white',
         shadowColor: '#000',
         shadowOffset: {width: 0, height: 2}, // Giảm độ lớn của bóng theo chiều dọc
@@ -139,7 +138,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
               fontSize: 16,
               fontWeight: '600',
             }}>
-            {item?.drink_type}
+            {item?.category}
           </Text>
           <Text
             style={{
@@ -149,7 +148,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
               fontWeight: '500',
               color: 'gray',
             }}>
-            {item?.drink_description}
+            {item?.description}
           </Text>
           <Text
             style={{
@@ -159,7 +158,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
               fontWeight: '500',
               color: '#505050',
             }}>
-            {item?.time}
+            Thời gian chuẩn bị: {item?.preparation_time} phút
           </Text>
         </View>
 
@@ -175,7 +174,8 @@ const Products = ({naviagation, item, menu, listItems}) => {
             gap: 3,
           }}>
           <Text style={{textAlign: 'center', color: 'white'}}>
-            {item?.aggregate_rating}
+            {/* {item?.ratings['average_rating']} */}
+            {item?.ratings?.average_rating ?? null}
           </Text>
           <Ionicons name="ios-star" size={15} color="white" />
         </View>

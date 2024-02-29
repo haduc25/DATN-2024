@@ -31,7 +31,7 @@ export const db = getFirestore(app);
 // Initialize Firebase Storage
 const storage = getStorage(app);
 
-console.log('storage1: ', storage);
+// console.log('storage1: ', storage);
 
 // // Khởi tạo Auth và cung cấp AsyncStorage
 // const auth = getAuth(app);

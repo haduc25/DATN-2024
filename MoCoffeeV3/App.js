@@ -39,11 +39,12 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <BottomTab.Navigator
-          initialRouteName={homeName}
+          // initialRouteName={homeName}
           // initialRouteName={productTypeName}
           // initialRouteName={cartName}
           // initialRouteName={registerName}
           // initialRouteName={loginName}
+          initialRouteName={favouriteName}
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;
