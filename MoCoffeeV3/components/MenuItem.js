@@ -35,12 +35,7 @@ const MenuItem = ({item}) => {
       <TouchableOpacity
         // onPress={() => alert(123)}
         // sang page `detail sp`
-        onPress={() =>
-          navi.navigate('DetailScreen', {
-            name: item?.name,
-            price: item?.price,
-          })
-        }
+        onPress={() => navi.navigate('DetailScreen', {item})}
         style={{
           margin: 10,
           flexDirection: 'row',
@@ -68,9 +63,13 @@ const MenuItem = ({item}) => {
                 key={i}
                 style={{paddingHorizontal: 3}}
                 // name={i < Math.floor(item.rating) ? 'star' : 'star-o'}
-                name={i < Math.floor(item.rating) ? 'star' : 'star-o'}
+                name={
+                  i < Math.floor(item.ratings['average_rating'])
+                    ? 'star'
+                    : 'star-o'
+                }
                 size={15}
-                color="#FFD700"
+                color='#FFD700'
               />
             ))}
           </Text>

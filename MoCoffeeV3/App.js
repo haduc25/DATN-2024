@@ -44,7 +44,8 @@ export default function App() {
           // initialRouteName={cartName}
           // initialRouteName={registerName}
           // initialRouteName={loginName}
-          initialRouteName={favouriteName}
+          // initialRouteName={favouriteName}
+          initialRouteName={detailName}
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;
@@ -110,6 +111,22 @@ export default function App() {
           <BottomTab.Screen
             name={detailName}
             component={DetailScreen}
+            initialParams={{
+              item: {
+                available: true,
+                available_sizes: ['S', 'M', 'L'],
+                category: 'tea',
+                description: 'Trà quất làm từ quất',
+                featured_image:
+                  'https://cong-news.appwifi.com/wp-content/uploads/2023/02/tra%CC%80-qua%CC%82%CC%81t-ma%CC%A3%CC%82t-ong_%C4%91a%CC%81.jpg',
+                id: 'vAyp6Z4hoNFUA8ARLpTw',
+                name: 'Trà quất',
+                preparation_time: '5',
+                price: '201',
+                ratings: {average_rating: '4.6', total_ratings: '10'},
+                sold_count: '20',
+              },
+            }}
             options={{
               headerShown: false,
               // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới

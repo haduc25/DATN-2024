@@ -49,6 +49,18 @@ const Products = ({naviagation, item, menu, listItems}) => {
 
   // console.log('ListItem: ', listItems);
   // console.log('typeof listItems: ', typeof listItems);
+
+  function translateCategory(category) {
+    const translations = {
+      tea: 'Trà',
+      coffee: 'Cà phê',
+      'milk-tea': 'Trà sữa',
+    };
+    // Nếu có, trả về giá trị tương ứng
+    // Nếu không, trả về category ban đầu
+    return translations[category] || category;
+  }
+
   return (
     <Pressable
       onPress={() => {
@@ -138,7 +150,8 @@ const Products = ({naviagation, item, menu, listItems}) => {
               fontSize: 16,
               fontWeight: '600',
             }}>
-            {item?.category}
+            {/* {item?.category} */}
+            {translateCategory(item?.category)}
           </Text>
           <Text
             style={{

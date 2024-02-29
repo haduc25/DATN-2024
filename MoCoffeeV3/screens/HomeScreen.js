@@ -20,6 +20,7 @@ import {AntDesign} from '@expo/vector-icons';
 import Categories from '../components/Categories';
 import Products from '../components/Products';
 import Carousel from '../components/Carousel';
+import CustomStatusBar from '../components/CustomStatusBar';
 
 // Database
 // import {supabase} from '../supabase';
@@ -33,12 +34,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // fetch Image
 import {auth, storage} from '../firebase';
 
-//
-import {
-  SafeAreaView,
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+// for custom status bar
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 export default function HomeScreen({navigation}) {
   // Location
@@ -201,35 +198,11 @@ export default function HomeScreen({navigation}) {
   ];
   // END: RECOMMENDED DATA
 
-  // START: TESTING
-  const CustomStatusBar = ({
-    backgroundColor,
-    barStyle = 'dark-content',
-    //add more props StatusBar
-  }) => {
-    const insets = useSafeAreaInsets();
-
-    return (
-      <View
-        style={{
-          height: insets.top,
-          backgroundColor,
-          // borderWidth: 1,
-          // borderColor: '#000',
-        }}>
-        <StatusBar
-          animated={true}
-          backgroundColor={backgroundColor}
-          barStyle={barStyle}
-        />
-      </View>
-    );
-  };
-
   // const numbers = [];
   // for (let i = 0; i < 1000; i++) {
   //   numbers.push(i);
   // }
+
   // return (
   //   <SafeAreaProvider>
   //     <CustomStatusBar backgroundColor="#fff" />
@@ -244,13 +217,13 @@ export default function HomeScreen({navigation}) {
 
   return (
     <SafeAreaProvider>
-      <CustomStatusBar backgroundColor="#fff" />
+      <CustomStatusBar backgroundColor='#fff' />
       <ScrollView
         style={{
           flex: 1,
           // backgroundColor: '#f8f8f8',
           backgroundColor: '#fff',
-          // paddingTop: 40,
+          paddingTop: 40,
         }}>
         {/* <StatusBar
           animated={true}
@@ -266,7 +239,7 @@ export default function HomeScreen({navigation}) {
             gap: 12,
             padding: 10,
           }}>
-          <Octicons name="location" size={24} color="#E52850" />
+          <Octicons name='location' size={24} color='#E52850' />
           <View style={{flex: 1}}>
             <Text style={{fontSize: 15, fontWeight: '500'}}>Giao hàng tới</Text>
             <Text style={{color: 'gray', fontSize: 16, marginTop: 3}}>
@@ -311,8 +284,8 @@ export default function HomeScreen({navigation}) {
             marginTop: 10,
             marginHorizontal: 10,
           }}>
-          <TextInput placeholder="Tìm kiếm cà phê, trà sữa, nước hoa quả..." />
-          <AntDesign name="search1" size={24} color="#E52B50" />
+          <TextInput placeholder='Tìm kiếm cà phê, trà sữa, nước hoa quả...' />
+          <AntDesign name='search1' size={24} color='#E52B50' />
         </View>
 
         <Carousel />
@@ -357,7 +330,7 @@ export default function HomeScreen({navigation}) {
 
                 <View
                   style={{flexDirection: 'row', alignItems: 'center', gap: 3}}>
-                  <Ionicons name="ios-time" size={24} color="green" />
+                  <Ionicons name='ios-time' size={24} color='green' />
                   {/* Có thể thay chỗ này là giá tiền or đánh giá */}
                   <Text>{item?.time} phút</Text>
                 </View>

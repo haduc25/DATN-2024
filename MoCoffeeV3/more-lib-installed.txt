@@ -21,3 +21,7 @@ https://www.npmjs.com/package/react-native-image-slider-box
 
 #custom statusbar (ios)
 https://snack.expo.dev/@ahmed_gaber/safe-area-context?platform=ios
+
+#slider image banner
+`npm i @pembajak/react-native-image-slider-banner`
+https://www.npmjs.com/package/@pembajak/react-native-image-slider-banner
