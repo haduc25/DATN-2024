@@ -1,6 +1,6 @@
 import {StatusBar} from 'expo-status-bar';
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, LogBox} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
@@ -15,6 +15,8 @@ import ProductType from './screens/childs/ProductType';
 import DetailScreen from './screens/DetailScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import DynamicHeaderScrollView from './screens/DynamicHeaderScrollView';
+import ImageAnimation from './screens/ImageAnimation';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -35,17 +37,22 @@ const loginName = 'LoginScreen';
 const registerName = 'RegisterScreen';
 
 export default function App() {
+  // Bỏ qua cảnh báo liên quan đến ViewPropTypes
+  LogBox.ignoreLogs(['ViewPropTypes will be removed from React Native']);
+
   return (
     <Provider store={store}>
       <NavigationContainer>
         <BottomTab.Navigator
-          // initialRouteName={homeName}
+          initialRouteName={homeName}
           // initialRouteName={productTypeName}
           // initialRouteName={cartName}
           // initialRouteName={registerName}
           // initialRouteName={loginName}
           // initialRouteName={favouriteName}
-          initialRouteName={detailName}
+          // initialRouteName={detailName}
+          // initialRouteName={'ImageAnimation'}
+          // initialRouteName={'DynamicHeaderScrollView'}
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;
@@ -100,6 +107,24 @@ export default function App() {
             }}
           />
           <BottomTab.Screen
+            name={'DynamicHeaderScrollView'}
+            component={DynamicHeaderScrollView}
+            options={{
+              headerShown: false,
+              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          <BottomTab.Screen
+            name={'ImageAnimation'}
+            component={ImageAnimation}
+            options={{
+              headerShown: false,
+              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          <BottomTab.Screen
             name={productTypeName}
             component={ProductType}
             options={{
@@ -111,22 +136,22 @@ export default function App() {
           <BottomTab.Screen
             name={detailName}
             component={DetailScreen}
-            initialParams={{
-              item: {
-                available: true,
-                available_sizes: ['S', 'M', 'L'],
-                category: 'tea',
-                description: 'Trà quất làm từ quất',
-                featured_image:
-                  'https://cong-news.appwifi.com/wp-content/uploads/2023/02/tra%CC%80-qua%CC%82%CC%81t-ma%CC%A3%CC%82t-ong_%C4%91a%CC%81.jpg',
-                id: 'vAyp6Z4hoNFUA8ARLpTw',
-                name: 'Trà quất',
-                preparation_time: '5',
-                price: '201',
-                ratings: {average_rating: '4.6', total_ratings: '10'},
-                sold_count: '20',
-              },
-            }}
+            // initialParams={{
+            //   item: {
+            //     available: true,
+            //     available_sizes: ['S', 'M', 'L'],
+            //     category: 'tea',
+            //     description: 'Trà quất làm từ quất',
+            //     featured_image:
+            //       'https://cong-news.appwifi.com/wp-content/uploads/2023/02/tra%CC%80-qua%CC%82%CC%81t-ma%CC%A3%CC%82t-ong_%C4%91a%CC%81.jpg',
+            //     id: 'vAyp6Z4hoNFUA8ARLpTw',
+            //     name: 'Trà quất',
+            //     preparation_time: '5',
+            //     price: '201',
+            //     ratings: {average_rating: '4.6', total_ratings: '10'},
+            //     sold_count: '20',
+            //   },
+            // }}
             options={{
               headerShown: false,
               // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới

@@ -190,7 +190,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
             {/* {item?.ratings['average_rating']} */}
             {item?.ratings?.average_rating ?? null}
           </Text>
-          <Ionicons name="ios-star" size={15} color="white" />
+          <Ionicons name='ios-star' size={15} color='white' />
         </View>
       </View>
       <View
@@ -210,9 +210,9 @@ const Products = ({naviagation, item, menu, listItems}) => {
           marginVertical: 5,
         }}>
         <MaterialCommunityIcons
-          name="brightness-percent"
+          name='brightness-percent'
           size={24}
-          color="#5C472A"
+          color='#5C472A'
         />
         <Text
           style={{

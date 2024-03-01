@@ -9,9 +9,6 @@ import {
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 
-// Icons
-import {Ionicons} from '@expo/vector-icons';
-
 // Image slider
 import {ImageSlider} from '@pembajak/react-native-image-slider-banner';
 
@@ -42,13 +39,13 @@ export default function DetailScreen({}) {
   // START: DynamicHeader
   const scrollA = useRef(new Animated.Value(0)).current;
 
-  // const [titlePage, setTitlePage] = useState(item.name);
+  const [titlePage, setTitlePage] = useState('Home');
   // END: DynamicHeader
 
   return (
     <View style={{flex: 1}}>
       <View>
-        <TopNavigation title={item.name} scrollA={scrollA} />
+        <TopNavigation title={titlePage} scrollA={scrollA} />
         <Animated.ScrollView
           // onScroll={e => console.log(e.nativeEvent.contentOffset.y)}
           onScroll={Animated.event(
@@ -188,10 +185,10 @@ export default function DetailScreen({}) {
                   // data={imageSrc}
                   data={[
                     {
-                      img: item.featured_image,
+                      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5a5uCP-n4teeW2SApcIqUrcQApev8ZVCJkA&usqp=CAU',
                     },
                     {
-                      img: 'https://i.ytimg.com/vi/NlyXpQYBS8Y/maxresdefault.jpg',
+                      img: 'https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg',
                     },
                     {
                       img: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510__340.jpg',
@@ -214,59 +211,50 @@ export default function DetailScreen({}) {
             </View>
           </View>
           {/* <DummyText /> */}
-          <View
-            style={{
-              height: 800,
-              borderWidth: 1,
-              padding: 10,
-            }}>
-            <Text style={{fontSize: 22, marginBottom: 10}}>{item.name}</Text>
-            <Text style={{fontSize: 16, marginBottom: 8}}>
-              Giá bán:{' '}
-              <Text style={{color: 'red', fontWeight: '600'}}>
-                {item.price}.000 ₫
-              </Text>
-            </Text>
-            <Text style={{fontSize: 16, marginBottom: 8}}>
-              {item.description}
-            </Text>
-            <Text style={{fontSize: 16, marginBottom: 8}}>
-              {item.sold_count} đã bán | ? lượt thích
-            </Text>
-            <Text style={{fontSize: 16, marginBottom: 8}}>
-              {item.ratings['average_rating']} / 5{' '}
-              <Ionicons name='ios-star' size={15} color='#FFD700' />(
+          <View style={{height: 800, borderWidth: 1}}>
+            <Text>{titlePage}</Text>
+            <Text>{item.name}</Text>
+            <Text>Giá: {item.price}.000 ₫</Text>
+            <Text>Mô tả: {item.description}</Text>
+            <Text>Đã bán: {item.sold_count}</Text>
+            <Text>
+              {item.ratings['average_rating']} / 5 Icon ngôi sao (
               {item.ratings['total_ratings']})
             </Text>
-            <Text style={{fontSize: 16, marginBottom: 8}}>
-              Thời gian chuẩn bị: ~{item.preparation_time} phút
-            </Text>
-            <Text style={{fontSize: 16, marginBottom: 8}}>
-              {item.category == 'tea' ? 'Trà' : item.category}
-            </Text>
-            <Text>
-              Size{' '}
-              {item.available_sizes.map((size, index) => (
-                <Text key={index}>
-                  {size}
-                  {index !== item.available_sizes.length - 1 && ', '}
-                </Text>
-              ))}
-            </Text>
-            {/* <Image
-              style={{width: 265, height: 180, resizeMode: 'contain'}}
-              source={{
-                uri: item.featured_image,
-              }}
-            /> */}
+            <Text>Thời gian chuẩn bị: ~{item.preparation_time} phút</Text>
+            <Text>{item.category == 'tea' ? 'Trà' : item.category}</Text>
           </View>
         </Animated.ScrollView>
       </View>
       {/*  */}
       {/* <ScrollView>
         <View>
-          
-          
+          <Text>{item.name}</Text>
+          <Text>Giá: {item.price}.000 ₫</Text>
+          <Text>Mô tả: {item.description}</Text>
+          <Text>Đã bán: {item.sold_count}</Text>
+          <Text>
+            {item.ratings['average_rating']} / 5 Icon ngôi sao (
+            {item.ratings['total_ratings']})
+          </Text>
+          <Text>Thời gian chuẩn bị: ~{item.preparation_time} phút</Text>
+          <Text>{item.category == 'tea' ? 'Trà' : item.category}</Text>
+          <Text>
+            Size:{' '}
+            {item.available_sizes.map((size, index) => (
+              <Text key={index}>
+                {size}
+                {index !== item.available_sizes.length - 1 && ', '}
+              </Text>
+            ))}
+          </Text>
+
+          <Image
+            style={{width: 265, height: 180, resizeMode: 'contain'}}
+            source={{
+              uri: item.featured_image,
+            }}
+          />
         </View>
       </ScrollView> */}
       {/* <CustomStatusBar
