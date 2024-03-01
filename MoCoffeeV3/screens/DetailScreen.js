@@ -6,6 +6,7 @@ import {
   ScrollView,
   Animated,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 
@@ -44,6 +45,21 @@ export default function DetailScreen({}) {
 
   // const [titlePage, setTitlePage] = useState(item.name);
   // END: DynamicHeader
+
+  // Size: active
+  const [activeSize, setActiveSize] = useState(item.available_sizes[0]); //mặc định là `active` size đầu tiên
+  const [sizeSelected, setSizeSelected] = useState(false);
+
+  const handleSizeSelect = size => {
+    if (!sizeSelected || activeSize !== size) {
+      setActiveSize(size);
+      setSizeSelected(true);
+      console.log('set này');
+      // Xử lý logic khi kích thước được chọn
+    } else {
+      console.log('k sét');
+    }
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -234,9 +250,15 @@ export default function DetailScreen({}) {
               {item.sold_count} đã bán | ? lượt thích
             </Text>
             <Text style={{fontSize: 16, marginBottom: 8}}>
-              {item.ratings['average_rating']} / 5{' '}
-              <Ionicons name='ios-star' size={15} color='#FFD700' />(
-              {item.ratings['total_ratings']})
+              <View style={{paddingRight: 8}}>
+                <Ionicons name='ios-star' size={15} color='#FFD700' />
+              </View>
+              <Text style={{fontWeight: '600'}}>
+                {item.ratings['average_rating']}
+              </Text>
+              <Text style={{fontSize: 12}}>
+                ({item.ratings['total_ratings']})
+              </Text>
             </Text>
             <Text style={{fontSize: 16, marginBottom: 8}}>
               Thời gian chuẩn bị: ~{item.preparation_time} phút
@@ -244,7 +266,7 @@ export default function DetailScreen({}) {
             <Text style={{fontSize: 16, marginBottom: 8}}>
               {item.category == 'tea' ? 'Trà' : item.category}
             </Text>
-            <Text>
+            {/* <Text>
               Size{' '}
               {item.available_sizes.map((size, index) => (
                 <Text key={index}>
@@ -252,13 +274,100 @@ export default function DetailScreen({}) {
                   {index !== item.available_sizes.length - 1 && ', '}
                 </Text>
               ))}
-            </Text>
-            {/* <Image
-              style={{width: 265, height: 180, resizeMode: 'contain'}}
-              source={{
-                uri: item.featured_image,
-              }}
-            /> */}
+            </Text> */}
+
+            {/* Size */}
+            <View style={{marginBottom: 20}}>
+              <Text style={{fontSize: 16, fontWeight: 'bold', marginBottom: 5}}>
+                Size
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                {item.available_sizes.map((size, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={{
+                      paddingVertical: 8,
+                      paddingHorizontal: 46,
+                      backgroundColor:
+                        activeSize === size ? 'transparent' : '#ccc',
+                      borderRadius: 12,
+                      marginRight: 10,
+                      marginBottom: 10,
+                      borderColor:
+                        activeSize === size ? '#6E5532' : 'transparent',
+                      borderWidth: 1,
+                    }}
+                    onPress={() => handleSizeSelect(size)}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: '600',
+                        color: activeSize === size ? '#6E5532' : 'black',
+                      }}>
+                      {size}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+            {/* Số lượng (có khi cứ thêm vào rooif chinhr sl owr cart)*/}
+            {/* <View>
+              <Text>
+                Số lượng
+                <Text>+</Text>
+                <Text>6</Text>
+                <Text>-</Text>
+              </Text>
+            </View> */}
+            <View style={{alignItems: 'center', paddingVertical: 80}}>
+              <Text>-------------------------------------------------</Text>
+            </View>
+            {/* Comment */}
+            <Text style={{fontSize: 16, marginBottom: 8}}>Bình luận</Text>
+            <View style={{alignItems: 'center', paddingTop: 50}}>
+              <Image
+                style={{height: 100, width: 100}}
+                source={{
+                  uri: 'https://cdn-icons-png.flaticon.com/512/11449/11449811.png',
+                }}
+              />
+            </View>
+            <View style={{alignItems: 'center', paddingTop: 10}}>
+              <Text>Chưa có đánh giá</Text>
+              <Text style={{paddingTop: 10}}>
+                Cùng chia sẻ trải nghiệm đặt hàng của bạn với mọi người nhé!
+              </Text>
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 8,
+                  paddingHorizontal: 46,
+                  // backgroundColor: activeSize === size ? 'transparent' : '#ccc',
+                  backgroundColor: 'transparent',
+                  borderRadius: 12,
+                  marginRight: 10,
+                  marginBottom: 10,
+                  // borderColor: activeSize === size ? '#6E5532' : 'transparent',
+                  borderColor: '#6E5532',
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  width: 200,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: '600',
+                    color: '#6E5532',
+                  }}>
+                  Đặt món ngay
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Animated.ScrollView>
       </View>
