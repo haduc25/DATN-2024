@@ -1,6 +1,5 @@
-import {StatusBar} from 'expo-status-bar';
 import React from 'react';
-import {StyleSheet, Text, View, LogBox} from 'react-native';
+import {StyleSheet, Text, View, LogBox, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
@@ -58,6 +57,7 @@ export default function App() {
               let iconName;
               if (route.name === homeName) {
                 iconName = focused ? 'home' : 'home-outline';
+                StatusBar.setBarStyle('dark-content');
               } else if (route.name === ordersName) {
                 iconName = focused ? 'list' : 'list-outline';
               } else if (route.name === favouriteName) {

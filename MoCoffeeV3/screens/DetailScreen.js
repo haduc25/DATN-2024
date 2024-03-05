@@ -54,10 +54,10 @@ export default function DetailScreen({}) {
     if (!sizeSelected || activeSize !== size) {
       setActiveSize(size);
       setSizeSelected(true);
-      console.log('set này');
+      // console.log('set này');
       // Xử lý logic khi kích thước được chọn
     } else {
-      console.log('k sét');
+      // console.log('k sét');
     }
   };
 

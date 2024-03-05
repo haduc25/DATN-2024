@@ -40,6 +40,7 @@ const TopNavigation = props => {
     <>
       <StatusBar
         barStyle={isTransparent ? 'light-content' : 'dark-content'}
+        // barStyle={'dark-content'}
         backgroundColor='transparent'
         translucent
       />
