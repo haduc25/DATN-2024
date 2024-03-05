@@ -134,7 +134,7 @@ const Products = ({naviagation, item, menu, listItems}) => {
           borderTopLeftRadius: 6,
           borderTopRightRadius: 6,
         }}
-        source={{uri: item?.featured_image}}
+        source={{uri: item?.featured_image[0]}}
       />
       <View
         style={{

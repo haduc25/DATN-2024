@@ -88,12 +88,12 @@ const SearchComponent = () => {
   return (
     <View>
       <TextInput
-        placeholder="Nhập từ khóa tìm kiếm..."
+        placeholder='Nhập từ khóa tìm kiếm...'
         value={searchQuery}
         onChangeText={setSearchQuery}
         style={{borderWidth: 1, padding: 10}}
       />
-      <Button title="Tìm kiếm" onPress={handleSearch} />
+      <Button title='Tìm kiếm' onPress={handleSearch} />
       <FlatList
         style={{borderWidth: 1}}
         data={searchResults}

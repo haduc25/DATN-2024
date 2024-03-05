@@ -35,7 +35,7 @@ export default function DetailScreen({}) {
 
   const {item} = route?.params;
 
-  // console.log('item: ', item);
+  console.log('DetailScreen_item: ', item);
   // console.log('typeof item: ', typeof item); //object
 
   // console.log('navigation: ', navigation);
@@ -204,7 +204,7 @@ export default function DetailScreen({}) {
                   // data={imageSrc}
                   data={[
                     {
-                      img: item.featured_image,
+                      img: item.featured_image[0],
                     },
                     {
                       img: 'https://i.ytimg.com/vi/NlyXpQYBS8Y/maxresdefault.jpg',

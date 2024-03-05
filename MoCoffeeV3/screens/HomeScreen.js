@@ -9,7 +9,6 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  StatusBar,
 } from 'react-native';
 
 // Icons
@@ -217,11 +216,6 @@ export default function HomeScreen({navigation}) {
 
   return (
     <SafeAreaProvider>
-      <StatusBar
-        barStyle={'dark-content'}
-        backgroundColor='transparent'
-        translucent
-      />
       <CustomStatusBar backgroundColor='#fff' />
       {/* <CustomStatusBar backgroundColor='transparent' barStyle='dark-content' /> */}
       <ScrollView
