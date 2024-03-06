@@ -39,7 +39,11 @@ export default function ProductType({navigation}) {
   const cart = useSelector(state => state.cart.cart);
   console.log('ProductType-Cart: ', cart);
 
-  console.log('navigation: ', navigation);
+  // product
+  // const product = useSelector(state => state.productInfo); // Product_Type (product):  {"category": "coffee", "name": "Cofffe sữa đá"}
+  // console.log('Product_Type (product): ', product);
+
+  console.log('ProductType_navigation: ', navigation);
   // console.log('route: ', route);
 
   const {name, category} = route.params || {};
@@ -138,9 +142,9 @@ export default function ProductType({navigation}) {
           <Ionicons
             onPress={() => navigation.canGoBack() && navigation.goBack()}
             style={{padding: 5}}
-            name="arrow-back"
+            name='arrow-back'
             size={24}
-            color="black"
+            color='black'
           />
 
           <View
@@ -150,12 +154,12 @@ export default function ProductType({navigation}) {
               paddingHorizontal: 14,
               gap: 10,
             }}>
-            <SimpleLineIcons name="camera" size={24} color="black" />
-            <Ionicons name="bookmark-outline" size={24} color="black" />
+            <SimpleLineIcons name='camera' size={24} color='black' />
+            <Ionicons name='bookmark-outline' size={24} color='black' />
             <MaterialCommunityIcons
-              name="share-outline"
+              name='share-outline'
               size={24}
-              color="black"
+              color='black'
             />
           </View>
         </View>
@@ -197,7 +201,7 @@ export default function ProductType({navigation}) {
                 {/* {aggregate_rating} */}
                 10
               </Text>
-              <Ionicons name="ios-star" size={15} color="white" />
+              <Ionicons name='ios-star' size={15} color='white' />
             </View>
             <Text style={{fontSize: 15, fontWeight: '500', marginLeft: 5}}>
               3.2K Đánh giá

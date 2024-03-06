@@ -154,7 +154,7 @@ export default function App() {
             // }}
             options={{
               headerShown: false,
-              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
               tabBarButton: () => null,
             }}
           />

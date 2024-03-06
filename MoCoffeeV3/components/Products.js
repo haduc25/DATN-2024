@@ -7,6 +7,10 @@ import {useRouter} from 'expo-router';
 // Navigation
 import {useNavigation} from '@react-navigation/native';
 
+// Redux
+import {useDispatch} from 'react-redux';
+import {setProductInfo} from '../redux/ProductReducer';
+
 const Products = ({naviagation, item, menu, listItems}) => {
   const router = useRouter();
   const router2 = useNavigation();
@@ -61,6 +65,8 @@ const Products = ({naviagation, item, menu, listItems}) => {
     return translations[category] || category;
   }
 
+  const dispatch = useDispatch();
+
   return (
     <Pressable
       onPress={() => {
@@ -97,10 +103,20 @@ const Products = ({naviagation, item, menu, listItems}) => {
         //   bigData: 'Dữ liệu được truyền từ ProductScreen',
         // });
 
+        // setup to `store`
+        let productName = item.name;
+        let categoryName = item.category;
+
+        dispatch(setProductInfo({name: productName, category: categoryName}));
+
         router2.navigate('ProductTypeScreen', {
-          name: item.name,
-          category: item.category,
+          name: productName,
+          category: categoryName,
         });
+        // router2.navigate('ProductTypeScreen', {
+        //   name: item.name,
+        //   category: item.category,
+        // });
       }}
       style={{
         // marginHorizontal: 6,

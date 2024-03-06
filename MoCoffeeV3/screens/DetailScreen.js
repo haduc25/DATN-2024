@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {useRoute, useNavigation} from '@react-navigation/native';
 
 // Icons
 import {Ionicons} from '@expo/vector-icons';
@@ -20,19 +20,29 @@ import {ImageSlider} from '@pembajak/react-native-image-slider-banner';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import CustomStatusBar from '../components/CustomStatusBar';
 
-// imnport DynamicHeader
+// import DynamicHeader
 import {BANNER_H} from './DynamicHeaderAnimation/constants';
 import TopNavigation from './DynamicHeaderAnimation/TopNavigation';
 import DummyText from './DynamicHeaderAnimation/DummyText';
+import {Pressable} from 'react-native';
+
+// Redux
+import {useSelector} from 'react-redux';
 
 // START: DynamicHeader
 
 // END: DynamicHeader
 
 export default function DetailScreen({}) {
-  const route = useRoute();
-  // console.log('route: ', route);
+  // redux
+  const productInfo = useSelector(state => state.productInfo);
+  console.log('DATA FROM REDUX: ', productInfo); // Hiển thị thông tin sản phẩm từ Redux trong console
 
+  const route = useRoute();
+  const navi = useNavigation();
+  // console.log('route: ', route);
+  console.log('Detail-navi: ', navi);
+  console.log('Detail-navi.getParent(): ', navi.getState());
   const {item} = route?.params;
 
   console.log('DetailScreen_item: ', item);
@@ -61,9 +71,24 @@ export default function DetailScreen({}) {
     }
   };
 
+  // return (
+  //   <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+  //     <Text
+  //       onPress={() =>
+  //         navi.navigate('ProductTypeScreen', {
+  //           name: productInfo.name,
+  //           category: productInfo.category,
+  //         })
+  //       }
+  //       style={{fontSize: 26, fontWeight: 'bold'}}>
+  //       Detail Screen
+  //     </Text>
+  //   </View>
+  // );
+
   return (
     <View style={{flex: 1}}>
-      <View>
+      <View style={{position: 'relative'}}>
         <TopNavigation title={item.name} scrollA={scrollA} />
         <Animated.ScrollView
           // onScroll={e => console.log(e.nativeEvent.contentOffset.y)}
@@ -232,7 +257,7 @@ export default function DetailScreen({}) {
           {/* <DummyText /> */}
           <View
             style={{
-              height: 800,
+              height: 1000,
               borderWidth: 1,
               padding: 10,
             }}>
@@ -247,7 +272,7 @@ export default function DetailScreen({}) {
               {item.description}
             </Text>
             <Text style={{fontSize: 16, marginBottom: 8}}>
-              {item.sold_count} đã bán | ? lượt thích
+              {item.sold_count} đã bán | {item.likes} lượt thích
             </Text>
             <Text style={{fontSize: 16, marginBottom: 8}}>
               <View style={{paddingRight: 8}}>
@@ -340,8 +365,13 @@ export default function DetailScreen({}) {
             </View>
             <View style={{alignItems: 'center', paddingTop: 10}}>
               <Text>Chưa có đánh giá</Text>
-              <Text style={{paddingTop: 10}}>
-                Cùng chia sẻ trải nghiệm đặt hàng của bạn với mọi người nhé!
+              <Text
+                style={{
+                  paddingTop: 10,
+                  paddingBottom: 40,
+                  textAlign: 'center',
+                }}>
+                Chia sẻ trải nghiệm đặt hàng của bạn với mọi người nhé!
               </Text>
               <TouchableOpacity
                 style={{
@@ -374,15 +404,73 @@ export default function DetailScreen({}) {
       {/*  */}
       {/* <ScrollView>
         <View>
-          
-          
+
         </View>
       </ScrollView> */}
-      {/* <CustomStatusBar
+      <CustomStatusBar
         canGoBack={true}
         navigation={() => meow}
         heightOfTop={28}
-      /> */}
+      />
+
+      {/* Button Order */}
+      <View
+        style={{
+          // paddingVertical: 25,
+          // height: 50,
+          // width: 100,
+          paddingBottom: 40,
+          backgroundColor: 'transparent',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}>
+        <Pressable
+          // onPress={() => navi.canGoBack() && navi.goBack()}
+          // onPress={() => console.log('Detail Navi: ', navi.getState())}
+          onPress={() =>
+            // console.log('detail_Navi: ', navi.getState().history[1])
+            // console.log('detail_Navi: ', navi.getState().history[0])
+            navi.navigate('ProductTypeScreen', {
+              name: productInfo.name,
+              category: productInfo.category,
+            })
+          }
+          style={{
+            // backgroundColor: '#fd5c63',
+            // backgroundColor: 'lightblue',
+            backgroundColor: '#7EC7E7',
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginLeft: 20,
+            marginRight: 20,
+            borderRadius: '15%',
+            zIndex: 999,
+          }}>
+          <View style={{flexDirection: 'row'}}>
+            <Text
+              style={{
+                paddingVertical: 10,
+                textAlign: 'center',
+                color: 'white',
+                fontSize: 15,
+                fontWeight: 'bold',
+                paddingRight: 20,
+              }}>
+              20.000 đ | Giao hàng ngay
+            </Text>
+            <Image
+              style={{width: 40, height: 40}}
+              source={{
+                uri: 'https://cdn-icons-png.flaticon.com/512/9561/9561688.png',
+              }}
+            />
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 }

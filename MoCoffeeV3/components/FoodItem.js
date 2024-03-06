@@ -35,7 +35,7 @@ const FoodItem = ({item}) => {
               {/* {item?.name} ({item?.items?.length}) */}
               {item?.name} ({data?.length})
             </Text>
-            <AntDesign name="down" size={20} color="black" />
+            <AntDesign name='down' size={20} color='black' />
           </Pressable>
 
           {/* {item?.items?.map((item, subIndex) => ( */}
