@@ -407,10 +407,21 @@ export default function DetailScreen({}) {
 
         </View>
       </ScrollView> */}
-      <CustomStatusBar
+      {/* <CustomStatusBar
         canGoBack={true}
         navigation={() => meow}
         heightOfTop={28}
+      /> */}
+
+      <CustomStatusBar
+        canGoBack={true}
+        heightOfTop={28}
+        // onPressBack={data => console.log(data)}
+        dataNavigation={{
+          screen: 'ProductTypeScreen',
+          name: productInfo.name,
+          category: productInfo.category,
+        }}
       />
 
       {/* Button Order */}
@@ -432,10 +443,12 @@ export default function DetailScreen({}) {
           onPress={() =>
             // console.log('detail_Navi: ', navi.getState().history[1])
             // console.log('detail_Navi: ', navi.getState().history[0])
-            navi.navigate('ProductTypeScreen', {
-              name: productInfo.name,
-              category: productInfo.category,
-            })
+            // navi.navigate('ProductTypeScreen', {
+            //   name: productInfo.name,
+            //   category: productInfo.category,
+            // })
+
+            alert(123)
           }
           style={{
             // backgroundColor: '#fd5c63',

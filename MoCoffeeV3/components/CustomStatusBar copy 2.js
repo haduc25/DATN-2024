@@ -6,61 +6,15 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 // Icons
 import {Ionicons} from '@expo/vector-icons';
 
-// navigation
-import {useNavigation} from '@react-navigation/native';
-
 const CustomStatusBar = ({
   backgroundColor = 'transparent',
   barStyle = 'dark-content',
   onPressBack,
   canGoBack = false,
+  navigation = null,
   heightOfTop = 0,
-  dataNavigation = null, // Thêm prop data để nhận dữ liệu từ bên ngoài
 }) => {
   const insets = useSafeAreaInsets();
-
-  // navigation
-  const navi = useNavigation();
-
-  const handlePressBack = () => {
-    // Kiểm tra xem onPressBack đã được truyền vào chưa
-    if (onPressBack) {
-      onPressBack(dataNavigation); // Truyền dữ liệu data khi gọi hàm onPressBack
-    }
-
-    // case 1
-    // let lengthOfDataNavigation = Object.keys(dataNavigation).length;
-    // console.log('lengthOfDataNavigation: ', lengthOfDataNavigation);
-    // if (lengthOfDataNavigation > 0) {
-    //   switch (lengthOfDataNavigation) {
-    //     case 1:
-    //       if (dataNavigation?.screen) {
-    //         console.log('only have 1 -> navigate to here and no props');
-    //       }
-    //       break;
-    //     default:
-    //       if (dataNavigation?.screen) {
-    //         console.log('have many props -> navigate to here and have props');
-    //       } else {
-    //         console.log('dont have screen -> pls add more props is screen');
-    //       }
-    //   }
-    // }
-
-    // case 2: tối ưu hơn khi dùng chát GPT
-    const {screen, ...otherProps} = dataNavigation;
-    if (screen) {
-      if (Object.keys(otherProps).length > 0) {
-        // console.log('navigate to here - and have props');
-        navi.navigate(screen, otherProps);
-      } else {
-        // console.log('navigate to here - and no props');
-        navi.navigate(screen);
-      }
-    } else {
-      console.log('pls add more props is screen');
-    }
-  };
 
   return (
     <View
@@ -79,7 +33,7 @@ const CustomStatusBar = ({
         paddingHorizontal: 10, // Khoảng cách giữa các phần tử
         // borderWidth: 1,
       }}>
-      {canGoBack && dataNavigation && (
+      {canGoBack && navigation && (
         <Text
           style={{
             overflow: 'hidden',
@@ -92,7 +46,8 @@ const CustomStatusBar = ({
             borderRadius: 14,
           }}>
           <Ionicons
-            onPress={handlePressBack} // Sử dụng hàm handlePressBack thay vì alert
+            // onPress={() => navigation.canGoBack() && navigation.goBack()}
+            onPress={() => alert(123)}
             style={{padding: 5}}
             name='arrow-back'
             size={24}
