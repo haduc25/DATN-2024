@@ -16,7 +16,7 @@ const TopNavigation = props => {
     }
     const listenerId = scrollA.addListener(a => {
       const topNaviOffset = BANNER_H - TOPNAVI_H - safeArea.top;
-      isTransparent !== a.value + 150 < topNaviOffset &&
+      isTransparent !== a.value - 150 < topNaviOffset &&
         setTransparent(!isTransparent);
 
       // const _value = a.value + 80;

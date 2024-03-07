@@ -7,12 +7,14 @@ import {
   Animated,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground,
 } from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
 
 // Icons
 import {Ionicons} from '@expo/vector-icons';
+
+// Image slider
+import {ImageSlider} from '@pembajak/react-native-image-slider-banner';
 
 // for custom status bar
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -26,7 +28,6 @@ import {Pressable} from 'react-native';
 
 // Redux
 import {useSelector} from 'react-redux';
-import {SliderBox} from 'react-native-image-slider-box';
 
 // START: DynamicHeader
 
@@ -92,13 +93,6 @@ export default function DetailScreen({}) {
     setIsFavorite(!isFavorite);
   };
 
-  //
-  const imagesSlider = [
-    item.featured_image[0],
-    'https://scontent.fhan15-1.fna.fbcdn.net/v/t39.30808-6/237037430_1178782892533825_3904563212716546943_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=chAgwQH2-esAX_0pN9J&_nc_ht=scontent.fhan15-1.fna&oh=00_AfAxMSUXfwqTfK6Ia3j-RJ3F8cjug74wu45wHhMveckI1Q&oe=65EE4A8F',
-    'https://www.crane-tea.com/wp-content/uploads/2021/07/HONG-TRA-CHANH.jpg',
-    'https://quangon.vn/resources/2020/04/22/cach-pha-tra-chanh-leo-3.jpg',
-  ];
   return (
     <View style={{flex: 1}}>
       <View style={{position: 'relative'}}>
@@ -111,30 +105,169 @@ export default function DetailScreen({}) {
           )}
           scrollEventThrottle={16}>
           {/* <View style={styles.bannerContainer}> */}
-          <View>
+          <View style={{height: 600}}>
             {/* START */}
+            {/* <Animated.View
+              style={{
+                zIndex: 2,
+                width: '100%',
+                position: 'relative',
+                backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                paddingBottom: 0,
+                // marginBottom: -100,
+                // marginTop: -100,
+                marginTop: -68,
+                // Sử dụng animated value ở đây
+                transform: [
+                  {
+                    translateY: scrollA.interpolate({
+                      inputRange: [0, 200], // Khoảng giá trị của scrollA
+                      outputRange: [0, -100], // Khoảng giá trị tương ứng với translateY
+                      extrapolate: 'clamp', // Giữ cho giá trị không vượt ra khỏi khoảng inputRange
+                    }),
+                  },
+                ],
+              }}>
+              <ImageSlider
+                // data={imageSrc}
+                data={[
+                  {
+                    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5a5uCP-n4teeW2SApcIqUrcQApev8ZVCJkA&usqp=CAU',
+                  },
+                  {
+                    img: 'https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg',
+                  },
+                  {
+                    img: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510__340.jpg',
+                  },
+                  {
+                    img: 'https://cong-news.appwifi.com/wp-content/uploads/2023/02/tra%CC%80-qua%CC%82%CC%81t-ma%CC%A3%CC%82t-ong_%C4%91a%CC%81.jpg',
+                  },
+                ]}
+                autoPlay={true}
+                timer={2000}
+                caroselImageContainerStyle={{
+                  paddingBottom: 0,
+                  overflow: 'hidden',
+                  resizeMode: 'fill',
+                }}
+                showIndicator={false}
+                preview={true}
+              />
+            </Animated.View> */}
+            {/* END */}
+            {/* <Animated.Image
+              style={styles.banner(scrollA)}
+              // source={require('./DynamicHeaderAnimation/banner.jpg')}
+              source={{
+                uri: item.featured_image,
+              }}
+            /> */}
             <View
               style={[
                 {
                   alignItems: 'center',
                   overflow: 'hidden',
-                  height: 500,
+                  // height: 200,
+                  height: 600,
+                  // borderWidth: 1,
                 },
               ]}>
-              <SliderBox
-                images={imagesSlider}
-                dotColor={'brown'}
-                inactiveDotColor={'lightblue'}
-                sliderBoxHeight={'100%'}
-                onCurrentImagePressed={index =>
-                  console.warn(`Image at index ${index} pressed`)
-                }
-                ImageComponentStyle={{}}
-                circleLoop={true} // Kích hoạt chuyển đổi tròn tròn, tạo hiệu ứng vòng lặp
-                autoplay={false} // Tự động chuyển đổi giữa các hình ảnh
-                imageLoadingColor='#E91E63'
-                autoplayInterval={100}
-              />
+              {/* style={[
+                {
+                  alignItems: 'center',
+                  overflow: 'hidden',
+                  height: 200,
+                  borderWidth: 1,
+                },
+                styles.banner(scrollA),
+              ]}> */}
+
+              {/* Start: fak */}
+              {/* <Animated.View
+                style={[
+                  {
+                    zIndex: 2,
+                    width: '100%',
+                    position: 'relative',
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    paddingBottom: 0,
+                    marginTop: -68,
+                  },
+                  styles.banner(scrollA),
+                ]}>
+                <ImageSlider
+                  // data={imageSrc}
+                  data={[
+                    {
+                      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5a5uCP-n4teeW2SApcIqUrcQApev8ZVCJkA&usqp=CAU',
+                    },
+                    {
+                      img: 'https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg',
+                    },
+                    {
+                      img: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510__340.jpg',
+                    },
+                    {
+                      img: 'https://cong-news.appwifi.com/wp-content/uploads/2023/02/tra%CC%80-qua%CC%82%CC%81t-ma%CC%A3%CC%82t-ong_%C4%91a%CC%81.jpg',
+                    },
+                  ]}
+                  autoPlay={true}
+                  timer={2000}
+                  caroselImageContainerStyle={{
+                    paddingBottom: 0,
+                    overflow: 'hidden',
+                    resizeMode: 'fill',
+                  }}
+                  showIndicator={false}
+                  preview={true}
+                />
+              </Animated.View> */}
+              <View
+                style={[
+                  {
+                    zIndex: 2,
+                    width: '100%',
+                    position: 'relative',
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    paddingBottom: 0,
+                    marginTop: -68,
+                    height: 600,
+                  },
+                ]}>
+                <ImageSlider
+                  // data={imageSrc}
+                  data={[
+                    {
+                      img: item.featured_image[0],
+                    },
+                    {
+                      img: 'https://i.ytimg.com/vi/NlyXpQYBS8Y/maxresdefault.jpg',
+                    },
+                    {
+                      img: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510__340.jpg',
+                    },
+                    {
+                      img: 'https://cong-news.appwifi.com/wp-content/uploads/2023/02/tra%CC%80-qua%CC%82%CC%81t-ma%CC%A3%CC%82t-ong_%C4%91a%CC%81.jpg',
+                    },
+                  ]}
+                  autoPlay={true}
+                  timer={2000}
+                  caroselImageContainerStyle={{
+                    paddingBottom: 0,
+                    overflow: 'hidden',
+                    // resizeMode: 'fill',
+                    // height: 600,
+                    // resizeMode: 'cover', // Chọn 'cover' hoặc 'contain' tùy thuộc vào yêu cầu
+                    height: 600, // Chiều cao của hình ảnh
+                  }}
+                  imageContainerStyle={{
+                    resizeMode: 'cover', // Chọn 'cover' hoặc 'contain' tùy thuộc vào yêu cầu
+                  }}
+                  showIndicator={false}
+                  preview={true}
+                />
+              </View>
             </View>
           </View>
           {/* <DummyText /> */}
@@ -142,9 +275,18 @@ export default function DetailScreen({}) {
             style={{
               // height: 1000,
               minHeight: 800,
-              // borderWidth: 1,
+              borderWidth: 1,
               padding: 10,
             }}>
+            <Text style={{fontSize: 22, marginBottom: 10}}>{item.name}</Text>
+
+            <Text style={{fontSize: 16, marginBottom: 8}}>
+              {item.description}
+            </Text>
+            <Text style={{fontSize: 16, marginBottom: 8}}>
+              {item.sold_count} đã bán | {item.likes} lượt thích
+            </Text>
+            {/* START: RATING, HEART */}
             <View
               style={{
                 // borderWidth: 1,
@@ -152,65 +294,44 @@ export default function DetailScreen({}) {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
-              <Text style={{fontSize: 22, fontWeight: '500', marginBottom: 10}}>
-                {item.name}
+              <Text
+                style={{
+                  fontSize: 16,
+                  marginBottom: 8,
+                }}>
+                <View style={{paddingRight: 8}}>
+                  <Ionicons name='ios-star' size={15} color='#FFD700' />
+                </View>
+                <Text style={{fontWeight: '600'}}>
+                  {item.ratings['average_rating']}
+                </Text>
+                <Text style={{fontSize: 12}}>
+                  ({item.ratings['total_ratings']})
+                </Text>
               </Text>
               {/* START: HEART ICON */}
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <TouchableOpacity onPress={toggleFavorite} style={{}}>
-                  <View>
-                    <Ionicons
-                      name={isFavorite ? 'heart' : 'heart-outline'}
-                      size={26}
-                      // color={isFavorite ? 'red' : '#b7b7b7'}
-                      color={isFavorite ? '#ff424f' : '#b7b7b7'}
-                    />
-                  </View>
-                </TouchableOpacity>
-                <Text style={{paddingLeft: 10}}>Đã thích ({item.likes}k)</Text>
-              </View>
+              <TouchableOpacity onPress={toggleFavorite} style={{}}>
+                <View>
+                  <Ionicons
+                    name={isFavorite ? 'heart' : 'heart-outline'}
+                    size={26}
+                    color={isFavorite ? 'red' : '#b7b7b7'}
+                  />
+                </View>
+              </TouchableOpacity>
               {/* END: HEART ICON */}
             </View>
-
-            <Text style={{fontSize: 16, marginBottom: 8}}>
-              {item.description}
-            </Text>
-            {/* START: RATING */}
-            <Text
-              style={{
-                fontSize: 16,
-                marginBottom: 8,
-              }}>
-              <View style={{paddingRight: 8}}>
-                {/* <Ionicons name='ios-star' size={15} color='#FFD700' /> */}
-                <Ionicons name='ios-star' size={15} color='#e5c100' />
-              </View>
-              <Text style={{fontWeight: '600'}}>
-                {item.ratings['average_rating']}
-              </Text>
-              <Text style={{fontSize: 12}}>
-                ({item.ratings['total_ratings']})
-              </Text>
-              <Text style={{fontSize: 16, marginBottom: 8}}>
-                {' '}
-                | {item.sold_count} đã bán
-              </Text>
-            </Text>
-            {/* END: RATING */}
+            {/* END: RATING, HEART */}
 
             <Text style={{fontSize: 20, marginBottom: 8}}>
               {/* Giá bán:{' '} */}
-              <Text style={{color: '#ee4d2d', fontWeight: '600'}}>
+              <Text style={{color: 'red', fontWeight: '600'}}>
                 {item.price}.000 ₫
               </Text>
             </Text>
-            {/* <Text style={{fontSize: 16, marginBottom: 8}}>
+            <Text style={{fontSize: 16, marginBottom: 8}}>
               Thời gian chuẩn bị: ~{item.preparation_time} phút
-            </Text> */}
+            </Text>
             {/* <Text style={{fontSize: 16, marginBottom: 8}}>
               {item.category == 'tea' ? 'Trà' : item.category}
             </Text> */}
@@ -224,7 +345,7 @@ export default function DetailScreen({}) {
               ))}
             </Text> */}
             {/* Size */}
-            <View>
+            <View style={{marginBottom: 20}}>
               <Text style={{fontSize: 16, fontWeight: 'bold', marginBottom: 5}}>
                 Size
               </Text>
@@ -272,19 +393,9 @@ export default function DetailScreen({}) {
                 <Text>-</Text>
               </Text>
             </View> */}
-            {/* START: Line split component */}
-            <View
-              style={{
-                alignItems: 'center',
-                height: 1,
-                width: '100%',
-                // backgroundColor: '#6E5532',
-                backgroundColor: '#ccc',
-                marginVertical: 40,
-              }}
-            />
-            {/* END: Line split component */}
-
+            <View style={{alignItems: 'center'}}>
+              <Text>-------------------------------------------------</Text>
+            </View>
             {/* Comment */}
             {/* <Text style={{fontSize: 16, marginBottom: 8}}>Bình luận</Text> */}
             <Text style={{fontSize: 16, marginBottom: 8}}>Nhận xét</Text>
