@@ -43,11 +43,11 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <BottomTab.Navigator
-          initialRouteName={homeName}
+          // initialRouteName={homeName}
           // initialRouteName={productTypeName}
           // initialRouteName={cartName}
           // initialRouteName={registerName}
-          // initialRouteName={loginName}
+          initialRouteName={loginName}
           // initialRouteName={favouriteName}
           // initialRouteName={detailName}
           // initialRouteName={'ImageAnimation'}

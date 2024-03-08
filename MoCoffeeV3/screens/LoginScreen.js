@@ -76,7 +76,10 @@ export default function LoginScreen({navigation}) {
       console.log('token: ', token);
       //  user:  {"_redirectEventId": undefined, "appName": "[DEFAULT]", "createdAt": "1708945480583", "displayName": undefined, "email": "abcd345@mail.com", "emailVerified": false, "isAnonymous": false, "lastLoginAt": "1708946005049", "phoneNumber": undefined, "photoURL": undefined, "providerData": [[Object]], "stsTokenManager": {"accessToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImExODE4ZjQ0ODk0MjI1ZjQ2MWQyMmI1NjA4NDcyMDM3MTc2MGY1OWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbW8tY29mZmVlLXRlYSIsImF1ZCI6Im1vLWNvZmZlZS10ZWEiLCJhdXRoX3RpbWUiOjE3MDg5NDYwMDUsInVzZXJfaWQiOiJiTWlITFJibUNmU0ZCSEMxV1NJYmtDZnhTQk0yIiwic3ViIjoiYk1pSExSYm1DZlNGQkhDMVdTSWJrQ2Z4U0JNMiIsImlhdCI6MTcwODk0NjAwNSwiZXhwIjoxNzA4OTQ5NjA1LCJlbWFpbCI6ImFiY2QzNDVAbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWJjZDM0NUBtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.3Vm6wnFnnvNUeVbZFtOU9Y-bo_0tAgJUcyPHVWUS-VqFApNGrDHEthaG0Wus3SAsKphSXKxFBLGUlqU100RZ-9mc7P44bsXDoT-58V2h8hR_Q6vd8CXguGUzpr06AnL7VKxFUwusW1QPUyuYyK4tvm35kvl6Rm2XSS-y6E3YD-ccb30XgE6bmDHfzZsLaNzHS4--pByBp4NNwkUDfInP3RVOcndXNT5SQ4is_Gi_cHUNUA8jUUbkJGPkyZy_IW193t8GrJefdePD1KGSWO0xH0QBT-DhaKCNEE4SdgaRBgtvDKJC41AptrBgyTMwLq9aS7yYyns90BpvzUXCsxUgbg", "expirationTime": 1708949605195, "refreshToken": "AMf-vBxkbhmT96RiH_4k9WF_F3KTvavpjiFeeqvmDEPjzluCUTPULsc9MKB30kfieLDPIcutLbF4BfInbV1sc58qTUFZiHQPBxT0c1TvMMhcyDLS7c9e5W4vLWmO0cRQxxnWxyM2VhgxUGuI9XA-kC205CH4MArE7TDG5Ue_O9ynjcpQyPgegsE8SYn1t3AGynE3ePLdCj2FlOlXwmmzFmyKWocqlJAhVg"}, "tenantId": undefined, "uid": "bMiHLRbmCfSFBHC1WSIbkCfxSBM2"}
 
-      console.log('success sign-in user: ', user.email);
+      // console.log('success sign-in user: ', user.email);
+      // console.log('success sign-in user: ', user.uid);
+      // console.log('\n\n ===> success sign-in user: ', user);
+
       // Chuyển hướng đến màn hình khác sau khi đăng nhập thành công
       navigation.navigate('Trang chủ');
     } catch (error) {
@@ -122,15 +125,15 @@ export default function LoginScreen({navigation}) {
             }}>
             <MaterialIcons
               style={{marginLeft: 8}}
-              name="email"
+              name='email'
               size={24}
-              color="gray"
+              color='gray'
             />
             <TextInput
               value={email}
               onChangeText={text => setEmail(text)}
               style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder="Nhập địa chỉ E-mail"
+              placeholder='Nhập địa chỉ E-mail'
             />
           </View>
 
@@ -146,23 +149,23 @@ export default function LoginScreen({navigation}) {
             }}>
             <AntDesign
               style={{marginLeft: 8}}
-              name="lock1"
+              name='lock1'
               size={24}
-              color="black"
+              color='black'
             />
             <TextInput
               value={password}
               onChangeText={text => setPassword(text)}
               style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder="Nhập mật khẩu"
+              placeholder='Nhập mật khẩu'
               secureTextEntry={!showPassword} // Sử dụng secureTextEntry để ẩn mật khẩu nếu showPassword là false
             />
             {/* Nút để hiển thị/ẩn mật khẩu */}
             <Pressable onPress={toggleShowPassword} style={{padding: 10}}>
               {showPassword ? (
-                <MaterialIcons name="visibility-off" size={24} color="gray" />
+                <MaterialIcons name='visibility-off' size={24} color='gray' />
               ) : (
-                <MaterialIcons name="visibility" size={24} color="gray" />
+                <MaterialIcons name='visibility' size={24} color='gray' />
               )}
             </Pressable>
           </View>

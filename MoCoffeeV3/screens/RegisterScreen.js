@@ -14,7 +14,8 @@ import {useNavigation} from '@react-navigation/native';
 
 // import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
-import {auth} from '../firebase';
+import {auth, db} from '../firebase';
+import {doc, setDoc} from 'firebase/firestore';
 
 export default function RegisterScreen({navigation}) {
   const [name, setName] = useState('');
@@ -28,6 +29,55 @@ export default function RegisterScreen({navigation}) {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword); // Đảo ngược trạng thái hiển thị mật khẩu
   };
+  // START: HANDLE PROFILE USER
+  const createUserProfile = profile => {
+    // summit data
+    if (profile) {
+      console.log('profile: ', profile);
+      const {
+        uid,
+        accessToken,
+        displayName,
+        email,
+        emailVerified,
+        metadata,
+        phoneNumber,
+        photoURL,
+      } = profile.auth.currentUser;
+
+      const {createdAt, lastLoginAt} = metadata;
+
+      if (uid) {
+        setDoc(doc(db, 'Users', uid), {
+          accessToken,
+          displayName,
+          email,
+          emailVerified,
+          phoneNumber,
+          photoURL,
+          createdAt,
+          lastLoginAt,
+          role: 'user',
+          dob: '25/09/2001',
+          gtinh: 'nam',
+          location: [],
+          itemFavorited: [],
+          itemOrder: [],
+          orderHistory: [],
+        })
+          .then(() => {
+            // Data create successfully!
+            console.log('Data created');
+            alert('Data created');
+          })
+          .catch(error => {
+            console.log('error: ', error);
+            alert('error: ', error);
+          });
+      }
+    }
+  };
+  // END: HANDLE PROFILE USER
 
   async function signUpNewUser(email, password, name) {
     if (!name) {
@@ -60,15 +110,32 @@ export default function RegisterScreen({navigation}) {
       await new Promise(resolve => setTimeout(resolve, 3000));
 
       const user = userCredential.user;
+
+      // // Filter dữ liệu user
+      // const {
+      //   // auth,
+      //   proactiveRefresh,
+      //   providerData,
+      //   providerId,
+      //   reloadListener,
+      //   reloadUserInfo,
+      //   stsTokenManager,
+      //   tenantId,
+      //   ...userInfo
+      // } = user.auth.currentUser;
+
+      // // update dữ liệu sang FireStore
+      createUserProfile(user);
+
       console.log('success created user: ', user.email);
       alert('ĐĂNG KÝ THÀNH CÔNG!');
       // setErrorMsg('valid');
 
-      // Quay sang đăng nhập
-      navi.reset({
-        index: 0,
-        routes: [{name: 'LoginScreen'}],
-      });
+      // // Quay sang đăng nhập
+      // navi.reset({
+      //   index: 0,
+      //   routes: [{name: 'LoginScreen'}],
+      // });
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
