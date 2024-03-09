@@ -30,7 +30,7 @@ import {SliderBox} from 'react-native-image-slider-box';
 
 // import for user
 import {db, auth} from '../firebase';
-import {doc, getDoc} from 'firebase/firestore';
+import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // START: DynamicHeader
@@ -175,6 +175,21 @@ export default function DetailScreen({}) {
         console.log('Item removed from favoritedItems:', itemId);
         setIsFavorite(false);
       }
+
+      // Update to DB (CẦM THẰNG NÀY VỨT LÊN DB LÀ MỌI CHUYỆN ĐC GIẢI QUYẾT)
+      console.log('DETAIL_ favoritedItems: ', favoritedItems);
+      // UPDATE DÂT FROM `ASYNCSTORAGE` TO `FIREBASE`
+
+      updateDoc(doc(db, 'Users', userId), {
+        itemFavorited: favoritedItems,
+      })
+        .then(() => {
+          // Data create successfully!
+          console.log('Data updated');
+        })
+        .catch(error => {
+          alert('error: ', error);
+        });
     } catch (error) {
       console.error('Error updating favoritedItems:', error);
     }
@@ -201,6 +216,25 @@ export default function DetailScreen({}) {
   //   }
   // };
   // // read();
+
+  // const update = () => {
+  //   // summit data
+  //   // LA: id of docs
+  //   updateDoc(doc(db, 'users', '1Z3PJNDlVQLDEETfacjV'), {
+  //     cat: ['meomeow', 'mèo méo meo mèo meo'],
+  //   })
+  //     .then(() => {
+  //       // Data create successfully!
+  //       console.log('Data created');
+  //       alert('Data updated');
+  //     })
+  //     .catch(error => {
+  //       console.log('error: ', error);
+  //       alert('error: ', error);
+  //     });
+  // };
+
+  // // update();
 
   // redux
   const productInfo = useSelector(state => state.productInfo);

@@ -77,25 +77,43 @@ export default function HomeScreen({navigation}) {
   // fetch user data
 
   // Read from firebase
-  const userId = auth.currentUser.uid;
+  // const userId = auth.currentUser.uid;
+  // console.log('auth.currentUser: ', auth.currentUser);
+  // console.log('userId: ', userId);
+
   const read = async () => {
     try {
-      const docSnap = await getDoc(doc(db, 'Users', userId));
-      if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
-        // setUserData(docSnap.data());
-        console.log('data: ', docSnap.data());
+      // Lấy dữ liệu từ AsyncStorage
+      const data = await AsyncStorage.getItem('usersProfile');
 
-        console.log('itemFavorited: ', docSnap.data().itemFavorited);
-        // Lưu danh sách sản phẩm đã yêu thích mới vào AsyncStorage
-        await AsyncStorage.setItem(
-          'favoritedItems',
-          JSON.stringify(docSnap.data().itemFavorited),
+      if (data !== null) {
+        // Chuyển đổi chuỗi JSON thành object
+        const userProfile = JSON.parse(data);
+        console.log('User profiles:', userProfile);
+        console.log('User profiles-id:', userProfile.currentUser._userId);
+
+        // READ
+        const docSnap = await getDoc(
+          doc(db, 'Users', userProfile.currentUser._userId),
         );
+        if (docSnap.exists()) {
+          console.log('Document data:', docSnap.data());
+          // setUserData(docSnap.data());
+          console.log('data: ', docSnap.data());
+
+          console.log('itemFavorited: ', docSnap.data().itemFavorited);
+          // Lưu danh sách sản phẩm đã yêu thích mới vào AsyncStorage
+          await AsyncStorage.setItem(
+            'favoritedItems',
+            JSON.stringify(docSnap.data().itemFavorited),
+          );
+        } else {
+          console.log('Document does not exist');
+          alert('Document does not exist');
+          // setUserData(null);
+        }
       } else {
-        console.log('Document does not exist');
-        alert('Document does not exist');
-        // setUserData(null);
+        console.log('No user profiles found');
       }
     } catch (error) {
       console.log('Error getting document:', error);
@@ -122,6 +140,7 @@ export default function HomeScreen({navigation}) {
             onPress: async () => {
               // Xóa token xác thực khỏi AsyncStorage
               await AsyncStorage.removeItem('authToken');
+              await AsyncStorage.removeItem('usersProfile');
 
               // Chuyển người dùng đến màn hình đăng nhập
 

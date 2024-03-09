@@ -63,6 +63,7 @@ export default function ProfileScreen({navigation}) {
             onPress: async () => {
               // Xóa token xác thực khỏi AsyncStorage
               await AsyncStorage.removeItem('authToken');
+              await AsyncStorage.removeItem('usersProfile');
 
               // Chuyển người dùng đến màn hình đăng nhập
 
