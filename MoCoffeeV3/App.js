@@ -87,6 +87,7 @@ export default function App() {
           <BottomTab.Screen
             name={favouriteName}
             component={FavouriteScreen}
+            initialParams={{refresh: Math.random()}}
             options={{headerShown: false}}
           />
           <BottomTab.Screen

@@ -31,7 +31,19 @@ const MenuItem = ({item}) => {
 
   console.log('additems: ', additems);
   return (
-    <View>
+    <View
+      style={{
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        margin: 10,
+        paddingHorizontal: 6,
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
+        shadowOffset: {width: 0, height: 0},
+        elevation: 5,
+      }}>
       <TouchableOpacity
         // onPress={() => alert(123)}
         // sang page `detail sp`

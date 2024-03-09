@@ -170,12 +170,14 @@ const Products = ({naviagation, item, menu, listItems}) => {
             {translateCategory(item?.category)}
           </Text>
           <Text
+            numberOfLines={1}
             style={{
               paddingHorizontal: 10,
               marginTop: 3,
               fontSize: 15,
               fontWeight: '500',
               color: 'gray',
+              maxWidth: 300,
             }}>
             {item?.description}
           </Text>

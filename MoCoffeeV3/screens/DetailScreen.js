@@ -349,12 +349,19 @@ export default function DetailScreen({}) {
             }}>
             <View
               style={{
+                marginBottom: 10,
                 // borderWidth: 1,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
-              <Text style={{fontSize: 22, fontWeight: '500', marginBottom: 10}}>
+              <Text
+                numberOfLines={2}
+                style={{
+                  fontSize: 22,
+                  fontWeight: '500',
+                  maxWidth: 270,
+                }}>
                 {item.name}
               </Text>
               {/* START: HEART ICON */}
