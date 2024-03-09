@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -28,23 +28,193 @@ import {Pressable} from 'react-native';
 import {useSelector} from 'react-redux';
 import {SliderBox} from 'react-native-image-slider-box';
 
+// import for user
+import {db, auth} from '../firebase';
+import {doc, getDoc} from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // START: DynamicHeader
 
 // END: DynamicHeader
 
 export default function DetailScreen({}) {
-  // redux
-  const productInfo = useSelector(state => state.productInfo);
-  console.log('DATA FROM REDUX: ', productInfo); // Hiển thị thông tin sản phẩm từ Redux trong console
+  // heart product
+  const [isFavorite, setIsFavorite] = useState(false);
+  const userId = auth.currentUser.uid;
 
+  //
   const route = useRoute();
-  const navi = useNavigation();
-  // console.log('route: ', route);
-  console.log('Detail-navi: ', navi);
-  console.log('Detail-navi.getParent(): ', navi.getState());
   const {item} = route?.params;
 
-  console.log('DetailScreen_item: ', item);
+  // auth - user
+  console.log('user-auth: ', userId);
+
+  useEffect(() => {
+    const checkFavorite = async () => {
+      try {
+        getFavoritedItems2(item.id);
+      } catch (error) {
+        console.log('Error checking favorite:', error);
+      }
+    };
+    checkFavorite();
+  }, [item.id, userId, isFavorite]);
+
+  // useEffect(() => {
+  //   const checkFavorite = async () => {
+  //     try {
+  //       const docSnap = await getDoc(doc(db, 'Users', userId));
+  //       if (docSnap.exists()) {
+  //         const userData = docSnap.data();
+  //         if (userData.itemFavorited.includes(item.id)) {
+  //           setIsFavorite(true);
+  //           console.log('maybe true: ', isFavorite);
+  //         } else {
+  //           setIsFavorite(false);
+  //           console.log('cmn dell on roi: ', isFavorite);
+  //         }
+  //       }
+  //       console.log('user id:', userId);
+  //       console.log('product id:', item.id);
+  //     } catch (error) {
+  //       console.log('Error checking favorite:', error);
+  //     }
+  //   };
+  //   checkFavorite();
+  // }, [item.id, userId]);
+
+  // ############# START: AsyncStorage #############
+  const getAllKeys = async () => {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      console.log('All keys:', keys);
+      // Điều gì đó với keys
+    } catch (error) {
+      console.error('Error getting all keys:', error);
+    }
+  };
+
+  const getFavoritedItems = async () => {
+    try {
+      const favoritedItems = await AsyncStorage.getItem('favoritedItems');
+      if (favoritedItems !== null) {
+        console.log('Favorited items:', favoritedItems);
+        // Xử lý dữ liệu favoritedItems ở đây
+      } else {
+        console.log('No favorited items found');
+      }
+    } catch (error) {
+      console.error('Error getting favorited items:', error);
+    }
+  };
+
+  const getFavoritedItems2 = async itemId => {
+    try {
+      const favoritedItems = await AsyncStorage.getItem('favoritedItems');
+      if (favoritedItems !== null) {
+        // Chuyển đổi dữ liệu favoritedItems từ JSON string sang mảng JavaScript
+        const parsedFavoritedItems = JSON.parse(favoritedItems);
+        // Kiểm tra xem id của sản phẩm có trong mảng favoritedItems hay không
+        const isFavorited = parsedFavoritedItems.includes(itemId);
+        console.log(
+          'Giá trị bên trong (getFavoritedItems2) - Is favorited:',
+          isFavorited,
+          parsedFavoritedItems,
+        );
+        console.log('\n\n===================\n\n');
+        console.log('Giá trị hiện tại của <3: ', isFavorite);
+        setIsFavorite(isFavorited);
+        // Trả về giá trị isFavorited
+        return isFavorited;
+      } else {
+        console.log('No favorited items found');
+        return false; // Trả về false nếu không có sản phẩm nào được yêu thích
+      }
+    } catch (error) {
+      console.error('Error getting favorited items:', error);
+      return false; // Trả về false nếu có lỗi xảy ra
+    }
+  };
+
+  const addItemToFavoritedItems = async itemId => {
+    try {
+      // Lấy danh sách favoritedItems từ AsyncStorage
+      let favoritedItems = await AsyncStorage.getItem('favoritedItems');
+
+      // Nếu danh sách không tồn tại, tạo một mảng mới
+      if (favoritedItems === null) {
+        favoritedItems = [];
+      } else {
+        // Chuyển đổi danh sách từ JSON string thành mảng JavaScript
+        favoritedItems = JSON.parse(favoritedItems);
+      }
+
+      // Kiểm tra xem id đã tồn tại trong danh sách favoritedItems hay không
+      if (!favoritedItems.includes(itemId)) {
+        // Nếu không tồn tại, thêm id vào danh sách
+        favoritedItems.push(itemId);
+
+        // Lưu mảng mới vào AsyncStorage
+        await AsyncStorage.setItem(
+          'favoritedItems',
+          JSON.stringify(favoritedItems),
+        );
+
+        console.log('Item added to favoritedItems:', itemId);
+        setIsFavorite(true);
+      } else {
+        // Nếu đã tồn tại, loại bỏ id khỏi danh sách
+        favoritedItems = favoritedItems.filter(id => id !== itemId);
+
+        // Lưu mảng mới vào AsyncStorage
+        await AsyncStorage.setItem(
+          'favoritedItems',
+          JSON.stringify(favoritedItems),
+        );
+
+        console.log('Item removed from favoritedItems:', itemId);
+        setIsFavorite(false);
+      }
+    } catch (error) {
+      console.error('Error updating favoritedItems:', error);
+    }
+  };
+  // ############# END: AsyncStorage #############
+
+  // // Read from firebase
+  // const read = async () => {
+  //   try {
+  //     const docSnap = await getDoc(doc(db, 'Users', userId));
+  //     if (docSnap.exists()) {
+  //       console.log('Document data:', docSnap.data());
+  //       // setUserData(docSnap.data());
+  //       console.log('data: ', docSnap.data());
+  //     } else {
+  //       console.log('Document does not exist');
+  //       alert('Document does not exist');
+  //       // setUserData(null);
+  //     }
+  //   } catch (error) {
+  //     console.log('Error getting document:', error);
+  //     alert('Error getting document:', error);
+  //     // setUserData(null);
+  //   }
+  // };
+  // // read();
+
+  // redux
+  const productInfo = useSelector(state => state.productInfo);
+  // console.log('DATA FROM REDUX: ', productInfo); // Hiển thị thông tin sản phẩm từ Redux trong console
+
+  // const route = useRoute();
+  const navi = useNavigation();
+  // console.log('route: ', route);
+  // console.log('Detail-navi: ', navi);
+  // console.log('Detail-navi.getParent(): ', navi.getState());
+  // const {item} = route?.params;
+
+  // console.log('DetailScreen_item: ', item);
+  // console.log('DetailScreen_item-id: ', item.id);
   // console.log('typeof item: ', typeof item); //object
 
   // console.log('navigation: ', navigation);
@@ -85,11 +255,9 @@ export default function DetailScreen({}) {
   //   </View>
   // );
 
-  // heart product
-  const [isFavorite, setIsFavorite] = useState(false);
-
   const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+    // setIsFavorite(!isFavorite);
+    addItemToFavoritedItems(item.id);
   };
 
   //
@@ -307,6 +475,7 @@ export default function DetailScreen({}) {
                 Chia sẻ trải nghiệm đặt hàng của bạn với mọi người nhé!
               </Text>
               <TouchableOpacity
+                onPress={getAllKeys}
                 style={{
                   paddingVertical: 8,
                   paddingHorizontal: 46,
@@ -328,6 +497,31 @@ export default function DetailScreen({}) {
                     color: '#6E5532',
                   }}>
                   Đặt món ngay
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={getFavoritedItems2}
+                style={{
+                  paddingVertical: 8,
+                  paddingHorizontal: 46,
+                  // backgroundColor: activeSize === size ? 'transparent' : '#ccc',
+                  backgroundColor: 'transparent',
+                  borderRadius: 12,
+                  marginRight: 10,
+                  marginBottom: 10,
+                  // borderColor: activeSize === size ? '#6E5532' : 'transparent',
+                  borderColor: '#6E5532',
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  width: 200,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: '600',
+                    color: '#6E5532',
+                  }}>
+                  Đặt món ngay2
                 </Text>
               </TouchableOpacity>
             </View>

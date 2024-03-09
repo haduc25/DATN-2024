@@ -23,15 +23,14 @@ import CustomStatusBar from '../components/CustomStatusBar';
 
 // Database
 // import {supabase} from '../supabase';
-import {collection, getDocs} from 'firebase/firestore';
-import {db} from '../firebase';
+import {collection, getDocs, getDoc, doc} from 'firebase/firestore';
 
 // navigation
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // fetch Image
-import {auth, storage} from '../firebase';
+import {db, auth, storage} from '../firebase';
 
 // for custom status bar
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -60,7 +59,7 @@ export default function HomeScreen({navigation}) {
         querySnapshot.forEach(doc => {
           fetchedData.push({id: doc.id, ...doc.data()});
         });
-        console.log('Data1:', fetchedData);
+        // console.log('Data1:', fetchedData);
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -73,7 +72,38 @@ export default function HomeScreen({navigation}) {
     if (auth.currentUser) setUserPhotoURL(auth.currentUser.photoURL);
   }, []);
 
-  console.log('data1', data);
+  // console.log('data1', data);
+
+  // fetch user data
+
+  // Read from firebase
+  const userId = auth.currentUser.uid;
+  const read = async () => {
+    try {
+      const docSnap = await getDoc(doc(db, 'Users', userId));
+      if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data());
+        // setUserData(docSnap.data());
+        console.log('data: ', docSnap.data());
+
+        console.log('itemFavorited: ', docSnap.data().itemFavorited);
+        // Lưu danh sách sản phẩm đã yêu thích mới vào AsyncStorage
+        await AsyncStorage.setItem(
+          'favoritedItems',
+          JSON.stringify(docSnap.data().itemFavorited),
+        );
+      } else {
+        console.log('Document does not exist');
+        alert('Document does not exist');
+        // setUserData(null);
+      }
+    } catch (error) {
+      console.log('Error getting document:', error);
+      alert('Error getting document:', error);
+      // setUserData(null);
+    }
+  };
+  read();
 
   // Đăng xuất
   const handleDangXuat = async () => {
