@@ -496,7 +496,7 @@ export default function DetailScreen({}) {
 
             {/* Comment */}
             {/* <Text style={{fontSize: 16, marginBottom: 8}}>Bình luận</Text> */}
-            <Text style={{fontSize: 16, marginBottom: 8}}>Nhận xét</Text>
+            <Text style={{fontSize: 16, marginBottom: 20}}>Nhận xét</Text>
             <View style={{alignItems: 'center', paddingTop: 20}}>
               <Image
                 style={{height: 100, width: 100}}
@@ -540,7 +540,7 @@ export default function DetailScreen({}) {
                   Đặt món ngay
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={getFavoritedItems2}
                 style={{
                   paddingVertical: 8,
@@ -564,7 +564,7 @@ export default function DetailScreen({}) {
                   }}>
                   Đặt món ngay2
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </Animated.ScrollView>

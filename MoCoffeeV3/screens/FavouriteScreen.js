@@ -119,28 +119,29 @@ export default function FavouriteScreen({navigation}) {
     //   />
     // </TouchableOpacity>
     <TouchableOpacity
+      onPress={() => alert('navigate to detail')}
       style={{
         // borderWidth: 1,
-        margin: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 15,
+        marginVertical: 4,
 
         backgroundColor: '#fff',
         borderRadius: 10,
         margin: 10,
-        marginBottom: 10,
+        marginBottom: 8,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 10,
         shadowOffset: {width: 0, height: 0},
         elevation: 5,
+        maxHeight: 200,
       }}>
       <View style={{padding: 14}}>
         {/* <Text>User ID: {item.userId}</Text> */}
         <Text
-          numberOfLines={2}
-          style={{fontSize: 16, fontWeight: '600', maxWidth: 180}}>
+          numberOfLines={1}
+          style={{fontSize: 16, fontWeight: '600', maxWidth: 160}}>
           {item.data.name}
         </Text>
         <Text numberOfLines={3} style={{maxWidth: 165}}>
@@ -177,13 +178,34 @@ export default function FavouriteScreen({navigation}) {
           ))}
         </Text>
 
-        <View style={{borderWidth: 0, alignItems: 'center'}}>
-          <Ionicons
-            name={true ? 'heart' : 'heart-outline'}
-            size={26}
-            // color={true ? 'red' : '#b7b7b7'}
-            color={true ? '#ff424f' : '#b7b7b7'}
-          />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: 16,
+          }}>
+          {/* ADD TO CART */}
+          <TouchableOpacity
+            onPress={() => alert(113)}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 34,
+              height: 34,
+              backgroundColor: 'red',
+              borderRadius: 20,
+            }}>
+            <Ionicons
+              name={true ? 'cart-outline' : 'heart-outline'}
+              size={24}
+              color={true ? '#fff' : '#b7b7b7'}
+              // color={true ? '#ff424f' : '#b7b7b7'}
+            />
+          </TouchableOpacity>
+          <View>
+            <Text>Đã bán {item.data.sold_count}</Text>
+          </View>
         </View>
       </View>
       <Image
