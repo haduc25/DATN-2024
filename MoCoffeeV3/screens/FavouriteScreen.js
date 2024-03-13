@@ -4,8 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {doc, getDoc} from 'firebase/firestore';
 import {db} from '../firebase';
 
-import {useRoute} from '@react-navigation/native';
-
+import {useRoute, useNavigation} from '@react-navigation/native';
 import {Ionicons, FontAwesome} from '@expo/vector-icons';
 
 export default function FavouriteScreen({navigation}) {
@@ -13,6 +12,7 @@ export default function FavouriteScreen({navigation}) {
   const [userDataList, setUserDataList] = useState([]);
 
   const route = useRoute();
+  const navi = useNavigation();
   const {refresh} = route.params;
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function FavouriteScreen({navigation}) {
     //   />
     // </TouchableOpacity>
     <TouchableOpacity
-      onPress={() => alert('navigate to detail')}
+      onPress={() => navi.navigate('DetailScreen', {item: item.data})}
       style={{
         // borderWidth: 1,
         flexDirection: 'row',
@@ -237,7 +237,6 @@ export default function FavouriteScreen({navigation}) {
           borderBottomWidth: 1,
         }}>
         <Text
-          onPress={() => navigation.navigate('Home')}
           style={{
             fontSize: 26,
             fontWeight: '500',
