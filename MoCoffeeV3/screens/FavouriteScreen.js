@@ -119,7 +119,12 @@ export default function FavouriteScreen({navigation}) {
     //   />
     // </TouchableOpacity>
     <TouchableOpacity
-      onPress={() => navi.navigate('DetailScreen', {item: item.data})}
+      onPress={() =>
+        navi.navigate('DetailScreen', {
+          item: item.data,
+          currentScreen: 'Yêu thích',
+        })
+      }
       style={{
         // borderWidth: 1,
         flexDirection: 'row',
@@ -187,7 +192,7 @@ export default function FavouriteScreen({navigation}) {
           }}>
           {/* ADD TO CART */}
           <TouchableOpacity
-            onPress={() => alert(113)}
+            onPress={() => alert('Đã thêm sản phẩm vào giỏ hàng!')}
             style={{
               alignItems: 'center',
               justifyContent: 'center',

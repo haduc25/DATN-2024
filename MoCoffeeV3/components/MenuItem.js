@@ -47,7 +47,12 @@ const MenuItem = ({item}) => {
       <TouchableOpacity
         // onPress={() => alert(123)}
         // sang page `detail sp`
-        onPress={() => navi.navigate('DetailScreen', {item})}
+        onPress={() =>
+          navi.navigate('DetailScreen', {
+            item,
+            currentScreen: 'ProductTypeScreen',
+          })
+        }
         style={{
           margin: 10,
           flexDirection: 'row',

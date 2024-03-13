@@ -44,7 +44,9 @@ export default function DetailScreen({}) {
 
   //
   const route = useRoute();
-  const {item} = route?.params;
+  const {item, currentScreen} = route?.params;
+  console.log('DETAIL_item: ', item);
+  console.log('currentScreen: ', currentScreen);
 
   // auth - user
   console.log('user-auth: ', userId);
@@ -52,13 +54,15 @@ export default function DetailScreen({}) {
   useEffect(() => {
     const checkFavorite = async () => {
       try {
-        getFavoritedItems2(item.id);
+        let itemId = item.id || item._id;
+        console.log('item.id: ', itemId);
+        getFavoritedItems2(itemId);
       } catch (error) {
         console.log('Error checking favorite:', error);
       }
     };
     checkFavorite();
-  }, [item.id, userId, isFavorite]);
+  }, [item.id, userId, isFavorite, currentScreen]);
 
   // useEffect(() => {
   //   const checkFavorite = async () => {
@@ -290,8 +294,9 @@ export default function DetailScreen({}) {
   // );
 
   const toggleFavorite = () => {
+    let itemId = item.id || item._id;
     // setIsFavorite(!isFavorite);
-    addItemToFavoritedItems(item.id);
+    addItemToFavoritedItems(itemId);
   };
 
   //
@@ -586,7 +591,7 @@ export default function DetailScreen({}) {
         heightOfTop={28}
         // onPressBack={data => console.log(data)}
         dataNavigation={{
-          screen: 'ProductTypeScreen',
+          screen: currentScreen,
           name: productInfo.name,
           category: productInfo.category,
         }}
