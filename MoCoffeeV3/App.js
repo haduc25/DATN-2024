@@ -16,6 +16,7 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import DynamicHeaderScrollView from './screens/DynamicHeaderScrollView';
 import ImageAnimation from './screens/ImageAnimation';
+import EditProfileScreen from './screens/EditProfileScreen';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -34,6 +35,7 @@ const productTypeName = 'ProductTypeScreen';
 const detailName = 'DetailScreen';
 const loginName = 'LoginScreen';
 const registerName = 'RegisterScreen';
+const editProfileName = 'Chỉnh sửa hồ sơ';
 
 export default function App() {
   // Bỏ qua cảnh báo liên quan đến ViewPropTypes
@@ -156,6 +158,17 @@ export default function App() {
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          {/* EDIT Profile */}
+          <BottomTab.Screen
+            name={editProfileName}
+            component={EditProfileScreen}
+            // initialParams={{name: 'haduc25'}}
+            options={{
+              headerShown: false,
+              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
               tabBarButton: () => null,
             }}
           />

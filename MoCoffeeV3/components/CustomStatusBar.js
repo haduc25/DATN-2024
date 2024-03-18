@@ -16,6 +16,10 @@ const CustomStatusBar = ({
   canGoBack = false,
   heightOfTop = 0,
   dataNavigation = null, // Thêm prop data để nhận dữ liệu từ bên ngoài
+  customStyleIconBack,
+  titleOfScreen = null,
+  arrowIconColor = '#000',
+  arrowIconBackgroundColor = 'rgba(110, 85, 50, .4)',
 }) => {
   const insets = useSafeAreaInsets();
 
@@ -77,28 +81,53 @@ const CustomStatusBar = ({
         alignItems: 'center', // Canh giữa các thành phần theo chiều dọc
         justifyContent: 'space-between', // Canh nút quay lại về phía trái và StatusBar về phía phải
         paddingHorizontal: 10, // Khoảng cách giữa các phần tử
-        // borderWidth: 1,
+        borderWidth: 0,
       }}>
       {canGoBack && dataNavigation && (
         <Text
-          style={{
-            overflow: 'hidden',
-            color: 'white',
-            marginTop: 50,
-            marginLeft: -5,
-            // borderWidth: 0.5,
-            // backgroundColor: '#6E5532',
-            backgroundColor: 'rgba(110, 85, 50, .4)',
-            borderRadius: 14,
-          }}>
+          style={[
+            {
+              overflow: 'hidden',
+              color: 'white',
+              marginTop: 50,
+              marginLeft: -5,
+              // borderWidth: 0.5,
+              // backgroundColor: '#6E5532',
+              backgroundColor: arrowIconBackgroundColor,
+              borderRadius: 14,
+            },
+            customStyleIconBack,
+          ]}>
           <Ionicons
             onPress={handlePressBack} // Sử dụng hàm handlePressBack thay vì alert
             style={{padding: 5}}
             name='arrow-back'
-            size={24}
-            color='black'
+            size={26}
+            color={arrowIconColor}
           />
         </Text>
+      )}
+      {titleOfScreen && (
+        <View
+          style={{
+            flex: 1,
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingRight: 31,
+            // borderWidth: 1,
+          }}>
+          <Text
+            numberOfLines={1}
+            style={{
+              maxWidth: 250,
+              fontSize: 18,
+              fontWeight: '600',
+              paddingTop: 24,
+            }}>
+            {titleOfScreen}
+          </Text>
+        </View>
       )}
       <StatusBar
         animated={true}

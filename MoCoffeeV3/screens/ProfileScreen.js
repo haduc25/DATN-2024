@@ -17,6 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Icons
 import {Ionicons, Fontisto, AntDesign} from '@expo/vector-icons';
+import CustomStatusBar from '../components/CustomStatusBar';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 export default function ProfileScreen({navigation}) {
   const [imageURI, setImageURI] = useState(null);
@@ -126,187 +128,213 @@ export default function ProfileScreen({navigation}) {
   console.log('image URI: ', imageURI);
 
   return (
-    <ScrollView
-      style={{
-        flex: 1,
-        borderWidth: 1,
-        paddingTop: 40,
-      }}>
-      <View style={{borderWidth: 1, flexDirection: 'row'}}>
-        {phoneNumber && <Text>Số điện thoại: {phoneNumber}</Text>}
-        {userPhotoURL && (
-          <Image
-            source={{uri: userPhotoURL}}
-            style={{width: 80, height: 80, borderRadius: 50}}
-          />
-        )}
-        <View style={{padding: 10}}>
-          {displayName && (
-            <Text style={{fontWeight: '700'}}>Hello, {displayName}</Text>
-          )}
-          {userEmail && <Text style={{paddingTop: 4}}>{userEmail}</Text>}
-        </View>
-        {/* {emailVerified && <Text>Email đã xác thực</Text>}
-        {userId && <Text>UserID: {userId}</Text>}
-        {imageURI && (
-          <Image source={{uri: imageURI}} style={{width: 200, height: 200}} />
-        )} */}
-      </View>
-      <View
+    <SafeAreaProvider>
+      <CustomStatusBar backgroundColor='#fff' />
+      <ScrollView
         style={{
-          borderWidth: 1,
-          borderColor: 'blue',
-          height: 500,
-          paddingTop: 20,
+          flex: 1,
+          // marginTop: 40,
+          paddingTop: 40,
+          backgroundColor: '#fff',
         }}>
-        {/* <View
+        <TouchableOpacity
+          // onPress={() => alert('navigate to Profile Edit')}
+          onPress={() => navi.navigate('Chỉnh sửa hồ sơ')}
           style={{
-            borderWidth: 1,
-            borderColor: 'red',
-            padding: 12,
+            // marginTop: 16,
+            paddingVertical: 20,
             flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between', // Đảm bảo các phần tử con được căn giữa và giãn cách đều
+            backgroundColor: '#fff',
+            paddingHorizontal: 14,
+            shadowColor: '#000',
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+            shadowOffset: {width: 0, height: 4},
+            elevation: 5,
           }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <AntDesign
-              name={'smileo'}
-              size={18}
-              color={'#000'}
-              // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+          {phoneNumber && <Text>Số điện thoại: {phoneNumber}</Text>}
+          {userPhotoURL && (
+            <Image
+              source={{uri: userPhotoURL}}
+              style={{width: 80, height: 80, borderRadius: 50}}
             />
-            <Text style={{paddingLeft: 10}}>Cộng đồng MoCoffee&Tea</Text>
+          )}
+          <View style={{padding: 10}}>
+            {displayName && (
+              <Text style={{fontWeight: '700'}}>Hello, {displayName}</Text>
+            )}
+            {userEmail && <Text style={{paddingTop: 4}}>{userEmail}</Text>}
           </View>
-          <AntDesign name={'right'} size={18} color={'#000'} />
-        </View> */}
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderColor: 'red',
-            padding: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-            <AntDesign
-              name={'smileo'}
-              size={18}
-              color={'#000'}
-              // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
-            />
-            <Text style={{paddingLeft: 10}}>Cộng đồng MoCoffee&Tea</Text>
-          </View>
-          <AntDesign name={'right'} size={18} color={'#000'} />
-        </View>
+          {/* {emailVerified && <Text>Email đã xác thực</Text>}
+          {userId && <Text>UserID: {userId}</Text>}
+          {imageURI && (
+            <Image source={{uri: imageURI}} style={{width: 200, height: 200}} />
+          )} */}
+        </TouchableOpacity>
 
         <View
           style={{
-            borderBottomWidth: 1,
-            borderColor: 'red',
-            padding: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-            <AntDesign
-              name={'creditcard'}
-              size={18}
-              color={'#000'}
-              // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
-            />
-            <Text style={{paddingLeft: 10}}>Quản lý thẻ</Text>
-          </View>
-          <AntDesign name={'right'} size={18} color={'#000'} />
-        </View>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderColor: 'red',
-            padding: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-            <AntDesign
-              name={'questioncircleo'}
-              size={18}
-              color={'#000'}
-              // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
-            />
-            <Text style={{paddingLeft: 10}}>Câu hỏi thường gặp</Text>
-          </View>
-          <AntDesign name={'right'} size={18} color={'#000'} />
-        </View>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderColor: 'red',
-            padding: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-            <AntDesign
-              name={'phone'}
-              // name={'customerservice'}
-              size={18}
-              color={'#000'}
-              // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
-            />
-            <Text style={{paddingLeft: 10}}>Liên hệ với MoCoffee&Tea</Text>
-          </View>
-          <AntDesign name={'right'} size={18} color={'#000'} />
-        </View>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderColor: 'red',
-            padding: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-            <AntDesign
-              name={'infocirlceo'}
-              size={18}
-              color={'#000'}
-              // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
-            />
-            <Text style={{paddingLeft: 10}}>Về MoCoffee&Tea</Text>
-          </View>
-          <AntDesign name={'right'} size={18} color={'#000'} />
-        </View>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderColor: 'red',
-            padding: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <AntDesign
-            name={'logout'}
-            size={18}
-            color={'#000'}
-            // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
-          />
-          <Text style={{paddingLeft: 10}}>Đăng xuất</Text>
-        </View>
+            // borderWidth: 1,
+            borderColor: 'blue',
+            minHeight: 332,
+            // paddingTop: 20,
+            marginTop: 10,
 
-        <View style={{alignItems: 'center'}}>
-          <Text style={{paddingLeft: 10}}>
+            backgroundColor: '#fff',
+            paddingHorizontal: 14,
+            shadowColor: '#000',
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+            shadowOffset: {width: 0, height: 4},
+            elevation: 5,
+          }}>
+          {/* <View
+            style={{
+              borderWidth: 1,
+              borderColor: '#ccc',
+              padding: 12,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between', // Đảm bảo các phần tử con được căn giữa và giãn cách đều
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <AntDesign
+                name={'smileo'}
+                size={18}
+                color={'#000'}
+                // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+              />
+              <Text style={{paddingLeft: 10}}>Cộng đồng MoCoffee&Tea</Text>
+            </View>
+            <AntDesign name={'right'} size={18} color={'#000'} />
+          </View> */}
+          <TouchableOpacity
+            onPress={() => alert('navigate to Cộng đồng MoCoffee&Tea')}
+            style={{
+              borderBottomWidth: 1,
+              borderColor: '#ccc',
+              paddingTop: 20,
+              padding: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+              <AntDesign
+                name={'smileo'}
+                size={18}
+                color={'#000'}
+                // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+              />
+              <Text style={{paddingLeft: 10}}>Cộng đồng MoCoffee&Tea</Text>
+            </View>
+            <AntDesign name={'right'} size={18} color={'#000'} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => alert('navigate to Quản lý thẻ')}
+            style={{
+              borderBottomWidth: 1,
+              borderColor: '#ccc',
+              padding: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+              <AntDesign
+                name={'creditcard'}
+                size={18}
+                color={'#000'}
+                // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+              />
+              <Text style={{paddingLeft: 10}}>Quản lý thẻ</Text>
+            </View>
+            <AntDesign name={'right'} size={18} color={'#000'} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => alert('navigate to Q&A')}
+            style={{
+              borderBottomWidth: 1,
+              borderColor: '#ccc',
+              padding: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+              <AntDesign
+                name={'questioncircleo'}
+                size={18}
+                color={'#000'}
+                // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+              />
+              <Text style={{paddingLeft: 10}}>Câu hỏi thường gặp</Text>
+            </View>
+            <AntDesign name={'right'} size={18} color={'#000'} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => alert('navigate to Contact to MoCoffee&Tea')}
+            style={{
+              borderBottomWidth: 1,
+              borderColor: '#ccc',
+              padding: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+              <AntDesign
+                name={'phone'}
+                // name={'customerservice'}
+                size={18}
+                color={'#000'}
+                // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+              />
+              <Text style={{paddingLeft: 10}}>Liên hệ với MoCoffee&Tea</Text>
+            </View>
+            <AntDesign name={'right'} size={18} color={'#000'} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => alert('navigate to INFO MoCoffee&Tea')}
+            style={{
+              borderBottomWidth: 1,
+              borderColor: '#ccc',
+              padding: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+              <AntDesign
+                name={'infocirlceo'}
+                size={18}
+                color={'#000'}
+                // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+              />
+              <Text style={{paddingLeft: 10}}>Về MoCoffee&Tea</Text>
+            </View>
+            <AntDesign name={'right'} size={18} color={'#000'} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleDangXuat}
+            style={{
+              borderBottomWidth: 1,
+              borderColor: '#ccc',
+              padding: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <AntDesign
+              name={'logout'}
+              size={18}
+              color={'red'}
+              // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+            />
+            <Text style={{paddingLeft: 10, color: 'red'}}>Đăng xuất</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{alignItems: 'center', paddingTop: 40}}>
+          <Text style={{paddingLeft: 10, color: '#ccc'}}>
             Phiên bản hiện tại: v3.1.5 (170324)
           </Text>
         </View>
-      </View>
-
-      {/* <TouchableOpacity
-        style={{paddingVertical: 10, marginTop: 80}}
-        onPress={handleDangXuat}>
-        <Text style={{fontSize: 18, color: 'red', fontWeight: '700'}}>
-          Đăng xuất
-        </Text>
-      </TouchableOpacity> */}
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaProvider>
   );
 }
