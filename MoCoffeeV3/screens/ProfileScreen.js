@@ -31,15 +31,18 @@ export default function ProfileScreen({navigation}) {
   const [userPhotoURL, setUserPhotoURL] = useState(null);
   const [userId, setUserId] = useState(null);
 
+  const [userInfo, setUserInfo] = useState(null);
+
   const navi = useNavigation();
 
   useEffect(() => {
     // const auth = getAuth();
     const user = auth.currentUser;
 
-    console.log('PROFILE - user: ', user);
+    console.log('PROFILE - user1: ', user);
 
     if (user) {
+      setUserInfo(user);
       // Lấy các thuộc tính của người dùng nếu có
       const displayName = user.displayName;
       const email = user.email;
@@ -138,8 +141,12 @@ export default function ProfileScreen({navigation}) {
           backgroundColor: '#fff',
         }}>
         <TouchableOpacity
-          // onPress={() => alert('navigate to Profile Edit')}
-          onPress={() => navi.navigate('Chỉnh sửa hồ sơ')}
+          onPress={() => {
+            if (userInfo) {
+              console.log('userInfo: ', userInfo);
+              navi.navigate('Chỉnh sửa hồ sơ', {userInfo: userInfo});
+            }
+          }}
           style={{
             // marginTop: 16,
             paddingVertical: 20,

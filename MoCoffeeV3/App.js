@@ -168,7 +168,7 @@ export default function App() {
             // initialParams={{name: 'haduc25'}}
             options={{
               headerShown: false,
-              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
               tabBarButton: () => null,
             }}
           />
