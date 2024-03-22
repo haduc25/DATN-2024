@@ -144,7 +144,14 @@ export default function ProfileScreen({navigation}) {
           onPress={() => {
             if (userInfo) {
               console.log('userInfo: ', userInfo);
-              navi.navigate('Chỉnh sửa hồ sơ', {userInfo: userInfo});
+              const userInfo2 = {
+                uid: userInfo.uid,
+                phoneNumber: userInfo.phoneNumber,
+                photoURL: userInfo.photoURL,
+                displayName: userInfo.displayName,
+                email: userInfo.email,
+              };
+              navi.navigate('Chỉnh sửa hồ sơ', {userInfo: userInfo2});
             }
           }}
           style={{
@@ -338,7 +345,7 @@ export default function ProfileScreen({navigation}) {
         </View>
         <View style={{alignItems: 'center', paddingTop: 40}}>
           <Text style={{paddingLeft: 10, color: '#ccc'}}>
-            Phiên bản hiện tại: v3.1.5 (170324)
+            Phiên bản hiện tại: v3.10.5 (170324)
           </Text>
         </View>
       </ScrollView>

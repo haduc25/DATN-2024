@@ -15,16 +15,69 @@ import {LinearGradient} from 'expo-linear-gradient';
 
 // Icons
 import {Ionicons, AntDesign} from '@expo/vector-icons';
+import Button from '../components/Button';
 
 export default function EditProfileScreen({navigation}) {
   const route = useRoute();
   const {userInfo} = route.params;
 
+  // version 2
+  const [userInfo2, setUserInfo2] = useState({
+    displayName: 'Minh Duc',
+    email: 'duc@mail.com',
+    // Thêm các trường thông tin khác cần thiết
+  });
+
+  // const [initDisplayName, setInitDisplayName] = useState(userInfo2.displayName);
+  const [initialValues, setInitialValues] = useState({...userInfo2});
+
+  const handleInputChange2 = (key, value) => {
+    // setUserInfo2(prevState => {
+    //   const newState = {...prevState, [key]: value};
+    //   const hasValue = Object.values(newState).some(item => !!item);
+    //   setShowButton(hasValue);
+    //   console.log('value: ', value);
+    //   console.log('hasValue: ', hasValue);
+    //   return newState;
+    // });
+
+    // setUserInfo2(prevState => {
+    //   const newState = {...prevState, [key]: value};
+    //   const hasValueChanged = newState[key] !== prevState[key]; // So sánh giá trị mới với giá trị ban đầu
+    //   setShowButton(hasValueChanged);
+    //   console.log('value: ', value);
+    //   console.log('hasValueChanged: ', hasValueChanged);
+    //   console.log('newState: ', newState);
+    //   console.log('prevState: ', prevState);
+    //   console.log('newState[key]: ', newState[key]);
+    //   console.log('prevState[key]: ', prevState[key]);
+    //   console.log('hasValueChanged: ', hasValueChanged);
+    //   return newState;
+    // });
+
+    // my logic
+    setUserInfo2(prevState => {
+      const newState = {...prevState, [key]: value};
+      const hasValueChanged = newState[key] !== initialValues[key]; // So sánh giá trị mới với giá trị ban đầu
+      setShowButton(hasValueChanged);
+      return newState;
+    });
+  };
+
   //info
-  const [userDisplayName, setUserDisplayName] = useState('Minh Đức');
+  const [userDisplayName, setUserDisplayName] = useState('');
   const [userEmail, setUserEmail] = useState(null);
 
-  console.log('EditProfileScreen_userInfo: ', userInfo);
+  // console.log('EditProfileScreen_userInfo: ', userInfo);
+
+  // button `Lưu`
+  const [showButton, setShowButton] = useState(false);
+
+  const handleInputChange = text => {
+    setUserDisplayName(text);
+    setShowButton(!!text); // Nếu text không rỗng, hiển thị nút, ngược lại ẩn nút
+    console.log('showButton: ', showButton);
+  };
 
   return (
     <SafeAreaProvider>
@@ -139,8 +192,12 @@ export default function EditProfileScreen({navigation}) {
             }}>
             <AntDesign name={'user'} size={18} color={'#000'} />
             <TextInput
-              value={userDisplayName}
-              onChangeText={text => setUserDisplayName(text)}
+              // value={userDisplayName}
+              // onChangeText={text => setUserDisplayName(text)}
+              // onChangeText={text => handleInputChange(text)}
+
+              value={userInfo2.displayName}
+              onChangeText={text => handleInputChange2('displayName', text)}
               style={{
                 marginLeft: 20,
                 color: 'gray',
@@ -163,8 +220,11 @@ export default function EditProfileScreen({navigation}) {
             <AntDesign name={'mail'} size={18} color={'#000'} />
             <TextInput
               //   value={userEmail ? userEmail : 'Chưa cập nhật'}
-              value={userInfo.email}
-              onChangeText={text => setUserEmail(text)}
+              // value={userInfo.email}
+              // onChangeText={text => setUserEmail(text)}
+
+              value={userInfo2.email}
+              onChangeText={text => handleInputChange2('email', text)}
               style={{
                 marginLeft: 20,
                 color: 'gray',
@@ -192,7 +252,7 @@ export default function EditProfileScreen({navigation}) {
                   ? 'Email đã xác thực'
                   : 'Email chưa xác thực'
               }
-              onChangeText={text => setUserDisplayName(text)}
+              onChangeText={text => setUserDisplayName(text.trim())}
               style={{
                 marginLeft: 20,
                 color: 'gray',
@@ -218,7 +278,7 @@ export default function EditProfileScreen({navigation}) {
               value={
                 userInfo.phoneNumber ? userInfo.phoneNumber : 'Chưa cập nhật'
               }
-              onChangeText={text => setUserDisplayName(text)}
+              onChangeText={text => setUserDisplayName(text.trim())}
               style={{
                 marginLeft: 20,
                 color: 'gray',
@@ -231,6 +291,14 @@ export default function EditProfileScreen({navigation}) {
               placeholder='Nhập địa chỉ E-mail'
             />
           </View>
+
+          {/* <View style={{borderWidth: 1, marginTop: 40}}>
+            <Button
+              title={'Lưu thay đổi'}
+              onPress={() => alert('meow')}
+              buttonStyleCustom={{borderRadius: '15%'}}
+            />
+          </View> */}
 
           {/*  */}
           {/* <LinearGradient
@@ -277,6 +345,22 @@ export default function EditProfileScreen({navigation}) {
           </LinearGradient> */}
         </View>
       </ScrollView>
+      {showButton && (
+        <View
+          style={{
+            // borderWidth: 1,
+            position: 'absolute',
+            bottom: 30,
+            left: 10,
+            right: 10,
+          }}>
+          <Button
+            title={'Lưu thay đổi'}
+            onPress={() => alert('meow')}
+            buttonStyleCustom={{borderRadius: '15%', paddingVertical: 16}}
+          />
+        </View>
+      )}
     </SafeAreaProvider>
   );
 }
