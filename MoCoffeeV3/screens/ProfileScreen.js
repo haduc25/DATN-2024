@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 // import {getAuth} from 'firebase/auth';
-import {auth, storage} from '../firebase';
+import {auth, db, storage} from '../firebase';
 import {ref, getDownloadURL} from 'firebase/storage';
 
 // navigation
@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Ionicons, Fontisto, AntDesign} from '@expo/vector-icons';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {doc, getDoc} from 'firebase/firestore';
 
 export default function ProfileScreen({navigation}) {
   const [imageURI, setImageURI] = useState(null);
@@ -35,31 +36,94 @@ export default function ProfileScreen({navigation}) {
 
   const navi = useNavigation();
 
+  // =========== START: Use Effect =========== //
   useEffect(() => {
-    // const auth = getAuth();
-    const user = auth.currentUser;
+    const readUserData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) return; // Exit early if no user is signed in
 
-    console.log('PROFILE - user1: ', user);
+        const userUid = user.uid;
+        const docSnap = await getDoc(doc(db, 'Users', userUid));
 
-    if (user) {
-      setUserInfo(user);
-      // Lấy các thuộc tính của người dùng nếu có
-      const displayName = user.displayName;
-      const email = user.email;
-      const verified = user.emailVerified;
-      const phone = user.phoneNumber;
-      const photoURL = user.photoURL;
-      const uid = user.uid;
+        if (docSnap.exists()) {
+          // const userData = docSnap.data();
+          // setUserInfo({user, userData});
+          // console.log('Document data FIREBASE:', userData);
 
-      // Cập nhật state với các giá trị tương ứng
-      setDisplayName(displayName);
-      setUserEmail(email);
-      setEmailVerified(verified);
-      setPhoneNumber(phone);
-      setUserPhotoURL(photoURL);
-      setUserId(uid);
-    }
+          // Lọc dữ liệu đảm bảo key k trùng lặp
+          const userData = docSnap.data();
+          const mergedData = mergeObjects(user, userData);
+          setUserInfo(mergedData);
+          console.log('Merged data:', mergedData);
+
+          // set cho 1 so propertiesmac dinh (ve sau cos the doi lai)
+
+          // // Lấy các thuộc tính của người dùng nếu có
+          // const displayName = user.displayName;
+          // const email = user.email;
+          // const verified = user.emailVerified;
+          // const phone = user.phoneNumber;
+          // const photoURL = user.photoURL;
+          // const uid = user.uid;
+
+          // // Cập nhật state với các giá trị tương ứng
+          // setDisplayName(displayName);
+          // setUserEmail(email);
+          // setEmailVerified(verified);
+          // setPhoneNumber(phone);
+          // setUserPhotoURL(photoURL);
+          // setUserId(uid);
+        } else {
+          console.log('Document does not exist');
+          alert('Document does not exist');
+        }
+      } catch (error) {
+        console.log('Error getting document:', error);
+        alert('Error getting document:', error.message); // Adjusted to show only the error message
+      }
+    };
+
+    readUserData();
   }, []);
+
+  // =========== END: Use Effect =========== //
+
+  //  Function to merge two objects and remove duplicate keys
+  const mergeObjects = (obj1, obj2) => {
+    const merged = {...obj1};
+
+    Object.keys(obj2).forEach(key => {
+      if (!(key in obj1)) {
+        merged[key] = obj2[key];
+      }
+    });
+
+    return merged;
+  };
+
+  // READ
+  const read = async () => {
+    try {
+      const docSnap = await getDoc(
+        doc(db, 'Users', 'lMsKBPaYTpORRtBxprjjHppCy0U2'),
+      );
+      if (docSnap.exists()) {
+        console.log('Document data FIREBASE:', docSnap.data());
+        console.log('userInfo: ', userInfo);
+        // setUserData(docSnap.data());
+      } else {
+        console.log('Document does not exist');
+        alert('Document does not exist');
+        // setUserData(null);
+      }
+    } catch (error) {
+      console.log('Error getting document:', error);
+      alert('Error getting document:', error);
+      // setUserData(null);
+    }
+  };
+  // read();
 
   // Đăng xuất
   const handleDangXuat = async () => {
@@ -143,13 +207,19 @@ export default function ProfileScreen({navigation}) {
         <TouchableOpacity
           onPress={() => {
             if (userInfo) {
-              console.log('userInfo: ', userInfo);
+              console.log('=================== \n');
+              console.log('userInfo222: ', userInfo);
               const userInfo2 = {
                 uid: userInfo.uid,
                 phoneNumber: userInfo.phoneNumber,
                 photoURL: userInfo.photoURL,
                 displayName: userInfo.displayName,
                 email: userInfo.email,
+                emailVerified: userInfo.emailVerified,
+                dob: userInfo.dob,
+                gtinh: userInfo.gtinh,
+                role: userInfo.role,
+                createdAt: userInfo.createdAt,
               };
               navi.navigate('Chỉnh sửa hồ sơ', {userInfo: userInfo2});
             }
@@ -166,19 +236,23 @@ export default function ProfileScreen({navigation}) {
             shadowOffset: {width: 0, height: 4},
             elevation: 5,
           }}>
-          {phoneNumber && <Text>Số điện thoại: {phoneNumber}</Text>}
-          {userPhotoURL && (
+          {/* {phoneNumber && <Text>Số điện thoại: {phoneNumber}</Text>}
+          {userInfo.photoURL && (
             <Image
-              source={{uri: userPhotoURL}}
+              source={{uri: userInfo.photoURL}}
               style={{width: 80, height: 80, borderRadius: 50}}
             />
           )}
           <View style={{padding: 10}}>
-            {displayName && (
-              <Text style={{fontWeight: '700'}}>Hello, {displayName}</Text>
+            {userInfo.displayName && (
+              <Text style={{fontWeight: '700'}}>
+                Hello, {userInfo.displayName}
+              </Text>
             )}
-            {userEmail && <Text style={{paddingTop: 4}}>{userEmail}</Text>}
-          </View>
+            {userInfo.email && (
+              <Text style={{paddingTop: 4}}>{userInfo.email}</Text>
+            )}
+          </View> */}
           {/* {emailVerified && <Text>Email đã xác thực</Text>}
           {userId && <Text>UserID: {userId}</Text>}
           {imageURI && (

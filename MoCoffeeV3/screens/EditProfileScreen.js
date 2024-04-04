@@ -21,10 +21,14 @@ export default function EditProfileScreen({navigation}) {
   const route = useRoute();
   const {userInfo} = route.params;
 
+  console.log('userInfo.createdAt: ', userInfo.createdAt);
+
   // version 2
   const [userInfo2, setUserInfo2] = useState({
-    displayName: 'Minh Duc',
-    email: 'duc@mail.com',
+    displayName: userInfo.displayName,
+    email: userInfo.email,
+    dob: userInfo.dob,
+    createdAt: formatDate(userInfo.createdAt),
     // Thêm các trường thông tin khác cần thiết
   });
 
@@ -78,6 +82,22 @@ export default function EditProfileScreen({navigation}) {
     setShowButton(!!text); // Nếu text không rỗng, hiển thị nút, ngược lại ẩn nút
     console.log('showButton: ', showButton);
   };
+
+  // convert
+  function formatDate(timestamp) {
+    if (typeof timestamp === 'string') {
+      timestamp = parseInt(timestamp);
+    }
+
+    console.log('timestamp: ', timestamp);
+    console.log('typeof timestamp: ', typeof timestamp);
+    const date = new Date(timestamp);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
 
   return (
     <SafeAreaProvider>
@@ -162,6 +182,7 @@ export default function EditProfileScreen({navigation}) {
             Thông tin cá nhân
           </Text>
 
+          {/* UID */}
           <View
             style={{
               flexDirection: 'row',
@@ -170,6 +191,7 @@ export default function EditProfileScreen({navigation}) {
             }}>
             <AntDesign name={'key'} size={18} color={'#000'} />
             <TextInput
+              onPressIn={() => alert('Bạn không thể chỉnh sửa UID.')}
               readOnly={true}
               value={userInfo.uid}
               style={{
@@ -184,6 +206,7 @@ export default function EditProfileScreen({navigation}) {
             />
           </View>
 
+          {/* DISPLAY NAME */}
           <View
             style={{
               flexDirection: 'row',
@@ -211,6 +234,7 @@ export default function EditProfileScreen({navigation}) {
             />
           </View>
 
+          {/* EMAIL */}
           <View
             style={{
               flexDirection: 'row',
@@ -238,6 +262,7 @@ export default function EditProfileScreen({navigation}) {
             />
           </View>
 
+          {/* EMAIL VALIDATED */}
           <View
             style={{
               flexDirection: 'row',
@@ -249,8 +274,8 @@ export default function EditProfileScreen({navigation}) {
               readOnly={true}
               value={
                 userInfo.emailVerified
-                  ? 'Email đã xác thực'
-                  : 'Email chưa xác thực'
+                  ? 'Email đã xác minh'
+                  : 'Email chưa được xác minh'
               }
               onChangeText={text => setUserDisplayName(text.trim())}
               style={{
@@ -266,6 +291,7 @@ export default function EditProfileScreen({navigation}) {
             />
           </View>
 
+          {/* SDT */}
           <View
             style={{
               flexDirection: 'row',
@@ -279,6 +305,56 @@ export default function EditProfileScreen({navigation}) {
                 userInfo.phoneNumber ? userInfo.phoneNumber : 'Chưa cập nhật'
               }
               onChangeText={text => setUserDisplayName(text.trim())}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+              placeholder='Nhập số điện thoại'
+            />
+          </View>
+
+          {/* DOB */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <Text>Ngày tạo tài khoản </Text>
+            <AntDesign name={'gift'} size={18} color={'#000'} />
+            <TextInput
+              value={userInfo2.dob}
+              onChangeText={text => handleInputChange2('dob', text)}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+              placeholder='Nhập địa chỉ E-mail'
+            />
+          </View>
+
+          {/* Created At */}
+          {console.log('createdAt: ', userInfo2.createdAt)}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <AntDesign name={'gift'} size={18} color={'#000'} />
+            <TextInput
+              value={userInfo2.createdAt}
+              onChangeText={text => handleInputChange2('dob', text)}
               style={{
                 marginLeft: 20,
                 color: 'gray',

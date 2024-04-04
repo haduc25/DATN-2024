@@ -29,3 +29,6 @@ https://www.npmjs.com/package/@pembajak/react-native-image-slider-banner
 #animation cho header (detail)
 `npm i moti`
 https://www.npmjs.com/package/moti
+
+#env hide api
+npm install react-native-dotenv
