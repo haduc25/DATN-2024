@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  StyleSheet,
 } from 'react-native';
 import {useState} from 'react';
 
@@ -20,6 +21,19 @@ import Button from '../components/Button';
 export default function EditProfileScreen({navigation}) {
   const route = useRoute();
   const {userInfo} = route.params;
+  const [isFocused, setIsFocused] = useState(false);
+  const [inputValue, setInputValue] = useState('Email');
+  const [inputValue2, setInputValue2] = useState('Meow');
+
+  // Form Name
+  const [formName, setFormName] = useState({
+    userID: 'UID',
+    displayName: 'Tên người dùng',
+    email: 'E-mail',
+    phoneNumber: 'Số điện thoại',
+    dob: 'Ngày sinh',
+    createdAt: 'Ngày tạo tài khoản',
+  });
 
   console.log('userInfo.createdAt: ', userInfo.createdAt);
 
@@ -124,7 +138,6 @@ export default function EditProfileScreen({navigation}) {
           style={{
             borderWidth: 1,
             alignItems: 'center',
-
             //
             marginTop: 10,
             backgroundColor: '#fff',
@@ -177,7 +190,13 @@ export default function EditProfileScreen({navigation}) {
         </View>
 
         {/* Thông tin cá nhân */}
-        <View style={{borderWidth: 1, marginTop: 10, paddingHorizontal: 14}}>
+        <View
+          style={{
+            borderWidth: 1,
+            marginTop: 10,
+            paddingHorizontal: 14,
+            height: 1500,
+          }}>
           <Text style={{fontSize: 18, fontWeight: 'bold', paddingTop: 20}}>
             Thông tin cá nhân
           </Text>
@@ -368,6 +387,113 @@ export default function EditProfileScreen({navigation}) {
             />
           </View>
 
+          {/* START: NEW TEXT INPUT */}
+          <View style={styles.container}>
+            {/* Thông tin cá nhân */}
+            <View>
+              <Text style={styles.title}>Thông tin cá nhân</Text>
+              <View style={styles.inputGroup}>
+                <View
+                  style={[
+                    styles.inputUserInfo,
+                    isFocused && styles.inputFocused,
+                  ]}>
+                  {/* <TextInput
+                    style={[
+                      styles.input,
+                      isFocused && {borderBottomColor: 'rgba(19, 19, 21, 1)'},
+                    ]}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.inputLabelTouchable}>
+                    <Text
+                      style={[
+                        styles.inputLabel,
+                        isFocused && styles.inputLabelFocused,
+                      ]}>
+                      Email
+                    </Text>
+                  </TouchableOpacity>
+                  <AntDesign
+                    name={'mail'}
+                    size={18}
+                    color={'rgba(19, 19, 21, 0.6)'}
+                    style={[
+                      {
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 0,
+                        top: 10,
+                      },
+                      isFocused && {
+                        color: 'rgba(19, 19, 21, 1)',
+                      },
+                    ]}
+                  />
+                  <Text style={styles.inputHelper}>Helper Text</Text> */}
+
+                  {/*  */}
+                  <TextInput
+                    style={styles.input}
+                    onFocus={() => {
+                      if (inputValue2) {
+                        setIsFocused(true);
+                        return;
+                      }
+                    }}
+                    onBlur={() => setIsFocused(false)}
+                    // onChangeText={text => setInputValue(text)}
+                    onChangeText={text => setInputValue2(text)}
+                    // value={inputValue}
+                    value={inputValue2}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.inputLabelTouchable}>
+                    <Text
+                      style={[
+                        styles.inputLabel,
+                        // isFocused || inputValue !== ''
+                        //   ? styles.inputLabelFocused
+                        //   : null,
+                        isFocused || inputValue2 !== ''
+                          ? styles.inputLabelFocused
+                          : null,
+                      ]}>
+                      {/* {inputValue !== '' ? inputValue : 'Normal'} */}
+                      {/* {inputValue} */}
+                      {/* Tên input (label) */}
+                      {formName.userID}
+                    </Text>
+                  </TouchableOpacity>
+                  <AntDesign
+                    name={'mail'}
+                    size={18}
+                    color={'rgba(19, 19, 21, 0.6)'}
+                    style={[
+                      {
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 0,
+                        top: 10,
+                      },
+                      isFocused && {
+                        color: 'rgba(19, 19, 21, 1)',
+                      },
+                    ]}
+                  />
+                  <Text style={styles.inputHelper}>Helper Text</Text>
+                </View>
+              </View>
+              {/* Additional Inputs here */}
+            </View>
+          </View>
+
+          {/* END: NEW TEXT INPUT */}
+
           {/* <View style={{borderWidth: 1, marginTop: 40}}>
             <Button
               title={'Lưu thay đổi'}
@@ -440,3 +566,75 @@ export default function EditProfileScreen({navigation}) {
     </SafeAreaProvider>
   );
 }
+
+// style
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    marginTop: 30,
+    borderColor: 'whitesmoke',
+    borderWidth: 1,
+    padding: 21,
+    borderRadius: 4,
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: 45,
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingTop: 20,
+  },
+  inputGroup: {
+    marginBottom: 15,
+  },
+  inputUserInfo: {
+    position: 'relative',
+    width: 250, // Adjust as per your design
+  },
+  inputFocused: {
+    borderBottomColor: 'rgba(19, 19, 21, 1)', // Adjust as per your design
+  },
+  input: {
+    // borderBottomWidth: 1,
+    // borderBottomColor: 'rgba(19, 19, 21, 0.6)', // Adjust as per your design
+    // height: 40,
+    // fontSize: 17, // Adjust as per your design
+    // paddingLeft: 10, // Adjust as per your design
+    // paddingRight: 40, // Adjust as per your design
+    // marginBottom: 5, // Adjust as per your design
+
+    borderBottomWidth: 1.5,
+    borderBottomColor: 'rgba(19, 19, 21, .6)', // Adjust as per your design
+    height: 40,
+    fontSize: 17, // Adjust as per your design
+    paddingLeft: 10, // Adjust as per your design
+    paddingRight: 40, // Adjust as per your design
+    marginBottom: 5, // Adjust as per your design
+  },
+  inputLabelTouchable: {
+    position: 'absolute',
+    top: 12, // Adjust as per your design
+    left: 10, // Adjust as per your design
+    zIndex: 1,
+    flexDirection: 'row',
+  },
+  inputLabel: {
+    color: 'rgba(19, 19, 21, 0.6)', // Adjust as per your design
+  },
+  // Cái này chỉnh độ cao khi đc focus
+  inputLabelFocused: {
+    top: -18,
+    fontSize: 12, // Adjust as per your design
+    color: 'rgba(19, 19, 21, 1)', // Adjust as per your design
+    fontWeight: '700',
+  },
+  inputHelper: {
+    fontSize: 15, // Adjust as per your design
+    color: 'rgba(19, 19, 21, 0.6)', // Adjust as per your design
+    marginLeft: 10, // Adjust as per your design
+    marginRight: 10, // Adjust as per your design
+    marginTop: 3, // Adjust as per your design
+  },
+});
