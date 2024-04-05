@@ -225,6 +225,196 @@ export default function EditProfileScreen({navigation}) {
             Thông tin cá nhân
           </Text>
 
+          {/* UID */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <AntDesign name={'key'} size={18} color={'#000'} />
+            <TextInput
+              onPressIn={() => alert('Bạn không thể chỉnh sửa UID.')}
+              readOnly={true}
+              value={userInfo.uid}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+            />
+          </View>
+
+          {/* DISPLAY NAME */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <AntDesign name={'user'} size={18} color={'#000'} />
+            <TextInput
+              // value={userDisplayName}
+              // onChangeText={text => setUserDisplayName(text)}
+              // onChangeText={text => handleInputChange(text)}
+
+              value={userInfo2.displayName}
+              onChangeText={text => handleInputChange2('displayName', text)}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+              placeholder='Nhập tên hiển thị'
+            />
+          </View>
+
+          {/* EMAIL */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <AntDesign name={'mail'} size={18} color={'#000'} />
+            <TextInput
+              //   value={userEmail ? userEmail : 'Chưa cập nhật'}
+              // value={userInfo.email}
+              // onChangeText={text => setUserEmail(text)}
+
+              value={userInfo2.email}
+              onChangeText={text => handleInputChange2('email', text)}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+              placeholder='Nhập địa chỉ E-mail'
+            />
+          </View>
+
+          {/* EMAIL VALIDATED */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <AntDesign name={'mail'} size={18} color={'#000'} />
+            <TextInput
+              readOnly={true}
+              value={
+                userInfo.emailVerified
+                  ? 'Email đã xác minh'
+                  : 'Email chưa được xác minh'
+              }
+              onChangeText={text => setUserDisplayName(text.trim())}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+              placeholder='Nhập địa chỉ E-mail'
+            />
+          </View>
+
+          {/* SDT */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <AntDesign name={'phone'} size={18} color={'#000'} />
+            <TextInput
+              readOnly={true}
+              value={
+                userInfo.phoneNumber ? userInfo.phoneNumber : 'Chưa cập nhật'
+              }
+              onChangeText={text => setUserDisplayName(text.trim())}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+              placeholder='Nhập số điện thoại'
+            />
+          </View>
+
+          {/* DOB */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <Text>Ngày tạo tài khoản </Text>
+            <AntDesign name={'gift'} size={18} color={'#000'} />
+            <TextInput
+              value={userInfo2.dob}
+              onChangeText={text => handleInputChange2('dob', text)}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+              placeholder='Nhập địa chỉ E-mail'
+            />
+          </View>
+
+          {/* Created At */}
+          {console.log(
+            'createdAt: ',
+            userInfo2.createdAt,
+            userInfo.phoneNumber,
+          )}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingLeft: 10,
+            }}>
+            <AntDesign name={'gift'} size={18} color={'#000'} />
+            <TextInput
+              value={userInfo2.createdAt}
+              onChangeText={text => handleInputChange2('dob', text)}
+              style={{
+                marginLeft: 20,
+                color: 'gray',
+                marginVertical: 10,
+                width: 220,
+                maxWidth: 220,
+                height: 40,
+                borderBottomWidth: 0.5,
+              }}
+              placeholder='Nhập địa chỉ E-mail'
+            />
+          </View>
+
           {/* START: NEW TEXT INPUT */}
           <View style={styles.container}>
             {/* Thông tin cá nhân */}
