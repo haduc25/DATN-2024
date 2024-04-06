@@ -236,8 +236,8 @@ export default function ProfileScreen({navigation}) {
             shadowOffset: {width: 0, height: 4},
             elevation: 5,
           }}>
-          {/* {phoneNumber && <Text>Số điện thoại: {phoneNumber}</Text>}
-          {userInfo.photoURL && (
+          {/* {phoneNumber && <Text>Số điện thoại: {phoneNumber}</Text>} */}
+          {/* {userInfo.photoURL && (
             <Image
               source={{uri: userInfo.photoURL}}
               style={{width: 80, height: 80, borderRadius: 50}}
@@ -253,6 +253,27 @@ export default function ProfileScreen({navigation}) {
               <Text style={{paddingTop: 4}}>{userInfo.email}</Text>
             )}
           </View> */}
+
+          {/*  */}
+          {userInfo && userInfo.photoURL && (
+            <Image
+              source={{uri: userInfo.photoURL}}
+              style={{width: 80, height: 80, borderRadius: 50}}
+            />
+          )}
+          <View style={{padding: 10}}>
+            {userInfo && userInfo.displayName && (
+              <Text style={{fontWeight: '700'}}>
+                Hello, {userInfo.displayName}
+              </Text>
+            )}
+            {userInfo && userInfo.email && (
+              <Text style={{paddingTop: 4}}>{userInfo.email}</Text>
+            )}
+          </View>
+
+          {/*  */}
+
           {/* {emailVerified && <Text>Email đã xác thực</Text>}
           {userId && <Text>UserID: {userId}</Text>}
           {imageURI && (

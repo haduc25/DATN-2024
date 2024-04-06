@@ -6,8 +6,10 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -28,6 +30,7 @@ export default function EditProfileScreen({navigation}) {
     phoneNumber: false,
     dob: false,
     createdAt: false,
+    location: false,
   });
   const [inputValue, setInputValue] = useState('Email');
   const [inputValue2, setInputValue2] = useState('Meow');
@@ -40,6 +43,7 @@ export default function EditProfileScreen({navigation}) {
     phoneNumber: 'Số điện thoại',
     dob: 'Ngày sinh',
     createdAt: 'Ngày tạo tài khoản',
+    location: 'Địa chỉ',
   });
 
   // handle form
@@ -49,6 +53,15 @@ export default function EditProfileScreen({navigation}) {
       [fieldName]: true,
     }));
   };
+
+  //
+  function limitText(text, maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return text.substring(0, maxLength) + '...';
+    }
+  }
 
   const handleInputBlur = fieldName => {
     setIsFocused(prevState => ({
@@ -95,6 +108,13 @@ export default function EditProfileScreen({navigation}) {
     //   return newState;
     // });
 
+    // checker
+    // Kiểm tra xem key có nằm trong danh sách các key của inputs không
+    if (Object.keys(inputs).includes(key)) {
+      handleChangeText(key, value);
+      return;
+    }
+
     // my logic
     setUserInfo2(prevState => {
       const newState = {...prevState, [key]: value};
@@ -107,6 +127,19 @@ export default function EditProfileScreen({navigation}) {
   //info
   const [userDisplayName, setUserDisplayName] = useState('');
   const [userEmail, setUserEmail] = useState(null);
+
+  // image
+  const [loading, setLoading] = useState(true);
+
+  const handleImageLoad = () => {
+    console.log('loading1: ', loading);
+    setLoading(false);
+    console.log('loading2: ', loading);
+  };
+
+  useEffect(() => {
+    console.log('loading2: ', loading);
+  }, [loading]);
 
   // console.log('EditProfileScreen_userInfo: ', userInfo);
 
@@ -134,6 +167,122 @@ export default function EditProfileScreen({navigation}) {
 
     return `${day}/${month}/${year}`;
   }
+
+  //  date
+  const [date, setDate] = useState('');
+
+  // const handleChangeText = input => {
+  //   // Loại bỏ bất kỳ dấu / nào đã được nhập trước đó
+  //   input = input.replace(/\//g, '');
+
+  //   // Kiểm tra xem có thể chia chuỗi thành 3 phần dd, mm, yyyy không
+  //   if (input.length <= 2) {
+  //     setDate(input);
+  //   } else if (input.length <= 4) {
+  //     setDate(input.substr(0, 2) + '/' + input.substr(2));
+  //   } else if (input.length <= 8) {
+  //     setDate(
+  //       input.substr(0, 2) + '/' + input.substr(2, 2) + '/' + input.substr(4),
+  //     );
+  //   }
+  // };
+
+  // const handleBlur = () => {
+  //   if (date.length !== 10) {
+  //     Alert.alert('Lỗi', 'Vui lòng nhập đúng định dạng dd/mm/yyyy');
+  //     setDate('');
+  //     return;
+  //   }
+
+  //   const [day, month, year] = date.split('/').map(Number);
+  //   const currentDate = new Date();
+  //   const currentYear = currentDate.getFullYear();
+  //   const minYear = currentYear - 100;
+
+  //   if (
+  //     isNaN(day) ||
+  //     isNaN(month) ||
+  //     isNaN(year) ||
+  //     day < 1 ||
+  //     day > 31 ||
+  //     month < 1 ||
+  //     month > 12 ||
+  //     year < minYear ||
+  //     year > currentYear
+  //   ) {
+  //     Alert.alert('Lỗi', 'Ngày tháng năm không hợp lệ');
+  //     setDate('');
+  //   }
+  // };
+
+  const [inputs, setInputs] = useState({
+    createdAt: '',
+    dob: '',
+  });
+
+  const [errors, setErrors] = useState({
+    createdAt: '',
+    dob: '',
+  });
+
+  const handleChangeText = (field, value) => {
+    // Loại bỏ bất kỳ dấu / nào đã được nhập trước đó
+    value = value.replace(/\//g, '');
+
+    // Kiểm tra xem có thể chia chuỗi thành 3 phần dd, mm, yyyy không
+    if (value.length <= 2) {
+      setInputs(prevInputs => ({...prevInputs, [field]: value}));
+    } else if (value.length <= 4) {
+      setInputs(prevInputs => ({
+        ...prevInputs,
+        [field]: value.substr(0, 2) + '/' + value.substr(2),
+      }));
+    } else if (value.length <= 8) {
+      setInputs(prevInputs => ({
+        ...prevInputs,
+        [field]:
+          value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4),
+      }));
+    }
+  };
+
+  const handleBlur = field => {
+    const value = inputs[field];
+
+    if (value.length !== 10) {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [field]: 'Vui lòng nhập đúng định dạng dd/mm/yyyy \nVí dụ: 25/09/2001',
+      }));
+      setInputs(prevInputs => ({...prevInputs, [field]: ''}));
+      return;
+    }
+
+    const [day, month, year] = value.split('/').map(Number);
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const minYear = currentYear - 100;
+
+    if (
+      isNaN(day) ||
+      isNaN(month) ||
+      isNaN(year) ||
+      day < 1 ||
+      day > 31 ||
+      month < 1 ||
+      month > 12 ||
+      year < minYear ||
+      year > currentYear
+    ) {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [field]: 'Ngày tháng năm không hợp lệ',
+      }));
+      setInputs(prevInputs => ({...prevInputs, [field]: ''}));
+    } else {
+      setErrors(prevErrors => ({...prevErrors, [field]: ''}));
+    }
+  };
 
   return (
     <SafeAreaProvider>
@@ -170,45 +319,115 @@ export default function EditProfileScreen({navigation}) {
             shadowOffset: {width: 0, height: 4},
             elevation: 5,
           }}>
-          <TouchableOpacity
-            onPress={() => alert('Upload new image')}
-            style={{paddingVertical: 20}}>
-            <LinearGradient
-              colors={['yellow', 'pink', 'teal', 'cyan', 'magenta']}
-              style={{
-                width: 160,
-                height: 160,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 999,
-              }}>
-              <Image
+          {userInfo && userInfo.photoURL && (
+            <TouchableOpacity
+              onPress={() => alert('Upload new image')}
+              style={{paddingVertical: 20, opacity: loading ? 0 : 1}}>
+              <LinearGradient
+                colors={['yellow', 'pink', 'teal', 'cyan', 'magenta']}
                 style={{
-                  width: 150,
-                  height: 150,
-                  resizeMode: 'cover',
+                  width: 160,
+                  height: 160,
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   borderRadius: 999,
-                  position: 'relative',
-                }}
-                source={{uri: userInfo.photoURL}}
-              />
-            </LinearGradient>
+                }}>
+                <Image
+                  style={{
+                    width: 150,
+                    height: 150,
+                    resizeMode: 'cover',
+                    borderRadius: 999,
+                    position: 'relative',
+                  }}
+                  source={{uri: userInfo.photoURL}}
+                  onLoad={handleImageLoad}
+                />
+              </LinearGradient>
+              {loading && (
+                <ActivityIndicator
+                  style={{position: 'absolute', alignSelf: 'center'}}
+                />
+              )}
+              <View
+                style={{
+                  zIndex: 999,
+                  position: 'absolute',
+                  bottom: 28,
+                  right: 8,
+                  backgroundColor: '#ddd',
+                  borderRadius: 60,
+                  height: 35,
+                  width: 35,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Ionicons name={'camera-outline'} size={25} color={'#000'} />
+              </View>
+            </TouchableOpacity>
+          )}
+
+          {/* start */}
+          <View
+            style={{
+              width: 170, // Adjust this size as needed
+              height: 170, // Adjust this size as needed
+              borderRadius: 85, // Half of width and height for a perfect circle
+              overflow: 'hidden', // Clip child components to the view's bounds
+              position: 'relative', // Position the linear gradient absolutely within the view
+            }}>
+            <Image
+              style={{
+                width: '100%',
+                height: '100%',
+                resizeMode: 'cover',
+                position: 'absolute',
+              }}
+              source={{uri: userInfo.photoURL}}
+            />
+            {/* Linear Gradient for the border */}
             <View
               style={{
-                zIndex: 999,
                 position: 'absolute',
-                bottom: 28,
-                right: 8,
-                backgroundColor: '#ddd',
-                borderRadius: 60,
-                height: 35,
-                width: 35,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Ionicons name={'camera-outline'} size={25} color={'#000'} />
-            </View>
-          </TouchableOpacity>
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                borderRadius: 85,
+                borderWidth: 3, // Adjust border width as needed
+                borderColor: 'transparent', // Set transparent border color
+                borderBottomColor: 'red', // Example: First color of the gradient
+                borderRightColor: 'green', // Example: Second color of the gradient
+                borderLeftColor: 'blue', // Example: Third color of the gradient
+                borderTopColor: 'yellow', // Example: Fourth color of the gradient
+                borderBottomLeftRadiusColor: 'orange', // Fifth color of the gradient
+                borderBottomRightRadiusColor: 'purple', // Sixth color of the gradient
+                borderTopLeftRadiusColor: 'pink', // Seventh color of the gradient
+                borderTopRightRadiusColor: 'cyan', // Eighth color of the gradient
+              }}
+            />
+          </View>
+          {/* end */}
+
+          {/* start2 */}
+          <View style={{flex: 1}}>
+            <Image
+              style={{
+                width: '100%',
+                height: '100%',
+                resizeMode: 'cover',
+                position: 'absolute',
+              }}
+              source={{uri: userInfo.photoURL}}
+              onLoad={handleImageLoad}
+            />
+            {loading && (
+              <ActivityIndicator
+                style={{position: 'absolute', alignSelf: 'center'}}
+              />
+            )}
+          </View>
+          {/* end2 */}
         </View>
 
         {/* Thông tin cá nhân */}
@@ -259,7 +478,7 @@ export default function EditProfileScreen({navigation}) {
                     onChangeText={text => setInputValue2(text)}
                     // value={inputValue}
                     // value={inputValue2}
-                    value={userInfo.uid}
+                    value={limitText(userInfo.uid, 25)}
                   />
                   <TouchableOpacity
                     activeOpacity={1}
@@ -435,6 +654,7 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.phoneNumber && styles.inputFocused,
                   ]}>
                   <TextInput
+                    keyboardType='numeric'
                     style={[
                       styles.input,
                       isFocused.phoneNumber && {
@@ -474,6 +694,59 @@ export default function EditProfileScreen({navigation}) {
                         top: 10,
                       },
                       isFocused.phoneNumber && {
+                        color: 'rgba(19, 19, 21, 1)',
+                      },
+                    ]}
+                  />
+                  <Text style={styles.inputHelper}>Message Text</Text>
+                </View>
+              </View>
+
+              {/* ĐỊA CHỈ */}
+              <View style={[styles.inputGroup]}>
+                <View
+                  style={[
+                    styles.inputUserInfo,
+                    isFocused.location && styles.inputFocused,
+                  ]}>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      isFocused.location && {
+                        borderBottomColor: 'rgba(19, 19, 21, 1)',
+                      },
+                    ]}
+                    onFocus={() => handleInputFocus('location')}
+                    onBlur={() => handleInputBlur('location')}
+                    onChangeText={text => handleInputChange2('location', text)}
+                    value={userInfo2.location}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.inputLabelTouchable}>
+                    <Text
+                      style={[
+                        styles.inputLabel,
+                        (isFocused.location ||
+                          (userInfo2.location !== undefined &&
+                            userInfo2.location !== '')) &&
+                          styles.inputLabelFocused,
+                      ]}>
+                      {formName.location}
+                    </Text>
+                  </TouchableOpacity>
+                  <Ionicons
+                    name={'location-outline'}
+                    size={20}
+                    color={'rgba(19, 19, 21, 0.6)'}
+                    style={[
+                      {
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 0,
+                        top: 10,
+                      },
+                      isFocused.location && {
                         color: 'rgba(19, 19, 21, 1)',
                       },
                     ]}
@@ -550,8 +823,12 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                     onFocus={() => handleInputFocus('createdAt')}
-                    onBlur={() => handleInputBlur('createdAt')}
+                    // onBlur={() => handleInputBlur('createdAt')}
+                    // onChangeText={text => handleInputChange2('createdAt', text)}
                     onChangeText={text => handleInputChange2('createdAt', text)}
+                    onBlur={() => handleInputBlur('createdAt')}
+                    maxLength={10}
+                    keyboardType='numeric'
                     value={userInfo2.createdAt}
                   />
                   <TouchableOpacity
@@ -584,8 +861,41 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                   />
-                  <Text style={styles.inputHelper}>Message Text</Text>
+                  {errors.createdAt ? (
+                    // <Text style={styles.errorText}>{errors.date}</Text>
+                    <Text style={styles.inputHelper}>{errors.createdAt}</Text>
+                  ) : null}
                 </View>
+              </View>
+
+              {/* Picker date */}
+              <View>
+                <TextInput
+                  value={inputs.date}
+                  onChangeText={text => handleChangeText('date', text)}
+                  onBlur={() => handleBlur('date')}
+                  placeholder='dd/mm/yyyy'
+                  maxLength={10}
+                  keyboardType='numeric'
+                  style={styles.input}
+                />
+                {errors.date ? (
+                  <Text style={styles.errorText}>{errors.date}</Text>
+                ) : null}
+              </View>
+              <View>
+                <TextInput
+                  value={inputs.dob}
+                  onChangeText={text => handleChangeText('dob', text)}
+                  onBlur={() => handleBlur('dob')}
+                  placeholder='dd/mm/yyyy'
+                  maxLength={10}
+                  keyboardType='numeric'
+                  style={styles.input}
+                />
+                {errors.dob ? (
+                  <Text style={styles.errorText}>{errors.dob}</Text>
+                ) : null}
               </View>
             </View>
           </View>
@@ -744,5 +1054,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     top: 10,
+  },
+  errorText: {
+    color: 'red',
+    marginLeft: 10,
   },
 });
