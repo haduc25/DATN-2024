@@ -93,7 +93,6 @@ export default function EditProfileScreen({navigation}) {
     //   console.log('hasValue: ', hasValue);
     //   return newState;
     // });
-
     // setUserInfo2(prevState => {
     //   const newState = {...prevState, [key]: value};
     //   const hasValueChanged = newState[key] !== prevState[key]; // So sánh giá trị mới với giá trị ban đầu
@@ -107,21 +106,23 @@ export default function EditProfileScreen({navigation}) {
     //   console.log('hasValueChanged: ', hasValueChanged);
     //   return newState;
     // });
-
-    // checker
-    // Kiểm tra xem key có nằm trong danh sách các key của inputs không
-    if (Object.keys(inputs).includes(key)) {
-      handleChangeText(key, value);
-      return;
-    }
-
+    // // checker
+    // // Kiểm tra xem key có nằm trong danh sách các key của inputs không
+    // if (Object.keys(inputs).includes(key)) {
+    //   handleChangeText(key, value);
+    //   return;
+    // }
     // my logic
-    setUserInfo2(prevState => {
-      const newState = {...prevState, [key]: value};
-      const hasValueChanged = newState[key] !== initialValues[key]; // So sánh giá trị mới với giá trị ban đầu
-      setShowButton(hasValueChanged);
-      return newState;
-    });
+    if (typeof value !== 'undefined' && value !== null) {
+      // Kiểm tra xem value có tồn tại không
+      setUserInfo2(prevState => {
+        const newState = {...prevState, [key]: value};
+        const hasValueChanged = newState[key] !== initialValues[key]; // So sánh giá trị mới với giá trị ban đầu
+        setShowButton(hasValueChanged);
+        console.log('----------------------UserInfo2: ', userInfo2);
+        return newState;
+      });
+    }
   };
 
   //info
@@ -225,63 +226,125 @@ export default function EditProfileScreen({navigation}) {
     dob: '',
   });
 
-  const handleChangeText = (field, value) => {
-    // Loại bỏ bất kỳ dấu / nào đã được nhập trước đó
-    value = value.replace(/\//g, '');
+  const handleChangeText = (field, value = '') => {
+    // // Loại bỏ bất kỳ dấu / nào đã được nhập trước đó
+    // value = value.replace(/\//g, '');
 
-    // Kiểm tra xem có thể chia chuỗi thành 3 phần dd, mm, yyyy không
-    if (value.length <= 2) {
-      setInputs(prevInputs => ({...prevInputs, [field]: value}));
-    } else if (value.length <= 4) {
-      setInputs(prevInputs => ({
-        ...prevInputs,
-        [field]: value.substr(0, 2) + '/' + value.substr(2),
-      }));
-    } else if (value.length <= 8) {
-      setInputs(prevInputs => ({
-        ...prevInputs,
-        [field]:
-          value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4),
-      }));
+    // // Kiểm tra xem có thể chia chuỗi thành 3 phần dd, mm, yyyy không
+    // console.log('field: ', field);
+    // console.log('value: ', value);
+    // console.log('inputs: ', inputs);
+    // if (value.length <= 2) {
+    //   setInputs(prevInputs => ({...prevInputs, [field]: value}));
+    //   console.log('input: 1', inputs);
+    // } else if (value.length <= 4) {
+    //   setInputs(prevInputs => ({
+    //     ...prevInputs,
+    //     [field]: value.substr(0, 2) + '/' + value.substr(2),
+    //   }));
+    //   console.log('input: 2', inputs);
+    // } else if (value.length <= 8) {
+    //   setInputs(prevInputs => ({
+    //     ...prevInputs,
+    //     [field]:
+    //       value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4),
+    //   }));
+    //   console.log('input: 3', inputs);
+    // }
+    // console.log('LAST inputs: ', inputs);
+    // console.log('inputs.date: ', inputs.date);
+    // handleInputChange2('createdAt', inputs.date);
+
+    // // ###############
+    // let updatedValue;
+
+    // if (value.length <= 2) {
+    //   updatedValue = value;
+    // } else if (value.length <= 4) {
+    //   updatedValue = value.substr(0, 2) + '/' + value.substr(2);
+    // } else if (value.length <= 8) {
+    //   updatedValue =
+    //     value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4);
+    // }
+
+    // console.log('updatedValue: ', updatedValue);
+    // handleInputChange2('createdAt', updatedValue);
+
+    // value = value.replace(/\//g, '');
+
+    // updatedValue = value;
+    // try {
+    //   if (value.length <= 2) {
+    //   } else if (value.length <= 4) {
+    //     updatedValue = value.substr(0, 2) + '/' + value.substr(2);
+    //   } else if (value.length <= 8) {
+    //     updatedValue =
+    //       value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4);
+    //   }
+
+    //   // console.log('Updated value:', updatedValue);
+    //   handleInputChange2('createdAt', updatedValue);
+    // } catch (error) {
+    //   console.log('error: ', error);
+    // }
+
+    if (typeof value !== 'undefined' && value !== null) {
+      // Kiểm tra xem value có tồn tại không
+      value = value.replace(/\//g, '');
+
+      let updatedValue = value; // Khai báo updatedValue bên trong hàm để tránh lỗi
+      if (value.length <= 2) {
+      } else if (value.length <= 4) {
+        updatedValue = value.substr(0, 2) + '/' + value.substr(2);
+      } else if (value.length <= 8) {
+        updatedValue =
+          value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4);
+      }
+
+      // console.log('Updated value:', updatedValue);
+      handleInputChange2('createdAt', updatedValue);
     }
   };
 
   const handleBlur = field => {
-    const value = inputs[field];
+    const value = userInfo2[field];
 
-    if (value.length !== 10) {
+    if (typeof value !== 'undefined' && value !== null && value.length === 10) {
+      const [day, month, year] = value.split('/').map(Number);
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const minYear = currentYear - 100;
+
+      if (
+        isNaN(day) ||
+        isNaN(month) ||
+        isNaN(year) ||
+        day < 1 ||
+        day > 31 ||
+        month < 1 ||
+        month > 12 ||
+        year < minYear ||
+        year > currentYear
+      ) {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          [field]: 'Ngày tháng năm không hợp lệ',
+        }));
+        setInputs(prevInputs => ({...prevInputs, [field]: ''}));
+        handleInputChange2(field, ''); // Truyền giá trị rỗng vào handleInputChange2
+      } else {
+        // Pass qua tất cả => Chuẩn rồi
+        setErrors(prevErrors => ({...prevErrors, [field]: ''}));
+      }
+    } else {
       setErrors(prevErrors => ({
         ...prevErrors,
         [field]: 'Vui lòng nhập đúng định dạng dd/mm/yyyy \nVí dụ: 25/09/2001',
       }));
-      setInputs(prevInputs => ({...prevInputs, [field]: ''}));
-      return;
+      handleInputChange2(field, ''); // Truyền giá trị rỗng vào handleInputChange2
     }
 
-    const [day, month, year] = value.split('/').map(Number);
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const minYear = currentYear - 100;
-
-    if (
-      isNaN(day) ||
-      isNaN(month) ||
-      isNaN(year) ||
-      day < 1 ||
-      day > 31 ||
-      month < 1 ||
-      month > 12 ||
-      year < minYear ||
-      year > currentYear
-    ) {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        [field]: 'Ngày tháng năm không hợp lệ',
-      }));
-      setInputs(prevInputs => ({...prevInputs, [field]: ''}));
-    } else {
-      setErrors(prevErrors => ({...prevErrors, [field]: ''}));
-    }
+    handleInputBlur(field);
   };
 
   return (
@@ -822,14 +885,14 @@ export default function EditProfileScreen({navigation}) {
                         borderBottomColor: 'rgba(19, 19, 21, 1)',
                       },
                     ]}
+                    // value={inputs.date}
+                    value={userInfo2.createdAt}
                     onFocus={() => handleInputFocus('createdAt')}
-                    // onBlur={() => handleInputBlur('createdAt')}
-                    // onChangeText={text => handleInputChange2('createdAt', text)}
-                    onChangeText={text => handleInputChange2('createdAt', text)}
-                    onBlur={() => handleInputBlur('createdAt')}
+                    onChangeText={text => handleChangeText('date', text)}
+                    // onBlur={() => handleBlur('date')}
+                    onBlur={() => handleBlur('createdAt')}
                     maxLength={10}
                     keyboardType='numeric'
-                    value={userInfo2.createdAt}
                   />
                   <TouchableOpacity
                     activeOpacity={1}
@@ -966,7 +1029,8 @@ export default function EditProfileScreen({navigation}) {
           }}>
           <Button
             title={'Lưu thay đổi'}
-            onPress={() => alert('meow')}
+            // onPress={() => alert('meow')}
+            onPress={() => console.log('\n\n\n\nuserinfo2: ', userInfo2)}
             buttonStyleCustom={{borderRadius: '15%', paddingVertical: 16}}
           />
         </View>
