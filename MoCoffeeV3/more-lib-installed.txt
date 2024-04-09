@@ -32,3 +32,6 @@ https://www.npmjs.com/package/moti
 
 #env hide api
 npm install react-native-dotenv
+
+#radio-button
+npm i expo-radio-button --save

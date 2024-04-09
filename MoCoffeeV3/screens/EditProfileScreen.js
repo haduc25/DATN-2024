@@ -8,8 +8,10 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  Picker,
 } from 'react-native';
 import {useState, useEffect} from 'react';
+import RadioButtonGroup, {RadioButtonItem} from 'expo-radio-button';
 
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -43,6 +45,7 @@ export default function EditProfileScreen({navigation}) {
     dob: 'Ngày sinh',
     createdAt: 'Ngày tạo tài khoản',
     location: 'Địa chỉ',
+    gtinh: 'Giới tính',
   });
 
   // handle form
@@ -71,12 +74,13 @@ export default function EditProfileScreen({navigation}) {
 
   console.log('userInfo.createdAt: ', userInfo.createdAt);
 
-  // version 2
+  // version 2: (Dữ lệu ban đầu)
   const [userInfo2, setUserInfo2] = useState({
     displayName: userInfo.displayName,
     email: userInfo.email,
     dob: userInfo.dob,
     createdAt: formatDate(userInfo.createdAt),
+    gtinh: userInfo.gtinh,
     // Thêm các trường thông tin khác cần thiết
   });
 
@@ -106,12 +110,6 @@ export default function EditProfileScreen({navigation}) {
   const handleImageLoad = () => {
     setLoading(false);
   };
-
-  // useEffect(() => {
-  //   console.log('loading2: ', loading);
-  // }, [loading]);
-
-  // console.log('EditProfileScreen_userInfo: ', userInfo);
 
   // button `Lưu`
   const [showButton, setShowButton] = useState(false);
@@ -221,6 +219,16 @@ export default function EditProfileScreen({navigation}) {
       }));
     }, timeout);
   };
+
+  // Giới tính
+  const [selectedGender, setSelectedGender] = useState('');
+
+  const handleGenderChange = gender => {
+    setSelectedGender(gender);
+  };
+
+  // Gtinh2
+  const [currentGioiTinh, setCurrentGioiTinh] = useState('test');
 
   return (
     <SafeAreaProvider>
@@ -783,6 +791,233 @@ export default function EditProfileScreen({navigation}) {
                   ) : null}
                 </View>
               </View>
+
+              {/* START: GIOI TINH */}
+              <View style={[styles.inputGroup]}>
+                <View
+                  style={[
+                    styles.inputUserInfo,
+                    isFocused.createdAt && styles.inputFocused,
+                  ]}>
+                  {/* <TextInput
+                    readOnly={true}
+                    onPressIn={() => {
+                      setErrorWithTimeout(
+                        'createdAt',
+                        'Bạn không thể chỉnh sửa Ngày tạo tài khoản.',
+                        5000,
+                      );
+                    }}
+                    style={[
+                      styles.input,
+                      isFocused.createdAt && {
+                        borderBottomColor: 'rgba(19, 19, 21, 1)',
+                      },
+                    ]}
+                    value={userInfo2.createdAt}
+                  /> */}
+                  <RadioButtonGroup
+                    containerStyle={{
+                      marginBottom: 10,
+                      flexDirection: 'row',
+                      borderWidth: 1,
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                    // selected={currentGioiTinh}
+                    selected={userInfo2.gtinh}
+                    // onSelected={value => setCurrentGioiTinh(value)}
+                    onSelected={value => {
+                      console.log('value: ', value);
+                      setCurrentGioiTinh(value);
+                      console.log('value2: ', value);
+                    }}
+                    radioBackground='lightblue'>
+                    <RadioButtonItem
+                      value='male'
+                      label={
+                        <View
+                          style={{
+                            paddingLeft: 6,
+                            flexDirection: 'row',
+                            borderWidth: 1,
+                            alignItems: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              color: 'red',
+                              fontSize: 15,
+                            }}>
+                            Nam
+                          </Text>
+                          <Ionicons
+                            name={'male'}
+                            size={18}
+                            color={'rgba(19, 19, 21, 0.6)'}
+                            style={
+                              [
+                                // {
+                                //   position: 'absolute',
+                                //   right: 0,
+                                //   bottom: 0,
+                                //   top: 10,
+                                // },
+                                // isFocused.createdAt && {
+                                //   color: 'rgba(19, 19, 21, 1)',
+                                // },
+                              ]
+                            }
+                          />
+                        </View>
+                      }
+                    />
+                    <RadioButtonItem
+                      value='female'
+                      label={
+                        <View
+                          style={{
+                            paddingLeft: 6,
+                            flexDirection: 'row',
+                            borderWidth: 1,
+                            alignItems: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              color: 'red',
+                              paddingLeft: 6,
+                              fontSize: 15,
+                            }}>
+                            Nữ
+                          </Text>
+                          <Ionicons
+                            name={'female'}
+                            size={18}
+                            color={'rgba(19, 19, 21, 0.6)'}
+                            style={
+                              [
+                                // {
+                                //   position: 'absolute',
+                                //   right: 0,
+                                //   bottom: 0,
+                                //   top: 10,
+                                // },
+                                // isFocused.createdAt && {
+                                //   color: 'rgba(19, 19, 21, 1)',
+                                // },
+                              ]
+                            }
+                          />
+                        </View>
+                      }
+                    />
+                    <RadioButtonItem
+                      value='other'
+                      label={
+                        <View
+                          style={{
+                            paddingLeft: 6,
+                            flexDirection: 'row',
+                            borderWidth: 1,
+                            alignItems: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              color: 'red',
+                              paddingLeft: 6,
+                              fontSize: 15,
+                            }}>
+                            Khác
+                          </Text>
+                          <Ionicons
+                            name={'male-female'}
+                            size={18}
+                            color={'rgba(19, 19, 21, 0.6)'}
+                            style={
+                              [
+                                // {
+                                //   position: 'absolute',
+                                //   right: 0,
+                                //   bottom: 0,
+                                //   top: 10,
+                                // },
+                                // isFocused.createdAt && {
+                                //   color: 'rgba(19, 19, 21, 1)',
+                                // },
+                              ]
+                            }
+                          />
+                        </View>
+                      }
+                    />
+                  </RadioButtonGroup>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.inputLabelTouchable}>
+                    <Text
+                      style={[
+                        styles.inputLabel,
+
+                        isFocused.createdAt || userInfo2.createdAt !== ''
+                          ? styles.inputLabelFocused
+                          : null,
+                      ]}>
+                      {formName.createdAt}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {errors.createdAt ? (
+                    <Text style={styles.inputHelper}>{errors.createdAt}</Text>
+                  ) : null}
+                </View>
+              </View>
+              <View style={{marginTop: 50}}>
+                <RadioButtonGroup
+                  containerStyle={{
+                    marginBottom: 10,
+                    flexDirection: 'row',
+                    borderWidth: 1,
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                  // selected={currentGioiTinh}
+                  selected={userInfo2.gtinh}
+                  // onSelected={value => setCurrentGioiTinh(value)}
+                  onSelected={value => {
+                    console.log('value: ', value);
+                    setCurrentGioiTinh(value);
+                    console.log('value2: ', value);
+                  }}
+                  radioBackground='lightblue'>
+                  <RadioButtonItem
+                    value='male'
+                    label={
+                      <Text
+                        style={{color: 'red', paddingLeft: 6, fontSize: 15}}>
+                        Nam
+                      </Text>
+                    }
+                  />
+                  <RadioButtonItem
+                    value='female'
+                    label={
+                      <Text
+                        style={{color: 'red', paddingLeft: 6, fontSize: 15}}>
+                        Nữ
+                      </Text>
+                    }
+                  />
+                  <RadioButtonItem
+                    value='other'
+                    label={
+                      <Text
+                        style={{color: 'red', paddingLeft: 6, fontSize: 15}}>
+                        Khác
+                      </Text>
+                    }
+                  />
+                </RadioButtonGroup>
+              </View>
+              {/* END: GIOI TINH */}
             </View>
           </View>
 
@@ -885,5 +1120,31 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginLeft: 10,
+  },
+
+  // Gioi tinh
+  label: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  radioButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 10,
+    borderRadius: 5,
+  },
+  selectedButton: {
+    backgroundColor: 'lightblue', // Màu sắc của nút radio khi được chọn
+  },
+  radioText: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  selectedGender: {
+    marginTop: 20,
+    fontSize: 16,
   },
 });
