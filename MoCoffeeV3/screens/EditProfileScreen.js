@@ -14,7 +14,6 @@ import {useState, useEffect} from 'react';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useRoute} from '@react-navigation/native';
-import {LinearGradient} from 'expo-linear-gradient';
 
 // Icons
 import {Ionicons, AntDesign} from '@expo/vector-icons';
@@ -85,34 +84,6 @@ export default function EditProfileScreen({navigation}) {
   const [initialValues, setInitialValues] = useState({...userInfo2});
 
   const handleInputChange2 = (key, value) => {
-    // setUserInfo2(prevState => {
-    //   const newState = {...prevState, [key]: value};
-    //   const hasValue = Object.values(newState).some(item => !!item);
-    //   setShowButton(hasValue);
-    //   console.log('value: ', value);
-    //   console.log('hasValue: ', hasValue);
-    //   return newState;
-    // });
-    // setUserInfo2(prevState => {
-    //   const newState = {...prevState, [key]: value};
-    //   const hasValueChanged = newState[key] !== prevState[key]; // So sánh giá trị mới với giá trị ban đầu
-    //   setShowButton(hasValueChanged);
-    //   console.log('value: ', value);
-    //   console.log('hasValueChanged: ', hasValueChanged);
-    //   console.log('newState: ', newState);
-    //   console.log('prevState: ', prevState);
-    //   console.log('newState[key]: ', newState[key]);
-    //   console.log('prevState[key]: ', prevState[key]);
-    //   console.log('hasValueChanged: ', hasValueChanged);
-    //   return newState;
-    // });
-    // // checker
-    // // Kiểm tra xem key có nằm trong danh sách các key của inputs không
-    // if (Object.keys(inputs).includes(key)) {
-    //   handleChangeText(key, value);
-    //   return;
-    // }
-    // my logic
     if (typeof value !== 'undefined' && value !== null) {
       // Kiểm tra xem value có tồn tại không
       setUserInfo2(prevState => {
@@ -133,14 +104,12 @@ export default function EditProfileScreen({navigation}) {
   const [loading, setLoading] = useState(true);
 
   const handleImageLoad = () => {
-    console.log('loading1: ', loading);
     setLoading(false);
-    console.log('loading2: ', loading);
   };
 
-  useEffect(() => {
-    console.log('loading2: ', loading);
-  }, [loading]);
+  // useEffect(() => {
+  //   console.log('loading2: ', loading);
+  // }, [loading]);
 
   // console.log('EditProfileScreen_userInfo: ', userInfo);
 
@@ -169,125 +138,15 @@ export default function EditProfileScreen({navigation}) {
     return `${day}/${month}/${year}`;
   }
 
-  //  date
-  const [date, setDate] = useState('');
-
-  // const handleChangeText = input => {
-  //   // Loại bỏ bất kỳ dấu / nào đã được nhập trước đó
-  //   input = input.replace(/\//g, '');
-
-  //   // Kiểm tra xem có thể chia chuỗi thành 3 phần dd, mm, yyyy không
-  //   if (input.length <= 2) {
-  //     setDate(input);
-  //   } else if (input.length <= 4) {
-  //     setDate(input.substr(0, 2) + '/' + input.substr(2));
-  //   } else if (input.length <= 8) {
-  //     setDate(
-  //       input.substr(0, 2) + '/' + input.substr(2, 2) + '/' + input.substr(4),
-  //     );
-  //   }
-  // };
-
-  // const handleBlur = () => {
-  //   if (date.length !== 10) {
-  //     Alert.alert('Lỗi', 'Vui lòng nhập đúng định dạng dd/mm/yyyy');
-  //     setDate('');
-  //     return;
-  //   }
-
-  //   const [day, month, year] = date.split('/').map(Number);
-  //   const currentDate = new Date();
-  //   const currentYear = currentDate.getFullYear();
-  //   const minYear = currentYear - 100;
-
-  //   if (
-  //     isNaN(day) ||
-  //     isNaN(month) ||
-  //     isNaN(year) ||
-  //     day < 1 ||
-  //     day > 31 ||
-  //     month < 1 ||
-  //     month > 12 ||
-  //     year < minYear ||
-  //     year > currentYear
-  //   ) {
-  //     Alert.alert('Lỗi', 'Ngày tháng năm không hợp lệ');
-  //     setDate('');
-  //   }
-  // };
-
-  const [inputs, setInputs] = useState({
-    createdAt: '',
-    dob: '',
-  });
-
   const [errors, setErrors] = useState({
+    uid: '',
     createdAt: '',
     dob: '',
+    email: '',
+    displayName: '',
   });
 
-  const handleChangeText = (field, value = '') => {
-    // // Loại bỏ bất kỳ dấu / nào đã được nhập trước đó
-    // value = value.replace(/\//g, '');
-
-    // // Kiểm tra xem có thể chia chuỗi thành 3 phần dd, mm, yyyy không
-    // console.log('field: ', field);
-    // console.log('value: ', value);
-    // console.log('inputs: ', inputs);
-    // if (value.length <= 2) {
-    //   setInputs(prevInputs => ({...prevInputs, [field]: value}));
-    //   console.log('input: 1', inputs);
-    // } else if (value.length <= 4) {
-    //   setInputs(prevInputs => ({
-    //     ...prevInputs,
-    //     [field]: value.substr(0, 2) + '/' + value.substr(2),
-    //   }));
-    //   console.log('input: 2', inputs);
-    // } else if (value.length <= 8) {
-    //   setInputs(prevInputs => ({
-    //     ...prevInputs,
-    //     [field]:
-    //       value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4),
-    //   }));
-    //   console.log('input: 3', inputs);
-    // }
-    // console.log('LAST inputs: ', inputs);
-    // console.log('inputs.date: ', inputs.date);
-    // handleInputChange2('createdAt', inputs.date);
-
-    // // ###############
-    // let updatedValue;
-
-    // if (value.length <= 2) {
-    //   updatedValue = value;
-    // } else if (value.length <= 4) {
-    //   updatedValue = value.substr(0, 2) + '/' + value.substr(2);
-    // } else if (value.length <= 8) {
-    //   updatedValue =
-    //     value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4);
-    // }
-
-    // console.log('updatedValue: ', updatedValue);
-    // handleInputChange2('createdAt', updatedValue);
-
-    // value = value.replace(/\//g, '');
-
-    // updatedValue = value;
-    // try {
-    //   if (value.length <= 2) {
-    //   } else if (value.length <= 4) {
-    //     updatedValue = value.substr(0, 2) + '/' + value.substr(2);
-    //   } else if (value.length <= 8) {
-    //     updatedValue =
-    //       value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4);
-    //   }
-
-    //   // console.log('Updated value:', updatedValue);
-    //   handleInputChange2('createdAt', updatedValue);
-    // } catch (error) {
-    //   console.log('error: ', error);
-    // }
-
+  const handleChangeTextForDatePicker = (field, value = '') => {
     if (typeof value !== 'undefined' && value !== null) {
       // Kiểm tra xem value có tồn tại không
       value = value.replace(/\//g, '');
@@ -301,12 +160,11 @@ export default function EditProfileScreen({navigation}) {
           value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4);
       }
 
-      // console.log('Updated value:', updatedValue);
-      handleInputChange2('createdAt', updatedValue);
+      handleInputChange2(field, updatedValue);
     }
   };
 
-  const handleBlur = field => {
+  const handleBlurForDatePicker = field => {
     const value = userInfo2[field];
 
     if (typeof value !== 'undefined' && value !== null && value.length === 10) {
@@ -330,7 +188,6 @@ export default function EditProfileScreen({navigation}) {
           ...prevErrors,
           [field]: 'Ngày tháng năm không hợp lệ',
         }));
-        setInputs(prevInputs => ({...prevInputs, [field]: ''}));
         handleInputChange2(field, ''); // Truyền giá trị rỗng vào handleInputChange2
       } else {
         // Pass qua tất cả => Chuẩn rồi
@@ -345,6 +202,24 @@ export default function EditProfileScreen({navigation}) {
     }
 
     handleInputBlur(field);
+  };
+
+  // set error
+  const setErrorWithTimeout = (field, message, timeout) => {
+    // Thiết lập lỗi với thông báo và trường xác định (field)
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [field]: message,
+    }));
+
+    // Thiết lập thời gian chờ để xóa lỗi sau khi đã được hiển thị
+    setTimeout(() => {
+      // Xóa lỗi bằng cách thiết lập lại thông báo thành chuỗi rỗng
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [field]: '',
+      }));
+    }, timeout);
   };
 
   return (
@@ -385,35 +260,66 @@ export default function EditProfileScreen({navigation}) {
           {userInfo && userInfo.photoURL && (
             <TouchableOpacity
               onPress={() => alert('Upload new image')}
-              style={{paddingVertical: 20, opacity: loading ? 0 : 1}}>
-              <LinearGradient
-                colors={['yellow', 'pink', 'teal', 'cyan', 'magenta']}
+              style={{
+                paddingVertical: 20,
+                minHeight: 170,
+              }}>
+              {/* start */}
+              <View
                 style={{
-                  width: 160,
-                  height: 160,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 999,
+                  width: 170, // Adjust this size as needed
+                  height: 170, // Adjust this size as needed
+                  borderRadius: 85, // Half of width and height for a perfect circle
+                  overflow: 'hidden', // Clip child components to the view's bounds
+                  position: 'relative', // Position the linear gradient absolutely within the view
                 }}>
                 <Image
                   style={{
-                    width: 150,
-                    height: 150,
+                    opacity: loading ? 0 : 1,
+                    width: '100%',
+                    height: '100%',
                     resizeMode: 'cover',
-                    borderRadius: 999,
-                    position: 'relative',
+                    position: 'absolute',
                   }}
                   source={{uri: userInfo.photoURL}}
                   onLoad={handleImageLoad}
                 />
-              </LinearGradient>
+                <View
+                  style={{
+                    opacity: loading ? 0 : 1,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 85,
+                    borderWidth: 3, // Adjust border width as needed
+                    borderColor: 'transparent', // Set transparent border color
+                    borderBottomColor: 'red', // Example: First color of the gradient
+                    borderRightColor: 'green', // Example: Second color of the gradient
+                    borderLeftColor: 'blue', // Example: Third color of the gradient
+                    borderTopColor: 'yellow', // Example: Fourth color of the gradient
+                    borderBottomLeftRadiusColor: 'orange', // Fifth color of the gradient
+                    borderBottomRightRadiusColor: 'purple', // Sixth color of the gradient
+                    borderTopLeftRadiusColor: 'pink', // Seventh color of the gradient
+                    borderTopRightRadiusColor: 'cyan', // Eighth color of the gradient
+                  }}
+                />
+              </View>
+              {/* end */}
               {loading && (
                 <ActivityIndicator
-                  style={{position: 'absolute', alignSelf: 'center'}}
+                  style={{
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    bottom: 0,
+                    top: 0,
+                  }}
                 />
               )}
               <View
                 style={{
+                  opacity: loading ? 0 : 1,
                   zIndex: 999,
                   position: 'absolute',
                   bottom: 28,
@@ -429,68 +335,6 @@ export default function EditProfileScreen({navigation}) {
               </View>
             </TouchableOpacity>
           )}
-
-          {/* start */}
-          <View
-            style={{
-              width: 170, // Adjust this size as needed
-              height: 170, // Adjust this size as needed
-              borderRadius: 85, // Half of width and height for a perfect circle
-              overflow: 'hidden', // Clip child components to the view's bounds
-              position: 'relative', // Position the linear gradient absolutely within the view
-            }}>
-            <Image
-              style={{
-                width: '100%',
-                height: '100%',
-                resizeMode: 'cover',
-                position: 'absolute',
-              }}
-              source={{uri: userInfo.photoURL}}
-            />
-            {/* Linear Gradient for the border */}
-            <View
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                borderRadius: 85,
-                borderWidth: 3, // Adjust border width as needed
-                borderColor: 'transparent', // Set transparent border color
-                borderBottomColor: 'red', // Example: First color of the gradient
-                borderRightColor: 'green', // Example: Second color of the gradient
-                borderLeftColor: 'blue', // Example: Third color of the gradient
-                borderTopColor: 'yellow', // Example: Fourth color of the gradient
-                borderBottomLeftRadiusColor: 'orange', // Fifth color of the gradient
-                borderBottomRightRadiusColor: 'purple', // Sixth color of the gradient
-                borderTopLeftRadiusColor: 'pink', // Seventh color of the gradient
-                borderTopRightRadiusColor: 'cyan', // Eighth color of the gradient
-              }}
-            />
-          </View>
-          {/* end */}
-
-          {/* start2 */}
-          <View style={{flex: 1}}>
-            <Image
-              style={{
-                width: '100%',
-                height: '100%',
-                resizeMode: 'cover',
-                position: 'absolute',
-              }}
-              source={{uri: userInfo.photoURL}}
-              onLoad={handleImageLoad}
-            />
-            {loading && (
-              <ActivityIndicator
-                style={{position: 'absolute', alignSelf: 'center'}}
-              />
-            )}
-          </View>
-          {/* end2 */}
         </View>
 
         {/* Thông tin cá nhân */}
@@ -520,7 +364,13 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.userID && styles.inputFocused,
                   ]}>
                   <TextInput
-                    onPressIn={() => alert('Bạn không thể chỉnh sửa UID.')}
+                    onPressIn={() => {
+                      setErrorWithTimeout(
+                        'uid',
+                        'Bạn không thể chỉnh sửa UID.',
+                        5000,
+                      );
+                    }}
                     readOnly={true}
                     style={[
                       styles.input,
@@ -528,19 +378,9 @@ export default function EditProfileScreen({navigation}) {
                         borderBottomColor: 'rgba(19, 19, 21, 1)',
                       },
                     ]}
-                    // onFocus={() => {
-                    //   if (userInfo.uid) {
-                    //     setIsFocused(true);
-                    //     return;
-                    //   }
-                    // }}
-                    onFocus={() => handleInputFocus('userID')}
-                    onBlur={() => handleInputBlur('userID')}
-                    // onBlur={() => setIsFocused(false)}
-                    // onChangeText={text => setInputValue(text)}
-                    onChangeText={text => setInputValue2(text)}
-                    // value={inputValue}
-                    // value={inputValue2}
+                    // onFocus={() => handleInputFocus('userID')}
+                    // onBlur={() => handleInputBlur('userID')}
+                    // onChangeText={text => setInputValue2(text)}
                     value={limitText(userInfo.uid, 25)}
                   />
                   <TouchableOpacity
@@ -549,15 +389,9 @@ export default function EditProfileScreen({navigation}) {
                     <Text
                       style={[
                         styles.inputLabel,
-                        // isFocused || inputValue !== ''
-                        //   ? styles.inputLabelFocused
-                        //   : null,
                         isFocused.userID || userInfo.uid !== ''
                           ? styles.inputLabelFocused
                           : null,
-                        // isFocused || inputValue2 !== ''
-                        //   ? styles.inputLabelFocused
-                        //   : null,
                       ]}>
                       {/* Tên input (label) */}
                       {formName.userID}
@@ -579,7 +413,9 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                   />
-                  <Text style={styles.inputHelper}>Message Text</Text>
+                  {errors.uid ? (
+                    <Text style={styles.inputHelper}>{errors.uid}</Text>
+                  ) : null}
                 </View>
               </View>
 
@@ -591,29 +427,17 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.displayName && styles.inputFocused,
                   ]}>
                   <TextInput
-                    // style={styles.input}
                     style={[
                       styles.input,
                       isFocused.displayName && {
                         borderBottomColor: 'rgba(19, 19, 21, 1)',
                       },
                     ]}
-                    // onFocus={() => {
-                    //   if (userInfo2.displayName) {
-                    //     setIsFocused(true);
-                    //     return;
-                    //   }
-                    // }}
-                    // onBlur={() => setIsFocused(false)}
                     onFocus={() => handleInputFocus('displayName')}
                     onBlur={() => handleInputBlur('displayName')}
-                    // onChangeText={text => setInputValue(text)}
-                    // onChangeText={text => setInputValue2(text)}
                     onChangeText={text =>
                       handleInputChange2('displayName', text)
                     }
-                    // value={inputValue}
-                    // value={inputValue2}
                     value={userInfo2.displayName}
                   />
                   <TouchableOpacity
@@ -652,7 +476,9 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                   />
-                  <Text style={styles.inputHelper}>Message Text</Text>
+                  {errors.displayName ? (
+                    <Text style={styles.inputHelper}>{errors.displayName}</Text>
+                  ) : null}
                 </View>
               </View>
 
@@ -670,9 +496,17 @@ export default function EditProfileScreen({navigation}) {
                         borderBottomColor: 'rgba(19, 19, 21, 1)',
                       },
                     ]}
-                    onFocus={() => handleInputFocus('email')}
-                    onBlur={() => handleInputBlur('email')}
-                    onChangeText={text => handleInputChange2('email', text)}
+                    onPressIn={() => {
+                      setErrorWithTimeout(
+                        'email',
+                        'Bạn không thể chỉnh sửa E-mail.',
+                        5000,
+                      );
+                    }}
+                    readOnly={true}
+                    // onFocus={() => handleInputFocus('email')}
+                    // onBlur={() => handleInputBlur('email')}
+                    // onChangeText={text => handleInputChange2('email', text)}
                     value={userInfo2.email}
                   />
                   <TouchableOpacity
@@ -705,7 +539,9 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                   />
-                  <Text style={styles.inputHelper}>Message Text</Text>
+                  {errors.email ? (
+                    <Text style={styles.inputHelper}>{errors.email}</Text>
+                  ) : null}
                 </View>
               </View>
 
@@ -761,7 +597,9 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                   />
-                  <Text style={styles.inputHelper}>Message Text</Text>
+                  {errors.phoneNumber ? (
+                    <Text style={styles.inputHelper}>{errors.phoneNumber}</Text>
+                  ) : null}
                 </View>
               </View>
 
@@ -814,7 +652,9 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                   />
-                  <Text style={styles.inputHelper}>Message Text</Text>
+                  {errors.location ? (
+                    <Text style={styles.inputHelper}>{errors.location}</Text>
+                  ) : null}
                 </View>
               </View>
 
@@ -833,8 +673,12 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                     onFocus={() => handleInputFocus('dob')}
-                    onBlur={() => handleInputBlur('dob')}
-                    onChangeText={text => handleInputChange2('dob', text)}
+                    onChangeText={text =>
+                      handleChangeTextForDatePicker('dob', text)
+                    }
+                    onBlur={() => handleBlurForDatePicker('dob')}
+                    maxLength={10}
+                    keyboardType='numeric'
                     value={userInfo2.dob}
                   />
                   <TouchableOpacity
@@ -867,7 +711,9 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                   />
-                  <Text style={styles.inputHelper}>Message Text</Text>
+                  {errors.dob ? (
+                    <Text style={styles.inputHelper}>{errors.dob}</Text>
+                  ) : null}
                 </View>
               </View>
 
@@ -879,20 +725,28 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.createdAt && styles.inputFocused,
                   ]}>
                   <TextInput
+                    readOnly={true}
+                    onPressIn={() => {
+                      setErrorWithTimeout(
+                        'createdAt',
+                        'Bạn không thể chỉnh sửa Ngày tạo tài khoản.',
+                        5000,
+                      );
+                    }}
                     style={[
                       styles.input,
                       isFocused.createdAt && {
                         borderBottomColor: 'rgba(19, 19, 21, 1)',
                       },
                     ]}
-                    // value={inputs.date}
                     value={userInfo2.createdAt}
-                    onFocus={() => handleInputFocus('createdAt')}
-                    onChangeText={text => handleChangeText('date', text)}
-                    // onBlur={() => handleBlur('date')}
-                    onBlur={() => handleBlur('createdAt')}
-                    maxLength={10}
-                    keyboardType='numeric'
+                    // onFocus={() => handleInputFocus('createdAt')}
+                    // onChangeText={text =>
+                    //   handleChangeTextForDatePicker('createdAt', text)
+                    // }
+                    // onBlur={() => handleBlurForDatePicker('createdAt')}
+                    // maxLength={10}
+                    // keyboardType='numeric'
                   />
                   <TouchableOpacity
                     activeOpacity={1}
@@ -908,9 +762,9 @@ export default function EditProfileScreen({navigation}) {
                       {formName.createdAt}
                     </Text>
                   </TouchableOpacity>
-                  <AntDesign
-                    name={'mail'}
-                    size={18}
+                  <Ionicons
+                    name={'time-outline'}
+                    size={20}
                     color={'rgba(19, 19, 21, 0.6)'}
                     style={[
                       {
@@ -925,97 +779,14 @@ export default function EditProfileScreen({navigation}) {
                     ]}
                   />
                   {errors.createdAt ? (
-                    // <Text style={styles.errorText}>{errors.date}</Text>
                     <Text style={styles.inputHelper}>{errors.createdAt}</Text>
                   ) : null}
                 </View>
-              </View>
-
-              {/* Picker date */}
-              <View>
-                <TextInput
-                  value={inputs.date}
-                  onChangeText={text => handleChangeText('date', text)}
-                  onBlur={() => handleBlur('date')}
-                  placeholder='dd/mm/yyyy'
-                  maxLength={10}
-                  keyboardType='numeric'
-                  style={styles.input}
-                />
-                {errors.date ? (
-                  <Text style={styles.errorText}>{errors.date}</Text>
-                ) : null}
-              </View>
-              <View>
-                <TextInput
-                  value={inputs.dob}
-                  onChangeText={text => handleChangeText('dob', text)}
-                  onBlur={() => handleBlur('dob')}
-                  placeholder='dd/mm/yyyy'
-                  maxLength={10}
-                  keyboardType='numeric'
-                  style={styles.input}
-                />
-                {errors.dob ? (
-                  <Text style={styles.errorText}>{errors.dob}</Text>
-                ) : null}
               </View>
             </View>
           </View>
 
           {/* END: NEW TEXT INPUT */}
-
-          {/* <View style={{borderWidth: 1, marginTop: 40}}>
-            <Button
-              title={'Lưu thay đổi'}
-              onPress={() => alert('meow')}
-              buttonStyleCustom={{borderRadius: '15%'}}
-            />
-          </View> */}
-
-          {/*  */}
-          {/* <LinearGradient
-            colors={['red', 'green', 'blue', 'yellow', 'orange']}
-            style={{
-              width: '100%',
-              height: 50,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 10,
-            }}>
-            <Text
-              style={[
-                {
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase',
-                  color: '#fff',
-                },
-              ]}>
-              'children'
-            </Text>
-          </LinearGradient> */}
-
-          {/* <LinearGradient
-            colors={['yellow', 'pink', 'teal', 'cyan', 'magenta']}
-            style={{
-              width: 210,
-              height: 210,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 999,
-            }}>
-            <Image
-              style={{
-                width: 200,
-                height: 200,
-                resizeMode: 'cover',
-                borderRadius: 999,
-                position: 'relative',
-              }}
-              source={{uri: userInfo.photoURL}}
-            />
-          </LinearGradient> */}
         </View>
       </ScrollView>
       {showButton && (
@@ -1073,14 +844,6 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(19, 19, 21, 1)', // Adjust as per your design
   },
   input: {
-    // borderBottomWidth: 1,
-    // borderBottomColor: 'rgba(19, 19, 21, 0.6)', // Adjust as per your design
-    // height: 40,
-    // fontSize: 17, // Adjust as per your design
-    // paddingLeft: 10, // Adjust as per your design
-    // paddingRight: 40, // Adjust as per your design
-    // marginBottom: 5, // Adjust as per your design
-
     borderBottomWidth: 1.5,
     borderBottomColor: 'rgba(19, 19, 21, .6)', // Adjust as per your design
     height: 40,
