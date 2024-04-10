@@ -35,3 +35,32 @@ npm install react-native-dotenv
 
 #radio-button
 npm i expo-radio-button --save
+
+#handle image (picker)
+expo-file-system
+npx expo install expo-image-picker
+
+#app.json
+#giống bên dưới nhưng đầy đủ
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ]
+  }
+}
+
+# giống bên trên nhưng gọn hơn
+"plugins": [
+    [
+    "expo-image-picker",
+    {
+        "photosPermission": "The app accesses your photos to let you share them with your friends."
+    }
+    ]
+],
