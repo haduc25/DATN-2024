@@ -29,6 +29,9 @@ import {
   getDownloadURL,
   uploadBytesResumable,
   updateProfile,
+  db,
+  doc,
+  updateDoc,
 } from '../firebase';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -295,9 +298,10 @@ export default function EditProfileScreen({navigation}) {
     // Tiến hành lưu thay đổi
     // ################### UPLOAD IMAGE ################### //
     // Sau khi lưu thành công, có thể thực hiện các hành động khác
-    console.log('THIS DATA WILL SAVING TO DATABASE(userInfo2): ', userInfo2);
+    // console.log('THIS DATA WILL SAVING TO DATABASE(userInfo2): ', userInfo2);
     // check tiếp
     console.log('changedFields: ', changedFields);
+    updateFirebase();
 
     // xử lý
     // handleUploadUserImage();
@@ -323,7 +327,7 @@ export default function EditProfileScreen({navigation}) {
       // case khi mà đã chọn vào image (selected)
       // setImageURI(result.assets[0].uri);
       handleValueChange('photoURL', result.assets[0].uri);
-      console.log('result.assets[0].uri: ', result.assets[0].uri);
+      // console.log('result.assets[0].uri: ', result.assets[0].uri);
     }
   };
 
@@ -366,6 +370,9 @@ export default function EditProfileScreen({navigation}) {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
             console.log('File available at', downloadURL);
 
+            // update on Firestore
+            await updateValueToFireStore('photoURL', downloadURL); // Gọi hàm cập nhật ảnh vào Firestore
+
             // update on AUTH
             handleUpdateToAuth(downloadURL);
 
@@ -404,6 +411,87 @@ export default function EditProfileScreen({navigation}) {
     } catch (error) {
       console.error('Lỗi khi cập nhật ảnh đại diện:', error);
       alert('Đã xảy ra lỗi khi cập nhật ảnh đại diện!');
+    }
+  };
+
+  // HANDLE FIRESTORE
+  // // V1
+  // const updateFirebase = () => {
+  //   // Lặp qua các key trong changedFields
+  //   for (const key in changedFields) {
+  //     if (Object.hasOwnProperty.call(changedFields, key)) {
+  //       // Lấy giá trị mới của key
+  //       const value = changedFields[key];
+
+  //       // Thực hiện cập nhật giá trị tương ứng trong cơ sở dữ liệu
+  //       updateDoc(doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), {
+  //         [key]: value,
+  //       })
+  //         .then(() => {
+  //           console.log(`${key} updated successfully!`);
+  //         })
+  //         .catch(error => {
+  //           console.error(`Error updating ${key}:`, error);
+  //         });
+  //     }
+  //   }
+  // };
+
+  // V2: Thêm phân loại để update cho cả auth
+  // HANDLE FIRESTORE
+  const updateFirebase = async () => {
+    // Lặp qua các key trong changedFields
+    for (const key in changedFields) {
+      if (Object.hasOwnProperty.call(changedFields, key)) {
+        // Lấy giá trị mới của key
+        const value = changedFields[key];
+
+        // Nếu key là 'photoURL', gọi hàm handleUploadUserImage và chờ cho đến khi hoàn thành
+        if (key === 'photoURL') {
+          // START: FUNC HANDLE UPLOAD USER IMAGE
+          handleUploadUserImage();
+          return;
+          // END: FUNC HANDLE UPLOAD USER IMAGE
+        }
+
+        // Thực hiện cập nhật giá trị tương ứng trong cơ sở dữ liệu
+        updateValueToFireStore(key, value);
+        // try {
+        //   await updateDoc(doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), {
+        //     [key]: value,
+        //   });
+        //   console.log(`${key} updated successfully!`);
+        // } catch (error) {
+        //   console.error(`Error updating ${key}:`, error);
+        //   // Bạn có thể xử lý lỗi tại đây
+        // }
+      }
+    }
+  };
+
+  const updateFirestore = async (key, value) => {
+    try {
+      await updateDoc(doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), {
+        [key]: value,
+      });
+      console.log(`${key} updated successfully!`);
+    } catch (error) {
+      console.error(`Error updating ${key}:`, error);
+      // Bạn có thể xử lý lỗi tại đây
+    }
+  };
+
+  const updateValueToFireStore = async (key, value) => {
+    try {
+      await updateDoc(
+        doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), // Thay đổi địa chỉ của tài liệu tương ứng trong Firestore
+        {
+          [key]: value, // Thay đổi tên trường cần cập nhật nếu cần
+        },
+      );
+      console.log(`${key} updated successfully!`);
+    } catch (error) {
+      console.error(`Error updating ${key}:`, error);
     }
   };
 
@@ -620,6 +708,7 @@ export default function EditProfileScreen({navigation}) {
                       handleValueChange('displayName', text)
                     }
                     value={userInfo2.displayName}
+                    maxLength={24}
                   />
                   <TouchableOpacity
                     activeOpacity={1}
@@ -734,6 +823,7 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.phoneNumber && styles.inputFocused,
                   ]}>
                   <TextInput
+                    maxLength={10}
                     keyboardType='numeric'
                     style={[
                       styles.input,
@@ -802,7 +892,7 @@ export default function EditProfileScreen({navigation}) {
                     onFocus={() => handleInputFocus('location')}
                     onBlur={() => handleInputBlur('location')}
                     onChangeText={text => handleValueChange('location', text)}
-                    value={userInfo2.location}
+                    // value={userInfo2.location}  (vì là array cần xử lý sang dạng string)
                   />
                   <TouchableOpacity
                     activeOpacity={1}

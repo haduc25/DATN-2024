@@ -59,7 +59,7 @@ export default function RegisterScreen({navigation}) {
           lastLoginAt,
           role: 'user',
           dob: '25/09/2001',
-          gtinh: 'nam',
+          gtinh: 'male',
           location: [],
           itemFavorited: [],
           itemOrder: [],
@@ -67,7 +67,7 @@ export default function RegisterScreen({navigation}) {
         })
           .then(() => {
             // Data create successfully!
-            console.log('Data created');
+            // console.log('Data created');
             alert('Data created');
           })
           .catch(error => {
@@ -131,11 +131,11 @@ export default function RegisterScreen({navigation}) {
       alert('ĐĂNG KÝ THÀNH CÔNG!');
       // setErrorMsg('valid');
 
-      // // Quay sang đăng nhập
-      // navi.reset({
-      //   index: 0,
-      //   routes: [{name: 'LoginScreen'}],
-      // });
+      // Quay sang đăng nhập
+      navi.reset({
+        index: 0,
+        routes: [{name: 'LoginScreen'}],
+      });
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;

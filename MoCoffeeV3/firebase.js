@@ -1,6 +1,15 @@
 // Import the functions you need from the SDKs you need
 import {initializeApp} from 'firebase/app';
-import {getFirestore} from 'firebase/firestore';
+import {
+  getFirestore,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import {
   getStorage,
   ref,
@@ -69,4 +78,11 @@ export {
   uploadBytesResumable,
   createUserWithEmailAndPassword,
   updateProfile,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
 };
