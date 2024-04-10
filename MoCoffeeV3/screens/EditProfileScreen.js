@@ -220,16 +220,6 @@ export default function EditProfileScreen({navigation}) {
     }, timeout);
   };
 
-  // Giới tính
-  const [selectedGender, setSelectedGender] = useState('');
-
-  const handleGenderChange = gender => {
-    setSelectedGender(gender);
-  };
-
-  // Gtinh2
-  const [currentGioiTinh, setCurrentGioiTinh] = useState('test');
-
   return (
     <SafeAreaProvider>
       <CustomStatusBar
@@ -253,7 +243,7 @@ export default function EditProfileScreen({navigation}) {
         }}>
         <View
           style={{
-            borderWidth: 1,
+            // borderWidth: 1,
             alignItems: 'center',
             //
             marginTop: 10,
@@ -348,17 +338,14 @@ export default function EditProfileScreen({navigation}) {
         {/* Thông tin cá nhân */}
         <View
           style={{
-            borderWidth: 1,
+            // borderWidth: 1,
             marginTop: 10,
             paddingHorizontal: 14,
 
             // Nháp
-            height: 2500,
+            // height: 1000,
+            paddingBottom: 300,
           }}>
-          <Text style={{fontSize: 18, fontWeight: 'bold', paddingTop: 20}}>
-            Thông tin cá nhân
-          </Text>
-
           {/* START: NEW TEXT INPUT */}
           <View style={styles.container}>
             {/* Thông tin cá nhân */}
@@ -794,33 +781,13 @@ export default function EditProfileScreen({navigation}) {
 
               {/* START: GIOI TINH */}
               <View style={[styles.inputGroup]}>
-                <View
-                  style={[
-                    styles.inputUserInfo,
-                    isFocused.createdAt && styles.inputFocused,
-                  ]}>
-                  {/* <TextInput
-                    readOnly={true}
-                    onPressIn={() => {
-                      setErrorWithTimeout(
-                        'createdAt',
-                        'Bạn không thể chỉnh sửa Ngày tạo tài khoản.',
-                        5000,
-                      );
-                    }}
-                    style={[
-                      styles.input,
-                      isFocused.createdAt && {
-                        borderBottomColor: 'rgba(19, 19, 21, 1)',
-                      },
-                    ]}
-                    value={userInfo2.createdAt}
-                  /> */}
+                <View>
                   <RadioButtonGroup
                     containerStyle={{
                       marginBottom: 10,
+                      marginTop: 14,
                       flexDirection: 'row',
-                      borderWidth: 1,
+                      // borderWidth: 1,
                       alignItems: 'center',
                       justifyContent: 'space-between',
                     }}
@@ -829,7 +796,8 @@ export default function EditProfileScreen({navigation}) {
                     // onSelected={value => setCurrentGioiTinh(value)}
                     onSelected={value => {
                       console.log('value: ', value);
-                      setCurrentGioiTinh(value);
+                      // setCurrentGioiTinh(value);
+                      handleInputChange2('gtinh', value);
                       console.log('value2: ', value);
                     }}
                     radioBackground='lightblue'>
@@ -840,7 +808,7 @@ export default function EditProfileScreen({navigation}) {
                           style={{
                             paddingLeft: 6,
                             flexDirection: 'row',
-                            borderWidth: 1,
+                            // borderWidth: 1,
                             alignItems: 'center',
                           }}>
                           <Text
@@ -854,19 +822,7 @@ export default function EditProfileScreen({navigation}) {
                             name={'male'}
                             size={18}
                             color={'rgba(19, 19, 21, 0.6)'}
-                            style={
-                              [
-                                // {
-                                //   position: 'absolute',
-                                //   right: 0,
-                                //   bottom: 0,
-                                //   top: 10,
-                                // },
-                                // isFocused.createdAt && {
-                                //   color: 'rgba(19, 19, 21, 1)',
-                                // },
-                              ]
-                            }
+                            style={{paddingLeft: 2}}
                           />
                         </View>
                       }
@@ -878,7 +834,7 @@ export default function EditProfileScreen({navigation}) {
                           style={{
                             paddingLeft: 6,
                             flexDirection: 'row',
-                            borderWidth: 1,
+                            // borderWidth: 1,
                             alignItems: 'center',
                           }}>
                           <Text
@@ -893,19 +849,7 @@ export default function EditProfileScreen({navigation}) {
                             name={'female'}
                             size={18}
                             color={'rgba(19, 19, 21, 0.6)'}
-                            style={
-                              [
-                                // {
-                                //   position: 'absolute',
-                                //   right: 0,
-                                //   bottom: 0,
-                                //   top: 10,
-                                // },
-                                // isFocused.createdAt && {
-                                //   color: 'rgba(19, 19, 21, 1)',
-                                // },
-                              ]
-                            }
+                            style={{paddingLeft: 2}}
                           />
                         </View>
                       }
@@ -917,7 +861,7 @@ export default function EditProfileScreen({navigation}) {
                           style={{
                             paddingLeft: 6,
                             flexDirection: 'row',
-                            borderWidth: 1,
+                            // borderWidth: 1,
                             alignItems: 'center',
                           }}>
                           <Text
@@ -932,19 +876,7 @@ export default function EditProfileScreen({navigation}) {
                             name={'male-female'}
                             size={18}
                             color={'rgba(19, 19, 21, 0.6)'}
-                            style={
-                              [
-                                // {
-                                //   position: 'absolute',
-                                //   right: 0,
-                                //   bottom: 0,
-                                //   top: 10,
-                                // },
-                                // isFocused.createdAt && {
-                                //   color: 'rgba(19, 19, 21, 1)',
-                                // },
-                              ]
-                            }
+                            style={{paddingLeft: 2}}
                           />
                         </View>
                       }
@@ -953,69 +885,11 @@ export default function EditProfileScreen({navigation}) {
                   <TouchableOpacity
                     activeOpacity={1}
                     style={styles.inputLabelTouchable}>
-                    <Text
-                      style={[
-                        styles.inputLabel,
-
-                        isFocused.createdAt || userInfo2.createdAt !== ''
-                          ? styles.inputLabelFocused
-                          : null,
-                      ]}>
-                      {formName.createdAt}
+                    <Text style={[styles.inputLabel, styles.inputLabelFocused]}>
+                      {formName.gtinh}
                     </Text>
                   </TouchableOpacity>
-
-                  {errors.createdAt ? (
-                    <Text style={styles.inputHelper}>{errors.createdAt}</Text>
-                  ) : null}
                 </View>
-              </View>
-              <View style={{marginTop: 50}}>
-                <RadioButtonGroup
-                  containerStyle={{
-                    marginBottom: 10,
-                    flexDirection: 'row',
-                    borderWidth: 1,
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                  // selected={currentGioiTinh}
-                  selected={userInfo2.gtinh}
-                  // onSelected={value => setCurrentGioiTinh(value)}
-                  onSelected={value => {
-                    console.log('value: ', value);
-                    setCurrentGioiTinh(value);
-                    console.log('value2: ', value);
-                  }}
-                  radioBackground='lightblue'>
-                  <RadioButtonItem
-                    value='male'
-                    label={
-                      <Text
-                        style={{color: 'red', paddingLeft: 6, fontSize: 15}}>
-                        Nam
-                      </Text>
-                    }
-                  />
-                  <RadioButtonItem
-                    value='female'
-                    label={
-                      <Text
-                        style={{color: 'red', paddingLeft: 6, fontSize: 15}}>
-                        Nữ
-                      </Text>
-                    }
-                  />
-                  <RadioButtonItem
-                    value='other'
-                    label={
-                      <Text
-                        style={{color: 'red', paddingLeft: 6, fontSize: 15}}>
-                        Khác
-                      </Text>
-                    }
-                  />
-                </RadioButtonGroup>
               </View>
               {/* END: GIOI TINH */}
             </View>
@@ -1053,7 +927,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginTop: 30,
     borderColor: 'whitesmoke',
-    borderWidth: 1,
+    // borderWidth: 1, (có thể bật hoặc không vì màu rất mờ)
     padding: 21,
     borderRadius: 4,
   },
@@ -1062,7 +936,6 @@ const styles = StyleSheet.create({
     marginBottom: 45,
     fontSize: 18,
     fontWeight: 'bold',
-    paddingTop: 20,
   },
   inputGroup: {
     marginBottom: 15,
