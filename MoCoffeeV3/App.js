@@ -55,8 +55,8 @@ export default function App() {
           // initialRouteName={'ImageAnimation'}
           // initialRouteName={'DynamicHeaderScrollView'}
 
-          // initialRouteName={loginName} //current
-          initialRouteName={'UploadImageToStorageDemo'} //test
+          initialRouteName={loginName} //current
+          // initialRouteName={'UploadImageToStorageDemo'} //test
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;

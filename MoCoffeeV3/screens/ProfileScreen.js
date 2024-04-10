@@ -220,6 +220,7 @@ export default function ProfileScreen({navigation}) {
                 gtinh: userInfo.gtinh,
                 role: userInfo.role,
                 createdAt: userInfo.createdAt,
+                location: userInfo.location,
               };
               navi.navigate('Chỉnh sửa hồ sơ', {userInfo: userInfo2});
             }

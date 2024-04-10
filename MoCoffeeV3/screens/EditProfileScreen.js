@@ -8,7 +8,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
-  Picker,
+  LogBox,
 } from 'react-native';
 import {useState, useEffect} from 'react';
 import RadioButtonGroup, {RadioButtonItem} from 'expo-radio-button';
@@ -20,6 +20,17 @@ import {useRoute} from '@react-navigation/native';
 // Icons
 import {Ionicons, AntDesign} from '@expo/vector-icons';
 import Button from '../components/Button';
+
+// Firebase: Storage (Upload Image)
+import {
+  auth,
+  storage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+  updateProfile,
+} from '../firebase';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function EditProfileScreen({navigation}) {
   const route = useRoute();
@@ -33,8 +44,6 @@ export default function EditProfileScreen({navigation}) {
     createdAt: false,
     location: false, // true => có dữ liệu, ngược lại
   });
-  const [inputValue, setInputValue] = useState('Email');
-  const [inputValue2, setInputValue2] = useState('Meow');
 
   // Form Name
   const [formName, setFormName] = useState({
@@ -46,6 +55,7 @@ export default function EditProfileScreen({navigation}) {
     createdAt: 'Ngày tạo tài khoản',
     location: 'Địa chỉ',
     gtinh: 'Giới tính',
+    uploadedImageName: null,
   });
 
   // handle form
@@ -72,7 +82,7 @@ export default function EditProfileScreen({navigation}) {
     }));
   };
 
-  console.log('userInfo.createdAt: ', userInfo.createdAt);
+  // console.log('userInfo.createdAt: ', userInfo.createdAt);
 
   // version 2: (Dữ lệu ban đầu)
   const [userInfo2, setUserInfo2] = useState({
@@ -81,20 +91,45 @@ export default function EditProfileScreen({navigation}) {
     dob: userInfo.dob,
     createdAt: formatDate(userInfo.createdAt),
     gtinh: userInfo.gtinh,
+    photoURL: userInfo.photoURL,
+    phoneNumber: userInfo.phoneNumber,
+    location: userInfo.location,
     // Thêm các trường thông tin khác cần thiết
   });
 
-  // const [initDisplayName, setInitDisplayName] = useState(userInfo2.displayName);
   const [initialValues, setInitialValues] = useState({...userInfo2});
+  const [changedFields, setChangedFields] = useState({}); // xác định feild nào đã thay đổi
 
-  const handleInputChange2 = (key, value) => {
+  // const handleValueChange = (key, value) => {
+  //   if (typeof value !== 'undefined' && value !== null) {
+  //     // Kiểm tra xem value có tồn tại không
+  //     setUserInfo2(prevState => {
+  //       const newState = {...prevState, [key]: value};
+  //       const hasValueChanged = newState[key] !== initialValues[key]; // So sánh giá trị mới với giá trị ban đầu
+  //       setShowButton(hasValueChanged);
+  //       console.log('----------------------UserInfo2: ', userInfo2);
+  //       return newState;
+  //     });
+  //   }
+  // };
+
+  const handleValueChange = (key, value) => {
     if (typeof value !== 'undefined' && value !== null) {
-      // Kiểm tra xem value có tồn tại không
       setUserInfo2(prevState => {
         const newState = {...prevState, [key]: value};
-        const hasValueChanged = newState[key] !== initialValues[key]; // So sánh giá trị mới với giá trị ban đầu
+
+        // So sánh giá trị mới với giá trị ban đầu
+        const hasValueChanged = newState[key] !== initialValues[key];
+
+        // Nếu giá trị đã thay đổi, thêm key vào danh sách dữ liệu đã thay đổi
+        if (hasValueChanged) {
+          setChangedFields(prevFields => {
+            return {...prevFields, [key]: value};
+          });
+        }
+
         setShowButton(hasValueChanged);
-        console.log('----------------------UserInfo2: ', userInfo2);
+        // console.log('----------------------UserInfo2: ', userInfo2);
         return newState;
       });
     }
@@ -126,8 +161,8 @@ export default function EditProfileScreen({navigation}) {
       timestamp = parseInt(timestamp);
     }
 
-    console.log('timestamp: ', timestamp);
-    console.log('typeof timestamp: ', typeof timestamp);
+    // console.log('timestamp: ', timestamp);
+    // console.log('typeof timestamp: ', typeof timestamp);
     const date = new Date(timestamp);
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -158,7 +193,7 @@ export default function EditProfileScreen({navigation}) {
           value.substr(0, 2) + '/' + value.substr(2, 2) + '/' + value.substr(4);
       }
 
-      handleInputChange2(field, updatedValue);
+      handleValueChange(field, updatedValue);
     }
   };
 
@@ -186,7 +221,7 @@ export default function EditProfileScreen({navigation}) {
           ...prevErrors,
           [field]: 'Ngày tháng năm không hợp lệ',
         }));
-        handleInputChange2(field, ''); // Truyền giá trị rỗng vào handleInputChange2
+        handleValueChange(field, ''); // Truyền giá trị rỗng vào handleValueChange
       } else {
         // Pass qua tất cả => Chuẩn rồi
         setErrors(prevErrors => ({...prevErrors, [field]: ''}));
@@ -196,7 +231,7 @@ export default function EditProfileScreen({navigation}) {
         ...prevErrors,
         [field]: 'Vui lòng nhập đúng định dạng dd/mm/yyyy \nVí dụ: 25/09/2001',
       }));
-      handleInputChange2(field, ''); // Truyền giá trị rỗng vào handleInputChange2
+      handleValueChange(field, ''); // Truyền giá trị rỗng vào handleValueChange
     }
 
     handleInputBlur(field);
@@ -249,19 +284,6 @@ export default function EditProfileScreen({navigation}) {
   };
 
   // Hàm xử lý khi nút "Lưu thay đổi" được nhấn
-  const handleSaveChanges = () => {
-    const hasErrors = checkErrors(); // Kiểm tra xem có lỗi không
-
-    console.log('errors2: ', errors2);
-
-    if (!hasErrors) {
-      // Nếu không có lỗi, thực hiện lưu thay đổi
-      console.log('Dữ liệu hợp lệ, lưu thay đổi...');
-    } else {
-      console.log('Dữ liệu không hợp lệ, vui lòng kiểm tra lại...');
-    }
-  };
-
   const handleSubmit = () => {
     // Kiểm tra xem có lỗi không
     const hasError = Object.values(errors).some(error => error !== '');
@@ -271,10 +293,118 @@ export default function EditProfileScreen({navigation}) {
     }
 
     // Tiến hành lưu thay đổi
-    // Your saving logic here
+    // ################### UPLOAD IMAGE ################### //
     // Sau khi lưu thành công, có thể thực hiện các hành động khác
-    // Ví dụ:
-    Alert.alert('Thành công', 'Dữ liệu đã được lưu thành công.');
+    console.log('THIS DATA WILL SAVING TO DATABASE(userInfo2): ', userInfo2);
+    // check tiếp
+    console.log('changedFields: ', changedFields);
+
+    // xử lý
+    // handleUploadUserImage();
+    // Alert.alert('Thành công', 'Dữ liệu đã được lưu thành công.');
+  };
+
+  //####################### HANDLE VALUES #######################//
+  // handle upload image
+  const handlePickImageFromLibrary = async () => {
+    const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission to access media library is required!');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      // case khi mà đã chọn vào image (selected)
+      // setImageURI(result.assets[0].uri);
+      handleValueChange('photoURL', result.assets[0].uri);
+      console.log('result.assets[0].uri: ', result.assets[0].uri);
+    }
+  };
+
+  // Ignore specific warning for deprecated 'cancelled' key
+  useEffect(() => {
+    LogBox.ignoreLogs([
+      'Key "cancelled" in the image picker result is deprecated',
+    ]);
+  }, []);
+
+  // Upload
+  const handleUploadUserImage = async () => {
+    try {
+      if (!userInfo2.photoURL) {
+        alert('Please select an image first!');
+        return;
+      }
+      const response = await fetch(userInfo2.photoURL);
+      const blob = await response.blob();
+      const imageName = userInfo2.photoURL.substring(
+        userInfo2.photoURL.lastIndexOf('/') + 1,
+      );
+      const storageRef = ref(storage, `assets/avatars/users/${imageName}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      uploadTask.on(
+        'state_changed',
+        snapshot => {
+          // Progress tracking can be implemented here if needed
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload image is ' + progress + '% done');
+        },
+        error => {
+          console.error('Error uploading image:', error);
+          alert('Error uploading image!');
+        },
+        async () => {
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log('File available at', downloadURL);
+
+            // update on AUTH
+            handleUpdateToAuth(downloadURL);
+
+            alert('Image uploaded successfully!');
+            // Đường dẫn đầy đủ của ảnh sẽ được lưu trong biến downloadURL
+            // Bạn có thể sử dụng nó để hiển thị hoặc thực hiện các tác vụ khác
+          } catch (error) {
+            console.error('Error getting download URL:', error);
+            alert('Error getting download URL!');
+          }
+        },
+      );
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Error uploading image!');
+    }
+  };
+
+  // Update image to auth
+  const handleUpdateToAuth = async url => {
+    try {
+      const user = auth.currentUser;
+
+      if (user) {
+        await updateProfile(user, {
+          photoURL: url,
+        });
+
+        // Chờ một khoảng thời gian ngắn (ví dụ: 1 giây) để đảm bảo thông tin hồ sơ được cập nhật
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        console.log('Cập nhật ảnh đại diện thành công!');
+      } else {
+        alert('Không tìm thấy người dùng hiện tại!');
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật ảnh đại diện:', error);
+      alert('Đã xảy ra lỗi khi cập nhật ảnh đại diện!');
+    }
   };
 
   return (
@@ -312,9 +442,9 @@ export default function EditProfileScreen({navigation}) {
             shadowOffset: {width: 0, height: 4},
             elevation: 5,
           }}>
-          {userInfo && userInfo.photoURL && (
+          {userInfo2 && userInfo2.photoURL && (
             <TouchableOpacity
-              onPress={() => alert('Upload new image')}
+              onPress={handlePickImageFromLibrary}
               style={{
                 paddingVertical: 20,
                 minHeight: 170,
@@ -336,7 +466,7 @@ export default function EditProfileScreen({navigation}) {
                     resizeMode: 'cover',
                     position: 'absolute',
                   }}
-                  source={{uri: userInfo.photoURL}}
+                  source={{uri: userInfo2.photoURL}}
                   onLoad={handleImageLoad}
                 />
                 <View
@@ -432,7 +562,6 @@ export default function EditProfileScreen({navigation}) {
                     ]}
                     // onFocus={() => handleInputFocus('userID')}
                     // onBlur={() => handleInputBlur('userID')}
-                    // onChangeText={text => setInputValue2(text)}
                     value={limitText(userInfo.uid, 25)}
                   />
                   <TouchableOpacity
@@ -488,7 +617,7 @@ export default function EditProfileScreen({navigation}) {
                     onFocus={() => handleInputFocus('displayName')}
                     onBlur={() => handleInputBlur('displayName')}
                     onChangeText={text =>
-                      handleInputChange2('displayName', text)
+                      handleValueChange('displayName', text)
                     }
                     value={userInfo2.displayName}
                   />
@@ -558,7 +687,7 @@ export default function EditProfileScreen({navigation}) {
                     readOnly={true}
                     // onFocus={() => handleInputFocus('email')}
                     // onBlur={() => handleInputBlur('email')}
-                    // onChangeText={text => handleInputChange2('email', text)}
+                    // onChangeText={text => handleValueChange('email', text)}
                     value={userInfo2.email}
                   />
                   <TouchableOpacity
@@ -615,7 +744,7 @@ export default function EditProfileScreen({navigation}) {
                     onFocus={() => handleInputFocus('phoneNumber')}
                     onBlur={() => handleInputBlur('phoneNumber')}
                     onChangeText={text =>
-                      handleInputChange2('phoneNumber', text)
+                      handleValueChange('phoneNumber', text)
                     }
                     value={userInfo2.phoneNumber}
                   />
@@ -625,10 +754,11 @@ export default function EditProfileScreen({navigation}) {
                     <Text
                       style={[
                         styles.inputLabel,
-                        (isFocused.phoneNumber ||
-                          (userInfo2.phoneNumber !== undefined &&
-                            userInfo2.phoneNumber !== '')) &&
-                          styles.inputLabelFocused,
+                        isFocused.phoneNumber ||
+                        (userInfo2.phoneNumber !== '' &&
+                          userInfo2.phoneNumber !== null)
+                          ? styles.inputLabelFocused
+                          : null,
                       ]}>
                       {formName.phoneNumber}
                     </Text>
@@ -671,7 +801,7 @@ export default function EditProfileScreen({navigation}) {
                     ]}
                     onFocus={() => handleInputFocus('location')}
                     onBlur={() => handleInputBlur('location')}
-                    onChangeText={text => handleInputChange2('location', text)}
+                    onChangeText={text => handleValueChange('location', text)}
                     value={userInfo2.location}
                   />
                   <TouchableOpacity
@@ -680,10 +810,12 @@ export default function EditProfileScreen({navigation}) {
                     <Text
                       style={[
                         styles.inputLabel,
-                        (isFocused.location ||
-                          (userInfo2.location !== undefined &&
-                            userInfo2.location !== '')) &&
-                          styles.inputLabelFocused,
+                        isFocused.location ||
+                        (userInfo2.location !== '' &&
+                          userInfo2.location !== null &&
+                          userInfo2.location.length > 0)
+                          ? styles.inputLabelFocused
+                          : null,
                       ]}>
                       {formName.location}
                     </Text>
@@ -854,7 +986,7 @@ export default function EditProfileScreen({navigation}) {
                     onSelected={value => {
                       console.log('value: ', value);
                       // setCurrentGioiTinh(value);
-                      handleInputChange2('gtinh', value);
+                      handleValueChange('gtinh', value);
                       console.log('value2: ', value);
                     }}
                     radioBackground='lightblue'>
