@@ -31,7 +31,7 @@ export default function EditProfileScreen({navigation}) {
     phoneNumber: false,
     dob: false,
     createdAt: false,
-    location: false,
+    location: false, // true => có dữ liệu, ngược lại
   });
   const [inputValue, setInputValue] = useState('Email');
   const [inputValue2, setInputValue2] = useState('Meow');
@@ -218,6 +218,63 @@ export default function EditProfileScreen({navigation}) {
         [field]: '',
       }));
     }, timeout);
+  };
+
+  // check errors
+  const [errors2, setErrors2] = useState({
+    userID: false,
+    displayName: false,
+    email: false,
+    phoneNumber: false,
+    dob: false,
+    createdAt: false,
+    location: false,
+  });
+
+  // Hàm này để kiểm tra xem trường nào bị lỗi
+  const checkErrors = () => {
+    let hasErrors = false;
+    const newErrors = {...errors2};
+
+    // Kiểm tra từng trường
+    Object.keys(isFocused).forEach(field => {
+      if (isFocused[field]) {
+        newErrors[field] = true; // Gán lỗi nếu trường không được focus
+        hasErrors = true; // Đặt hasErrors thành true nếu có lỗi
+      }
+    });
+
+    setErrors2(newErrors); // Cập nhật trạng thái lỗi
+    return hasErrors; // Trả về true nếu có lỗi, ngược lại trả về false
+  };
+
+  // Hàm xử lý khi nút "Lưu thay đổi" được nhấn
+  const handleSaveChanges = () => {
+    const hasErrors = checkErrors(); // Kiểm tra xem có lỗi không
+
+    console.log('errors2: ', errors2);
+
+    if (!hasErrors) {
+      // Nếu không có lỗi, thực hiện lưu thay đổi
+      console.log('Dữ liệu hợp lệ, lưu thay đổi...');
+    } else {
+      console.log('Dữ liệu không hợp lệ, vui lòng kiểm tra lại...');
+    }
+  };
+
+  const handleSubmit = () => {
+    // Kiểm tra xem có lỗi không
+    const hasError = Object.values(errors).some(error => error !== '');
+    if (hasError) {
+      Alert.alert('Lỗi', 'Vui lòng kiểm tra lại các trường nhập liệu.');
+      return;
+    }
+
+    // Tiến hành lưu thay đổi
+    // Your saving logic here
+    // Sau khi lưu thành công, có thể thực hiện các hành động khác
+    // Ví dụ:
+    Alert.alert('Thành công', 'Dữ liệu đã được lưu thành công.');
   };
 
   return (
@@ -910,7 +967,9 @@ export default function EditProfileScreen({navigation}) {
           <Button
             title={'Lưu thay đổi'}
             // onPress={() => alert('meow')}
-            onPress={() => console.log('\n\n\n\nuserinfo2: ', userInfo2)}
+            // onPress={() => console.log('\n\n\n\nuserinfo2: ', userInfo2)}
+            // onPress={handleSaveChanges}
+            onPress={handleSubmit}
             buttonStyleCustom={{borderRadius: '15%', paddingVertical: 16}}
           />
         </View>

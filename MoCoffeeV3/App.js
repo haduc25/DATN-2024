@@ -17,6 +17,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import DynamicHeaderScrollView from './screens/DynamicHeaderScrollView';
 import ImageAnimation from './screens/ImageAnimation';
 import EditProfileScreen from './screens/EditProfileScreen';
+import UploadImageToStorageDemo from './screens/UploadImageToStorageDemo';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -49,11 +50,13 @@ export default function App() {
           // initialRouteName={productTypeName}
           // initialRouteName={cartName}
           // initialRouteName={registerName}
-          initialRouteName={loginName}
           // initialRouteName={favouriteName}
           // initialRouteName={detailName}
           // initialRouteName={'ImageAnimation'}
           // initialRouteName={'DynamicHeaderScrollView'}
+
+          // initialRouteName={loginName} //current
+          initialRouteName={'UploadImageToStorageDemo'} //test
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;
@@ -169,6 +172,16 @@ export default function App() {
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          {/* UploadImageToStorageDemo */}
+          <BottomTab.Screen
+            name={'UploadImageToStorageDemo'}
+            component={UploadImageToStorageDemo}
+            options={{
+              // headerShown: false,
+              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
               tabBarButton: () => null,
             }}
           />

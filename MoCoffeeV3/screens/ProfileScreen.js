@@ -274,11 +274,11 @@ export default function ProfileScreen({navigation}) {
 
           {/*  */}
 
-          {/* {emailVerified && <Text>Email đã xác thực</Text>}
+          {emailVerified && <Text>Email đã xác thực</Text>}
           {userId && <Text>UserID: {userId}</Text>}
           {imageURI && (
             <Image source={{uri: imageURI}} style={{width: 200, height: 200}} />
-          )} */}
+          )}
         </TouchableOpacity>
 
         <View

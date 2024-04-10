@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import {initializeApp} from 'firebase/app';
 import {getFirestore} from 'firebase/firestore';
-import {getStorage} from 'firebase/storage'; // Thêm import này
+import {getStorage, ref, uploadBytes} from 'firebase/storage'; // Thêm import này
 import {
   getAuth,
   initializeAuth,
@@ -16,6 +16,8 @@ import {
   FIREBASE_MESSAGING_SENDER_ID,
   FIREBASE_APP_ID,
 } from '@env';
+
+console.log('REF: ', ref());
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -53,4 +55,4 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
 
-export {app, auth, storage};
+export {app, auth, storage, ref, uploadBytes};
