@@ -109,7 +109,6 @@ export default function EditProfileScreen({navigation}) {
   //     setUserInfo2(prevState => {
   //       const newState = {...prevState, [key]: value};
   //       const hasValueChanged = newState[key] !== initialValues[key]; // So sánh giá trị mới với giá trị ban đầu
-  //       setShowButton(hasValueChanged);
   //       console.log('----------------------UserInfo2: ', userInfo2);
   //       return newState;
   //     });
@@ -127,11 +126,10 @@ export default function EditProfileScreen({navigation}) {
         // Nếu giá trị đã thay đổi, thêm key vào danh sách dữ liệu đã thay đổi
         if (hasValueChanged) {
           setChangedFields(prevFields => {
-            return {...prevFields, [key]: value};
+            return {...prevFields, [key]: true};
           });
         }
 
-        setShowButton(hasValueChanged);
         // console.log('----------------------UserInfo2: ', userInfo2);
         return newState;
       });
@@ -139,7 +137,6 @@ export default function EditProfileScreen({navigation}) {
   };
 
   //info
-  const [userDisplayName, setUserDisplayName] = useState('');
   const [userEmail, setUserEmail] = useState(null);
 
   // image
@@ -149,13 +146,11 @@ export default function EditProfileScreen({navigation}) {
     setLoading(false);
   };
 
-  // button `Lưu`
-  const [showButton, setShowButton] = useState(false);
+  // button `enableEditing`
+  const [enableEditing, setEnableEditing] = useState(false);
 
-  const handleInputChange = text => {
-    setUserDisplayName(text);
-    setShowButton(!!text); // Nếu text không rỗng, hiển thị nút, ngược lại ẩn nút
-    console.log('showButton: ', showButton);
+  const handleInputChange = () => {
+    setEnableEditing(!enableEditing);
   };
 
   // convert
@@ -301,6 +296,7 @@ export default function EditProfileScreen({navigation}) {
     // console.log('THIS DATA WILL SAVING TO DATABASE(userInfo2): ', userInfo2);
     // check tiếp
     console.log('changedFields: ', changedFields);
+    // console.log('userInfo2: ', userInfo2);
     updateFirebase();
 
     // xử lý
@@ -338,7 +334,7 @@ export default function EditProfileScreen({navigation}) {
     ]);
   }, []);
 
-  // Upload
+  // Upload Image
   const handleUploadUserImage = async () => {
     try {
       if (!userInfo2.photoURL) {
@@ -374,9 +370,9 @@ export default function EditProfileScreen({navigation}) {
             await updateValueToFireStore('photoURL', downloadURL); // Gọi hàm cập nhật ảnh vào Firestore
 
             // update on AUTH
-            handleUpdateToAuth(downloadURL);
+            handleUpdateToAuth({photoURL: downloadURL});
 
-            alert('Image uploaded successfully!');
+            alert('UPLOAD SUCCESS!');
             // Đường dẫn đầy đủ của ảnh sẽ được lưu trong biến downloadURL
             // Bạn có thể sử dụng nó để hiển thị hoặc thực hiện các tác vụ khác
           } catch (error) {
@@ -392,25 +388,69 @@ export default function EditProfileScreen({navigation}) {
   };
 
   // Update image to auth
-  const handleUpdateToAuth = async url => {
+  // const handleUpdateToAuth = async (field, value) => {
+  //   try {
+  //     const user = auth.currentUser;
+
+  //     if (user) {
+  //       await updateProfile(user, {
+  //         field: value,
+  //       });
+
+  //       // Chờ một khoảng thời gian ngắn (ví dụ: 1 giây) để đảm bảo thông tin hồ sơ được cập nhật
+  //       await new Promise(resolve => setTimeout(resolve, 3000));
+
+  //       console.log('Cập nhật thành công!');
+  //     } else {
+  //       alert('Không tìm thấy người dùng hiện tại!');
+  //     }
+  //   } catch (error) {
+  //     console.error('Lỗi khi cập nhật', error);
+  //     alert('Đã xảy ra lỗi khi cập nhật!');
+  //   }
+  // };
+
+  const handleUpdateToAuth = async dataToUpdate => {
     try {
       const user = auth.currentUser;
+      const valueObject = {};
 
       if (user) {
-        await updateProfile(user, {
-          photoURL: url,
-        });
+        // Lặp qua mỗi cặp key-value trong dataToUpdate
+        for (const field in dataToUpdate) {
+          const value = dataToUpdate[field];
+
+          // console.log('\n=========================');
+          // console.log('[field]: ', [field]);
+          // console.log('value: ', value);
+
+          valueObject[field] = value;
+          // // Cập nhật thông tin người dùng dựa trên cặp key-value hiện tại
+          // await updateProfile(user, {
+          //   [field]: value,
+          // });
+
+          // // Chờ một khoảng thời gian ngắn (ví dụ: 1 giây) để đảm bảo thông tin hồ sơ được cập nhật
+          // await new Promise(resolve => setTimeout(resolve, 1000));
+
+          // console.log(`Cập nhật thành công ${field} với giá trị ${value}!`);
+        }
+
+        // console.log('valueObject: ', valueObject);
+
+        // Cập nhật thông tin người dùng dựa trên cặp key-value hiện tại
+        await updateProfile(user, valueObject);
 
         // Chờ một khoảng thời gian ngắn (ví dụ: 1 giây) để đảm bảo thông tin hồ sơ được cập nhật
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        console.log('Cập nhật ảnh đại diện thành công!');
+        console.log(`Cập nhật thành công!!!`);
       } else {
         alert('Không tìm thấy người dùng hiện tại!');
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật ảnh đại diện:', error);
-      alert('Đã xảy ra lỗi khi cập nhật ảnh đại diện!');
+      console.error('Lỗi khi cập nhật', error);
+      alert('Đã xảy ra lỗi khi cập nhật!');
     }
   };
 
@@ -440,32 +480,350 @@ export default function EditProfileScreen({navigation}) {
   // V2: Thêm phân loại để update cho cả auth
   // HANDLE FIRESTORE
   const updateFirebase = async () => {
-    // Lặp qua các key trong changedFields
-    for (const key in changedFields) {
-      if (Object.hasOwnProperty.call(changedFields, key)) {
-        // Lấy giá trị mới của key
-        const value = changedFields[key];
+    const keysToCheck = ['phoneNumber', 'displayName', 'photoURL']; // Mảng chứa các key cần kiểm tra
+    const keysArray = Object.keys(changedFields);
+    const resultObject = {};
+    const diffrentKeyOfResultObject = {};
 
-        // Nếu key là 'photoURL', gọi hàm handleUploadUserImage và chờ cho đến khi hoàn thành
-        if (key === 'photoURL') {
-          // START: FUNC HANDLE UPLOAD USER IMAGE
-          handleUploadUserImage();
-          return;
-          // END: FUNC HANDLE UPLOAD USER IMAGE
-        }
+    // Khởi tạo các giá trị ban đầu trong resultObject là false
+    keysToCheck.forEach(key => {
+      resultObject[key] = false;
+    });
 
-        // Thực hiện cập nhật giá trị tương ứng trong cơ sở dữ liệu
-        updateValueToFireStore(key, value);
-        // try {
-        //   await updateDoc(doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), {
-        //     [key]: value,
-        //   });
-        //   console.log(`${key} updated successfully!`);
-        // } catch (error) {
-        //   console.error(`Error updating ${key}:`, error);
-        //   // Bạn có thể xử lý lỗi tại đây
-        // }
+    for (const key of keysArray) {
+      // Kiểm tra xem key có tồn tại trong keysToCheck không
+      if (keysToCheck.includes(key)) {
+        // Nếu có, cập nhật giá trị của key trong resultObject thành true
+        resultObject[key] = true;
+      } else {
+        // Nếu key không có trong keysToCheck, console log key đó
+        // console.log(`Key '${key}' không nằm trong danh sách keysToCheck.`);
+        diffrentKeyOfResultObject[key] = true;
       }
+    }
+
+    // console.log(resultObject); // In ra object với các giá trị đã được cập nhật
+
+    // Tạm tắt
+    // console.log('diffrentKeyOfResultObject: ', diffrentKeyOfResultObject);
+    // updateValueToFireStore2(diffrentKeyOfResultObject, userInfo2);
+
+    // Check có image thì upload từ trước luôn
+    let savePhotoURL = null;
+    // if (resultObject.photoURL) {
+    //   try {
+    //     if (!userInfo2.photoURL) {
+    //       alert('Please select an image first!');
+    //       return;
+    //     }
+    //     const response = await fetch(userInfo2.photoURL);
+    //     const blob = await response.blob();
+    //     const imageName = userInfo2.photoURL.substring(
+    //       userInfo2.photoURL.lastIndexOf('/') + 1,
+    //     );
+    //     const storageRef = ref(storage, `assets/avatars/users/${imageName}`);
+    //     const uploadTask = uploadBytesResumable(storageRef, blob);
+
+    //     uploadTask.on(
+    //       'state_changed',
+    //       snapshot => {
+    //         const progress =
+    //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //         console.log('Upload image is ' + progress + '% done');
+    //       },
+    //       error => {
+    //         console.error('Error uploading image:', error);
+    //         alert('Error uploading image!');
+    //       },
+    //       async () => {
+    //         try {
+    //           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+    //           console.log('File available at', downloadURL);
+
+    //           // // update on Firestore
+    //           // await updateValueToFireStore('photoURL', downloadURL); // Gọi hàm cập nhật ảnh vào Firestore
+
+    //           // // update on AUTH
+    //           // handleUpdateToAuth({photoURL: downloadURL});
+
+    //           // save url to out side
+    //           savePhotoURL = downloadURL;
+
+    //           alert('UPLOAD SUCCESS!');
+    //           // Đường dẫn đầy đủ của ảnh sẽ được lưu trong biến downloadURL
+    //           // Bạn có thể sử dụng nó để hiển thị hoặc thực hiện các tác vụ khác
+    //         } catch (error) {
+    //           console.error('Error getting download URL:', error);
+    //           alert('Error getting download URL!');
+    //         }
+    //       },
+    //     );
+    //   } catch (error) {
+    //     console.error('Error uploading image:', error);
+    //     alert('Error uploading image!');
+    //   }
+    // }
+
+    async function uploadAndSaveURL() {
+      if (resultObject.photoURL) {
+        try {
+          if (!userInfo2.photoURL) {
+            alert('Please select an image first!');
+            return;
+          }
+          const response = await fetch(userInfo2.photoURL);
+          const blob = await response.blob();
+          const imageName = userInfo2.photoURL.substring(
+            userInfo2.photoURL.lastIndexOf('/') + 1,
+          );
+          const storageRef = ref(storage, `assets/avatars/users/${imageName}`);
+          const uploadTask = uploadBytesResumable(storageRef, blob);
+
+          await new Promise((resolve, reject) => {
+            uploadTask.on(
+              'state_changed',
+              snapshot => {
+                const progress =
+                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload image is ' + progress + '% done');
+              },
+              error => {
+                console.error('Error uploading image:', error);
+                alert('Error uploading image!');
+                reject(error);
+              },
+              async () => {
+                try {
+                  const downloadURL = await getDownloadURL(
+                    uploadTask.snapshot.ref,
+                  );
+                  console.log('File available at', downloadURL);
+
+                  // // update on Firestore
+                  // await updateValueToFireStore('photoURL', downloadURL); // Gọi hàm cập nhật ảnh vào Firestore
+
+                  // // update on AUTH
+                  // handleUpdateToAuth({photoURL: downloadURL});
+
+                  // save url to out side
+                  savePhotoURL = downloadURL;
+
+                  console.log('UPLOAD SUCCESS!');
+                  resolve();
+                } catch (error) {
+                  console.error('Error getting download URL:', error);
+                  alert('Error getting download URL!');
+                  reject(error);
+                }
+              },
+            );
+          });
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          alert('Error uploading image!');
+        }
+      }
+    }
+
+    async function waitUpload() {
+      await uploadAndSaveURL();
+
+      // dieu kien
+      // Kiểm tra điều kiện để cập nhật lên db
+      if (resultObject.photoURL) {
+        if (
+          resultObject.displayName &&
+          resultObject.phoneNumber &&
+          resultObject.photoURL
+        ) {
+          // Cập nhật lên db với cả ba trường là displayName, phoneNumber và photoURL
+          console.log(
+            'Update displayName, phoneNumber và photoURL: ',
+            userInfo2.displayName,
+            userInfo2.phoneNumber,
+            savePhotoURL,
+          );
+
+          handleUpdateToAuth({
+            displayName: userInfo2.displayName,
+            photoURL: savePhotoURL, //url need handle
+            phoneNumber: userInfo2.phoneNumber,
+          });
+          updateValueToFireStore4({
+            displayName: userInfo2.displayName,
+            photoURL: savePhotoURL,
+            phoneNumber: userInfo2.phoneNumber,
+          });
+          resultObject['phoneNumber'] = false;
+          resultObject['displayName'] = false;
+          resultObject['photoURL'] = false;
+        } else if (resultObject.displayName && resultObject.photoURL) {
+          // Cập nhật lên db với trường displayName và photoURL
+          console.log(
+            'Update displayName và photoURL: ',
+            userInfo2.displayName,
+            userInfo2.photoURL,
+          );
+          handleUpdateToAuth({
+            displayName: userInfo2.displayName,
+            photoURL: savePhotoURL,
+          });
+          updateValueToFireStore4({
+            displayName: userInfo2.displayName,
+            photoURL: savePhotoURL,
+          });
+          resultObject['displayName'] = false;
+          resultObject['photoURL'] = false;
+        } else if (resultObject.phoneNumber && resultObject.photoURL) {
+          // Cập nhật lên db với trường phoneNumber và photoURL
+          console.log(
+            'Update phoneNumber và photoURL: ',
+            userInfo2.phoneNumber,
+            userInfo2.photoURL,
+          );
+          handleUpdateToAuth({
+            photoURL: savePhotoURL, //url need handle
+            phoneNumber: userInfo2.phoneNumber,
+          });
+          updateValueToFireStore4({
+            photoURL: savePhotoURL,
+            phoneNumber: userInfo2.phoneNumber,
+          });
+          resultObject['phoneNumber'] = false;
+          resultObject['photoURL'] = false;
+        } else if (resultObject.photoURL) {
+          // Chỉ cập nhật lên db với trường photoURL
+          console.log('UPDATE photoURL with VALUE: ', userInfo2.photoURL);
+          // handleUploadUserImage();
+
+          updateValueToFireStore('photoURL', savePhotoURL); // Gọi hàm cập nhật ảnh vào Firestore
+
+          // update on AUTH
+          handleUpdateToAuth({photoURL: savePhotoURL});
+          resultObject['photoURL'] = false;
+        }
+      }
+    }
+
+    waitUpload();
+
+    return;
+    // // Kiểm tra điều kiện để cập nhật lên db
+    // if (
+    //   resultObject.displayName &&
+    //   resultObject.phoneNumber &&
+    //   resultObject.photoURL &&
+    // ) {
+    //   // Cập nhật lên db với cả ba trường là displayName, phoneNumber và photoURL
+    //   console.log(
+    //     'Update displayName, phoneNumber và photoURL: ',
+    //     userInfo2.displayName,
+    //     userInfo2.phoneNumber,
+    //     userInfo2.photoURL,
+    //     savePhotoURL,
+    //   );
+
+    //   // handleUpdateToAuth({
+    //   //   displayName: userInfo2.displayName,
+    //   //   photoURL: savePhotoURL, //url need handle
+    //   //   phoneNumber: userInfo2.phoneNumber,
+    //   // });
+    //   resultObject['phoneNumber'] = false;
+    //   resultObject['displayName'] = false;
+    //   resultObject['photoURL'] = false;
+    // } else if (resultObject.displayName && resultObject.phoneNumber) {
+    //   // Cập nhật lên db với cả hai trường là displayName và phoneNumber
+    //   console.log(
+    //     'Update displayName và phoneNumber: ',
+    //     userInfo2.displayName,
+    //     userInfo2.phoneNumber,
+    //   );
+    //   handleUpdateToAuth({
+    //     displayName: userInfo2.displayName,
+    //     phoneNumber: userInfo2.phoneNumber,
+    //   });
+    //   updateValueToFireStore4({
+    //     displayName: userInfo2.displayName,
+    //     phoneNumber: userInfo2.phoneNumber,
+    //   });
+    //   resultObject['phoneNumber'] = false;
+    //   resultObject['displayName'] = false;
+    // } else if (resultObject.displayName && resultObject.photoURL) {
+    //   // Cập nhật lên db với trường displayName và photoURL
+    //   console.log(
+    //     'Update displayName và photoURL: ',
+    //     userInfo2.displayName,
+    //     userInfo2.photoURL,
+    //   );
+    //   resultObject['displayName'] = false;
+    //   resultObject['photoURL'] = false;
+    // } else if (resultObject.phoneNumber && resultObject.photoURL) {
+    //   // Cập nhật lên db với trường phoneNumber và photoURL
+    //   console.log(
+    //     'Update phoneNumber và photoURL: ',
+    //     userInfo2.phoneNumber,
+    //     userInfo2.photoURL,
+    //   );
+    //   resultObject['phoneNumber'] = false;
+    //   resultObject['photoURL'] = false;
+    // } else if (resultObject.displayName) {
+    //   // Chỉ cập nhật lên db với trường displayName
+    //   console.log('UPDATE displayName with VALUE: ', userInfo2.displayName);
+    //   handleUpdateToAuth({
+    //     displayName: userInfo2.displayName,
+    //   });
+    //   updateValueToFireStore3('displayName', userInfo2.displayName);
+    //   resultObject['displayName'] = false;
+    // } else if (resultObject.phoneNumber) {
+    //   // Chỉ cập nhật lên db với trường phoneNumber
+    //   console.log('UPDATE phoneNumber with VALUE: ', userInfo2.phoneNumber);
+    //   handleUpdateToAuth({
+    //     phoneNumber: userInfo2.phoneNumber,
+    //   });
+    //   updateValueToFireStore3('phoneNumber', userInfo2.phoneNumber);
+    //   resultObject['phoneNumber'] = false;
+    // } else if (resultObject.photoURL) {
+    //   // Chỉ cập nhật lên db với trường photoURL
+    //   console.log('UPDATE photoURL with VALUE: ', userInfo2.photoURL);
+    //   handleUploadUserImage();
+    //   resultObject['photoURL'] = false;
+    // }
+
+    // DISPLAYNAME + PHONENUMER
+    // Kiểm tra điều kiện để cập nhật lên db
+    if (resultObject.displayName && resultObject.phoneNumber) {
+      // Cập nhật lên db với cả hai trường là displayName và phoneNumber
+      console.log(
+        'Update displayName và phoneNumber: ',
+        userInfo2.displayName,
+        userInfo2.phoneNumber,
+      );
+      handleUpdateToAuth({
+        displayName: userInfo2.displayName,
+        phoneNumber: userInfo2.phoneNumber,
+      });
+      updateValueToFireStore4({
+        displayName: userInfo2.displayName,
+        phoneNumber: userInfo2.phoneNumber,
+      });
+      resultObject['phoneNumber'] = false;
+      resultObject['displayName'] = false;
+    } else if (resultObject.displayName) {
+      // Chỉ cập nhật lên db với trường displayName
+      console.log('UPDATE displayName with VALUE: ', userInfo2.displayName);
+      handleUpdateToAuth({
+        displayName: userInfo2.displayName,
+      });
+      updateValueToFireStore3('displayName', userInfo2.displayName);
+      resultObject['displayName'] = false;
+    } else if (resultObject.phoneNumber) {
+      // Chỉ cập nhật lên db với trường phoneNumber
+      console.log('UPDATE phoneNumber with VALUE: ', userInfo2.phoneNumber);
+      handleUpdateToAuth({
+        phoneNumber: userInfo2.phoneNumber,
+      });
+      updateValueToFireStore3('phoneNumber', userInfo2.phoneNumber);
+      resultObject['phoneNumber'] = false;
     }
   };
 
@@ -482,6 +840,37 @@ export default function EditProfileScreen({navigation}) {
   };
 
   const updateValueToFireStore = async (key, value) => {
+    // try {
+    //   await updateDoc(
+    //     doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), // Thay đổi địa chỉ của tài liệu tương ứng trong Firestore
+    //     {
+    //       [key]: value, // Thay đổi tên trường cần cập nhật nếu cần
+    //     },
+    //   );
+    //   console.log(`${key} updated successfully!`);
+    // } catch (error) {
+    //   console.error(`Error updating ${key}:`, error);
+    // }
+  };
+
+  const updateValueToFireStore2 = (obj1, obj2) => {
+    if (obj1 && obj2) {
+      // console.log('obj1: ', obj1);
+      // console.log('obj2: ', obj2);
+
+      const keysFromObj1InObj2 = {};
+
+      for (const key in obj1) {
+        if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
+          keysFromObj1InObj2[key] = obj2[key];
+        }
+      }
+
+      console.log('UPDATE TO FIRESTORE: ', keysFromObj1InObj2);
+    }
+  };
+
+  const updateValueToFireStore3 = async (key, value) => {
     try {
       await updateDoc(
         doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), // Thay đổi địa chỉ của tài liệu tương ứng trong Firestore
@@ -490,6 +879,23 @@ export default function EditProfileScreen({navigation}) {
         },
       );
       console.log(`${key} updated successfully!`);
+    } catch (error) {
+      console.error(`Error updating ${key}:`, error);
+    }
+  };
+
+  const updateValueToFireStore4 = async object => {
+    const valueObject = {};
+    try {
+      for (const field in object) {
+        const value = object[field];
+        valueObject[field] = value;
+      }
+      await updateDoc(
+        doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), // Thay đổi địa chỉ của tài liệu tương ứng trong Firestore
+        object,
+      );
+      console.log(`object is updated successfully!`);
     } catch (error) {
       console.error(`Error updating ${key}:`, error);
     }
@@ -532,7 +938,11 @@ export default function EditProfileScreen({navigation}) {
           }}>
           {userInfo2 && userInfo2.photoURL && (
             <TouchableOpacity
-              onPress={handlePickImageFromLibrary}
+              onPress={() => {
+                if (enableEditing) {
+                  handlePickImageFromLibrary();
+                }
+              }}
               style={{
                 paddingVertical: 20,
                 minHeight: 170,
@@ -626,6 +1036,46 @@ export default function EditProfileScreen({navigation}) {
             {/* Thông tin cá nhân */}
             <View>
               <Text style={styles.title}>Thông tin cá nhân</Text>
+
+              {/* Button accept chỉnh sửa */}
+              <TouchableOpacity onPress={handleInputChange}>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    padding: 12,
+                    borderWidth: 1,
+                    marginBottom: 12,
+                  }}>
+                  <View>
+                    {enableEditing ? (
+                      <View style={{flexDirection: 'row'}}>
+                        <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                          Hủy chỉnh sửa
+                        </Text>
+                        <AntDesign
+                          name={'close'}
+                          size={18}
+                          // color={''}
+                          style={{paddingLeft: 6}}
+                        />
+                      </View>
+                    ) : (
+                      <View style={{flexDirection: 'row'}}>
+                        <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                          Chỉnh sửa hồ sơ
+                        </Text>
+                        <AntDesign
+                          name={'edit'}
+                          size={18}
+                          // color={''}
+                          style={{paddingLeft: 6}}
+                        />
+                      </View>
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+
               {/* UID */}
               <View style={styles.inputGroup}>
                 <View
@@ -635,11 +1085,13 @@ export default function EditProfileScreen({navigation}) {
                   ]}>
                   <TextInput
                     onPressIn={() => {
-                      setErrorWithTimeout(
-                        'uid',
-                        'Bạn không thể chỉnh sửa UID.',
-                        5000,
-                      );
+                      if (enableEditing) {
+                        setErrorWithTimeout(
+                          'uid',
+                          'Bạn không thể chỉnh sửa UID.',
+                          5000,
+                        );
+                      }
                     }}
                     readOnly={true}
                     style={[
@@ -696,6 +1148,7 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.displayName && styles.inputFocused,
                   ]}>
                   <TextInput
+                    readOnly={enableEditing ? false : true}
                     style={[
                       styles.input,
                       isFocused.displayName && {
@@ -767,11 +1220,13 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                     onPressIn={() => {
-                      setErrorWithTimeout(
-                        'email',
-                        'Bạn không thể chỉnh sửa E-mail.',
-                        5000,
-                      );
+                      if (enableEditing) {
+                        setErrorWithTimeout(
+                          'email',
+                          'Bạn không thể chỉnh sửa E-mail.',
+                          5000,
+                        );
+                      }
                     }}
                     readOnly={true}
                     // onFocus={() => handleInputFocus('email')}
@@ -823,6 +1278,7 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.phoneNumber && styles.inputFocused,
                   ]}>
                   <TextInput
+                    readOnly={enableEditing ? false : true}
                     maxLength={10}
                     keyboardType='numeric'
                     style={[
@@ -883,6 +1339,7 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.location && styles.inputFocused,
                   ]}>
                   <TextInput
+                    readOnly={enableEditing ? false : true}
                     style={[
                       styles.input,
                       isFocused.location && {
@@ -940,6 +1397,7 @@ export default function EditProfileScreen({navigation}) {
                     isFocused.dob && styles.inputFocused,
                   ]}>
                   <TextInput
+                    readOnly={enableEditing ? false : true}
                     style={[
                       styles.input,
                       isFocused.dob && {
@@ -1001,11 +1459,13 @@ export default function EditProfileScreen({navigation}) {
                   <TextInput
                     readOnly={true}
                     onPressIn={() => {
-                      setErrorWithTimeout(
-                        'createdAt',
-                        'Bạn không thể chỉnh sửa Ngày tạo tài khoản.',
-                        5000,
-                      );
+                      if (enableEditing) {
+                        setErrorWithTimeout(
+                          'createdAt',
+                          'Bạn không thể chỉnh sửa Ngày tạo tài khoản.',
+                          5000,
+                        );
+                      }
                     }}
                     style={[
                       styles.input,
@@ -1074,10 +1534,9 @@ export default function EditProfileScreen({navigation}) {
                     selected={userInfo2.gtinh}
                     // onSelected={value => setCurrentGioiTinh(value)}
                     onSelected={value => {
-                      console.log('value: ', value);
-                      // setCurrentGioiTinh(value);
-                      handleValueChange('gtinh', value);
-                      console.log('value2: ', value);
+                      if (enableEditing) {
+                        handleValueChange('gtinh', value);
+                      }
                     }}
                     radioBackground='lightblue'>
                     <RadioButtonItem
@@ -1177,7 +1636,7 @@ export default function EditProfileScreen({navigation}) {
           {/* END: NEW TEXT INPUT */}
         </View>
       </ScrollView>
-      {showButton && (
+      {enableEditing && (
         <View
           style={{
             // borderWidth: 1,
@@ -1214,7 +1673,8 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    marginBottom: 45,
+    // marginBottom: 45,
+    marginBottom: 16,
     fontSize: 18,
     fontWeight: 'bold',
   },

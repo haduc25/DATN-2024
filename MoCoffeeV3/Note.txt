@@ -4,3 +4,4 @@
 
 
 - phoneNumber & displayName đã update lên firestore nhma chưa update cho auth cần thêm
+- phần Storage ../user/ thêm id user để phân loại mỗi avt trong 1 folder riêng
