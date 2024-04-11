@@ -47,6 +47,7 @@ export default function ProfileScreen({navigation}) {
         const docSnap = await getDoc(doc(db, 'Users', userUid));
 
         if (docSnap.exists()) {
+          // console.log('docSnap222: ', docSnap.data());
           // const userData = docSnap.data();
           // setUserInfo({user, userData});
           // console.log('Document data FIREBASE:', userData);
@@ -95,6 +96,9 @@ export default function ProfileScreen({navigation}) {
 
     Object.keys(obj2).forEach(key => {
       if (!(key in obj1)) {
+        merged[key] = obj2[key];
+      } else if (key === 'phoneNumber') {
+        // Bỏ `phoneNumber` của auth đi để lấy cái `phoneNumber` ở bên Firestore thôi
         merged[key] = obj2[key];
       }
     });

@@ -1,11 +1,23 @@
 import React from 'react';
-import {Text, StyleSheet, Pressable} from 'react-native';
+import {Text, StyleSheet, Pressable, ActivityIndicator} from 'react-native';
 
 export default function Button(props) {
-  const {onPress, title = 'Save', buttonStyleCustom} = props;
+  const {onPress, title = 'Save', buttonStyleCustom, loading, disabled} = props;
+
   return (
-    <Pressable style={[styles.button, buttonStyleCustom]} onPress={onPress}>
-      <Text style={styles.text}>{title}</Text>
+    <Pressable
+      style={[
+        styles.button,
+        buttonStyleCustom,
+        disabled && {backgroundColor: '#4c4c4c'},
+      ]}
+      onPress={onPress}
+      disabled={loading || disabled}>
+      {loading ? (
+        <ActivityIndicator size='small' color='#ffffff' />
+      ) : (
+        <Text style={[styles.text, disabled && {opacity: 0.6}]}>{title}</Text>
+      )}
     </Pressable>
   );
 }
@@ -18,7 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: 'black',
+    backgroundColor: '#000',
   },
   text: {
     fontSize: 16,
