@@ -85,6 +85,8 @@ export default function EditProfileScreen({navigation}) {
     }));
   };
 
+  // console.log('userInfo.createdAt: ', userInfo.createdAt);
+
   // version 2: (Dữ lệu ban đầu)
   const [userInfo2, setUserInfo2] = useState({
     displayName: userInfo.displayName,
@@ -102,6 +104,18 @@ export default function EditProfileScreen({navigation}) {
   const [initialValues, setInitialValues] = useState({...userInfo2});
   const [changedFields, setChangedFields] = useState({}); // xác định feild nào đã thay đổi
 
+  // const handleValueChange = (key, value) => {
+  //   if (typeof value !== 'undefined' && value !== null) {
+  //     // Kiểm tra xem value có tồn tại không
+  //     setUserInfo2(prevState => {
+  //       const newState = {...prevState, [key]: value};
+  //       const hasValueChanged = newState[key] !== initialValues[key]; // So sánh giá trị mới với giá trị ban đầu
+  //       console.log('----------------------UserInfo2: ', userInfo2);
+  //       return newState;
+  //     });
+  //   }
+  // };
+
   const handleValueChange = (key, value) => {
     if (typeof value !== 'undefined' && value !== null) {
       setUserInfo2(prevState => {
@@ -116,18 +130,26 @@ export default function EditProfileScreen({navigation}) {
             return {...prevFields, [key]: true};
           });
         }
+
+        // console.log('----------------------UserInfo2: ', userInfo2);
         return newState;
       });
     }
   };
 
+  //info
+  const [userEmail, setUserEmail] = useState(null);
+
   // image
+  // const [loading, setLoading] = useState(true);
   const [loading, setLoading] = useState({
     imageLoading: true,
     buttonLoading: false,
   });
 
   const handleImageLoad = () => {
+    // setLoading(false);
+    // setLoading(false);
     setLoading({...loading, imageLoading: false});
   };
 
@@ -144,6 +166,8 @@ export default function EditProfileScreen({navigation}) {
       timestamp = parseInt(timestamp);
     }
 
+    // console.log('timestamp: ', timestamp);
+    // console.log('typeof timestamp: ', typeof timestamp);
     const date = new Date(timestamp);
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -236,6 +260,34 @@ export default function EditProfileScreen({navigation}) {
     }, timeout);
   };
 
+  // check errors
+  const [errors2, setErrors2] = useState({
+    userID: false,
+    displayName: false,
+    email: false,
+    phoneNumber: false,
+    dob: false,
+    createdAt: false,
+    location: false,
+  });
+
+  // Hàm này để kiểm tra xem trường nào bị lỗi
+  const checkErrors = () => {
+    let hasErrors = false;
+    const newErrors = {...errors2};
+
+    // Kiểm tra từng trường
+    Object.keys(isFocused).forEach(field => {
+      if (isFocused[field]) {
+        newErrors[field] = true; // Gán lỗi nếu trường không được focus
+        hasErrors = true; // Đặt hasErrors thành true nếu có lỗi
+      }
+    });
+
+    setErrors2(newErrors); // Cập nhật trạng thái lỗi
+    return hasErrors; // Trả về true nếu có lỗi, ngược lại trả về false
+  };
+
   // Hàm xử lý khi nút "Lưu thay đổi" được nhấn
   const handleSubmit = () => {
     setLoading({...loading, buttonLoading: true});
@@ -247,14 +299,16 @@ export default function EditProfileScreen({navigation}) {
       return;
     }
 
-    // Kiểm tra xem có lỗi không
-
     // // Tiến hành lưu thay đổi
-    // // ################### UPLOADING ################### //
+    // // ################### UPLOAD IMAGE ################### //
+    // // Sau khi lưu thành công, có thể thực hiện các hành động khác
+    // // console.log('THIS DATA WILL SAVING TO DATABASE(userInfo2): ', userInfo2);
+
     // // check tiếp
     console.log('changedFields: ', changedFields);
     updateFirebase();
 
+    // // xử lý
     // // Alert.alert('Thành công', 'Dữ liệu đã được lưu thành công.');
   };
 
@@ -318,7 +372,30 @@ export default function EditProfileScreen({navigation}) {
   };
 
   // HANDLE FIRESTORE
+  // // V1
+  // const updateFirebase = () => {
+  //   // Lặp qua các key trong changedFields
+  //   for (const key in changedFields) {
+  //     if (Object.hasOwnProperty.call(changedFields, key)) {
+  //       // Lấy giá trị mới của key
+  //       const value = changedFields[key];
+
+  //       // Thực hiện cập nhật giá trị tương ứng trong cơ sở dữ liệu
+  //       updateDoc(doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), {
+  //         [key]: value,
+  //       })
+  //         .then(() => {
+  //           console.log(`${key} updated successfully!`);
+  //         })
+  //         .catch(error => {
+  //           console.error(`Error updating ${key}:`, error);
+  //         });
+  //     }
+  //   }
+  // };
+
   // V2: Thêm phân loại để update cho cả auth
+  // HANDLE FIRESTORE
   const updateFirebase = async () => {
     const keysToCheck = ['displayName', 'photoURL']; // Mảng chứa các key cần kiểm tra
     const keysArray = Object.keys(changedFields);
@@ -346,7 +423,7 @@ export default function EditProfileScreen({navigation}) {
 
     // Tạm tắt
     console.log('diffrentKeyOfResultObject: ', diffrentKeyOfResultObject);
-    updateValueToFireStore2Object(diffrentKeyOfResultObject, userInfo2);
+    updateValueToFireStore2(diffrentKeyOfResultObject, userInfo2);
 
     // Check có image thì upload từ trước luôn
     let savePhotoURL = null;
@@ -388,6 +465,12 @@ export default function EditProfileScreen({navigation}) {
                   );
                   console.log('File available at', downloadURL);
 
+                  // // update on Firestore
+                  // await updateValueToFireStore('photoURL', downloadURL); // Gọi hàm cập nhật ảnh vào Firestore
+
+                  // // update on AUTH
+                  // handleUpdateToAuth({photoURL: downloadURL});
+
                   // save url to out side
                   savePhotoURL = downloadURL;
 
@@ -410,50 +493,77 @@ export default function EditProfileScreen({navigation}) {
     }
 
     async function waitUpload() {
-      if (resultObject.photoURL) {
-        await uploadAndSaveURL();
-      }
+      await uploadAndSaveURL();
 
+      // dieu kien
       // Kiểm tra điều kiện để cập nhật lên db
-      if (resultObject.displayName && resultObject.photoURL) {
-        // Cập nhật lên db với các trường là displayName và photoURL
-        console.log(
-          'Update displayName và photoURL: ',
-          userInfo2.displayName,
-          savePhotoURL,
-        );
+      if (resultObject.photoURL) {
+        if (resultObject.displayName && resultObject.photoURL) {
+          // Cập nhật lên db với các trường là displayName và photoURL
+          console.log(
+            'Update displayName và photoURL: ',
+            userInfo2.displayName,
+            savePhotoURL,
+          );
 
-        handleUpdateToAuth({
-          displayName: userInfo2.displayName,
-          photoURL: savePhotoURL, //url need handle
-        });
-        updateValueToFireStore1Object({
-          displayName: userInfo2.displayName,
-          photoURL: savePhotoURL,
-        });
-        resultObject['displayName'] = false;
-        resultObject['photoURL'] = false;
-      } else if (resultObject.displayName) {
-        // Cập nhật lên db với trường displayName
-        handleUpdateToAuth({
-          displayName: userInfo2.displayName,
-        });
-        updateValueToFireStore1Object({
-          displayName: userInfo2.displayName,
-        });
-        resultObject['photoURL'] = false;
-      } else if (resultObject.photoURL) {
-        // Chỉ cập nhật lên db với trường photoURL
-        console.log('UPDATE photoURL with VALUE: ', userInfo2.photoURL);
-        updateValueToFireStore('photoURL', savePhotoURL); // Gọi hàm cập nhật ảnh vào Firestore
+          handleUpdateToAuth({
+            displayName: userInfo2.displayName,
+            photoURL: savePhotoURL, //url need handle
+          });
+          updateValueToFireStore4({
+            displayName: userInfo2.displayName,
+            photoURL: savePhotoURL,
+          });
+          resultObject['displayName'] = false;
+          resultObject['photoURL'] = false;
+        } else if (resultObject.displayName && resultObject.photoURL) {
+          // Cập nhật lên db với trường displayName và photoURL
+          console.log(
+            'Update displayName và photoURL: ',
+            userInfo2.displayName,
+            userInfo2.photoURL,
+          );
+          handleUpdateToAuth({
+            displayName: userInfo2.displayName,
+            photoURL: savePhotoURL,
+          });
+          updateValueToFireStore4({
+            displayName: userInfo2.displayName,
+            photoURL: savePhotoURL,
+          });
+          resultObject['displayName'] = false;
+          resultObject['photoURL'] = false;
+        } else if (resultObject.photoURL) {
+          // Chỉ cập nhật lên db với trường photoURL
+          console.log('UPDATE photoURL with VALUE: ', userInfo2.photoURL);
+          updateValueToFireStore('photoURL', savePhotoURL); // Gọi hàm cập nhật ảnh vào Firestore
 
-        // update on AUTH
-        handleUpdateToAuth({photoURL: savePhotoURL});
-        resultObject['photoURL'] = false;
+          // update on AUTH
+          handleUpdateToAuth({photoURL: savePhotoURL});
+          resultObject['photoURL'] = false;
+        }
       }
+
+      setLoading({...loading, buttonLoading: false});
     }
 
-    waitUpload();
+    if (resultObject.photoURL) {
+      waitUpload();
+    }
+
+    // ################################### DISPLAYNAME ################################### //
+    // Kiểm tra điều kiện để cập nhật lên db
+    if (resultObject.displayName) {
+      // Cập nhật lên db với cả hai trường là displayName
+      console.log('Update displayName ', userInfo2.displayName);
+      handleUpdateToAuth({
+        displayName: userInfo2.displayName,
+      });
+      updateValueToFireStore4({
+        displayName: userInfo2.displayName,
+      });
+      resultObject['displayName'] = false;
+    }
 
     // Fake loading
     setTimeout(() => {
@@ -461,7 +571,33 @@ export default function EditProfileScreen({navigation}) {
     }, 2000);
   };
 
-  const updateValueToFireStore2Object = async (obj1, obj2) => {
+  const updateFirestore = async (key, value) => {
+    try {
+      await updateDoc(doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), {
+        [key]: value,
+      });
+      console.log(`${key} updated successfully!`);
+    } catch (error) {
+      console.error(`Error updating ${key}:`, error);
+      // Bạn có thể xử lý lỗi tại đây
+    }
+  };
+
+  const updateValueToFireStore = async (key, value) => {
+    // try {
+    //   await updateDoc(
+    //     doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), // Thay đổi địa chỉ của tài liệu tương ứng trong Firestore
+    //     {
+    //       [key]: value, // Thay đổi tên trường cần cập nhật nếu cần
+    //     },
+    //   );
+    //   console.log(`${key} updated successfully!`);
+    // } catch (error) {
+    //   console.error(`Error updating ${key}:`, error);
+    // }
+  };
+
+  const updateValueToFireStore2 = async (obj1, obj2) => {
     try {
       if (obj1 && obj2) {
         // console.log('obj1: ', obj1);
@@ -484,7 +620,21 @@ export default function EditProfileScreen({navigation}) {
     }
   };
 
-  const updateValueToFireStore1Object = async object => {
+  const updateValueToFireStore3 = async (key, value) => {
+    try {
+      await updateDoc(
+        doc(db, 'Users', 'htyhhHyJG9YnuAnd1C8PZy80wVu2'), // Thay đổi địa chỉ của tài liệu tương ứng trong Firestore
+        {
+          [key]: value, // Thay đổi tên trường cần cập nhật nếu cần
+        },
+      );
+      console.log(`${key} updated successfully!`);
+    } catch (error) {
+      console.error(`Error updating ${key}:`, error);
+    }
+  };
+
+  const updateValueToFireStore4 = async object => {
     const valueObject = {};
     try {
       for (const field in object) {
@@ -1074,6 +1224,13 @@ export default function EditProfileScreen({navigation}) {
                       },
                     ]}
                     value={userInfo2.createdAt}
+                    // onFocus={() => handleInputFocus('createdAt')}
+                    // onChangeText={text =>
+                    //   handleChangeTextForDatePicker('createdAt', text)
+                    // }
+                    // onBlur={() => handleBlurForDatePicker('createdAt')}
+                    // maxLength={10}
+                    // keyboardType='numeric'
                   />
                   <TouchableOpacity
                     activeOpacity={1}
