@@ -3,5 +3,11 @@
 - Làm thêm thanh Progress (0-100%)
 
 
-- phoneNumber & displayName đã update lên firestore nhma chưa update cho auth cần thêm
-- phần Storage ../user/ thêm id user để phân loại mỗi avt trong 1 folder riêng
+- phoneNumber & displayName đã update lên firestore nhma chưa update cho auth cần thêm => ok
+- phần Storage ../user/ thêm id user để phân loại mỗi avt trong 1 folder riêng => ok
+
+# next `timeline` in Future
+- Chỉnh lại trang Register (Thêm các form như SDT, Giới tính, DOB)
+- Chỉnh lại trang Login (Thêm button -> Login vs Quyền ADMIN `check role`)
+- Tạo ra Screen cho Admin gồm: Thống kê (Analytics, 
+chart...), Đơn hàng (Sort by (A-Z, Z-A, Time order, Price), item state(ordered, delivering, completed, cancel order)), Sản phẩm (CRUD)

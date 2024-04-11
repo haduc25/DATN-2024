@@ -367,6 +367,7 @@ export default function EditProfileScreen({navigation}) {
             `assets/avatars/users/${userInfo2.uid}/${imageName}`,
           );
           const uploadTask = uploadBytesResumable(storageRef, blob);
+          console.log('imageName: ', imageName);
 
           await new Promise((resolve, reject) => {
             uploadTask.on(
@@ -444,8 +445,9 @@ export default function EditProfileScreen({navigation}) {
         resultObject['photoURL'] = false;
       } else if (resultObject.photoURL) {
         // Chỉ cập nhật lên db với trường photoURL
-        console.log('UPDATE photoURL with VALUE: ', userInfo2.photoURL);
-        updateValueToFireStore('photoURL', savePhotoURL); // Gọi hàm cập nhật ảnh vào Firestore
+        updateValueToFireStore1Object({
+          photoURL: savePhotoURL,
+        });
 
         // update on AUTH
         handleUpdateToAuth({photoURL: savePhotoURL});
@@ -495,7 +497,6 @@ export default function EditProfileScreen({navigation}) {
         doc(db, 'Users', userInfo2.uid), // Thay đổi địa chỉ của tài liệu tương ứng trong Firestore
         object,
       );
-      console.log(`object is updated successfully!`);
     } catch (error) {
       console.error(`Error updating ${key}:`, error);
     }
