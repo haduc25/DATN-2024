@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import {signInWithEmailAndPassword} from 'firebase/auth';
+import Brand from '../components/Brand';
+import Button from '../components/Button';
 
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
@@ -109,10 +111,8 @@ export default function LoginScreen({navigation}) {
   return (
     <SafeAreaView
       style={{flex: 1, backgroundColor: 'white', alignItems: 'center'}}>
-      <View style={{marginTop: 50}}>
-        <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
-          Mỡ Coffee & Tea
-        </Text>
+      <View style={{marginTop: 40}}>
+        <Brand />
       </View>
 
       <KeyboardAvoidingView>
@@ -203,42 +203,20 @@ export default function LoginScreen({navigation}) {
           <Text>Quên mật khẩu?</Text>
         </View>
 
-        <Pressable
-          onPress={() => signInWithEmail(email, password)}
-          android_ripple={{color: 'rgba(0, 0, 0, 0.1)'}} // Hiệu ứng opacity cho Android
-          // style={{
-          //   width: 200,
-          //   backgroundColor: '#fd5c63',
-          //   borderRadius: 6,
-          //   marginLeft: 'auto',
-          //   marginRight: 'auto',
-          //   padding: 15,
-          //   marginTop: 50,
-          // }}>
-          style={({pressed}) => [
-            {
-              opacity: pressed ? 0.5 : 1, // Thay đổi opacity khi nhấn
-            },
-            {
-              width: 200,
-              backgroundColor: '#fd5c63',
-              borderRadius: 6,
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              padding: 15,
-              marginTop: 50,
-            },
-          ]}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: 16,
-              color: 'white',
-            }}>
-            ĐĂNG NHẬP
-          </Text>
-        </Pressable>
+        <View style={{marginTop: 50}}>
+          <Button
+            title={'Đăng nhập'}
+            onPress={() => signInWithEmail(email, password)}
+            // loading={loading.buttonLoading}
+            // disabled={loading.buttonLoading}
+            buttonStyleCustom={{
+              borderRadius: '15%',
+              paddingVertical: 16,
+              backgroundColor: '#ff4c4c',
+            }}
+            textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
+          />
+        </View>
 
         <Pressable
           onPress={() =>

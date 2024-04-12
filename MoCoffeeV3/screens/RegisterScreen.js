@@ -7,15 +7,22 @@ import {
   TextInput,
   Pressable,
   Alert,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Animated,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {MaterialIcons, Ionicons, AntDesign} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
+import RadioButtonGroup, {RadioButtonItem} from 'expo-radio-button';
+import Brand from '../components/Brand';
 
 // import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
 import {auth, db} from '../firebase';
 import {doc, setDoc} from 'firebase/firestore';
+import Button from '../components/Button';
 
 export default function RegisterScreen({navigation}) {
   const [name, setName] = useState('');
@@ -147,199 +154,364 @@ export default function RegisterScreen({navigation}) {
 
   return (
     <SafeAreaView
-      style={{flex: 1, backgroundColor: 'white', alignItems: 'center'}}>
-      <View style={{marginTop: 50}}>
-        <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
-          Mỡ Coffee & Tea
-        </Text>
-      </View>
-
-      <KeyboardAvoidingView>
-        <View style={{alignItems: 'center'}}>
-          <Text
-            style={{
-              fontSize: 17,
-              fontWeight: 'bold',
-              marginTop: 12,
-              color: 'red',
-            }}>
-            Đăng ký nhanh chóng và dễ dàng
-          </Text>
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        borderWidth: 1,
+      }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
+        <View style={{marginTop: 40}}>
+          {/* LINEAR GRADIENT */}
+          <Brand />
         </View>
 
-        <View style={{marginTop: 70}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
-              backgroundColor: '#E0E0E0',
-              paddingVertical: 5,
-              borderRadius: 5,
-              marginTop: 30,
-            }}>
-            <Ionicons
-              name='person'
-              size={24}
-              color='gray'
-              style={{marginLeft: 8}}
-            />
-            <TextInput
-              value={name}
-              onChangeText={text => setName(text)}
-              style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder='Nhập tên hiển thị'
-            />
+        <KeyboardAvoidingView>
+          <View style={{marginTop: 10}}>
+            {/* DISPLAY NAME */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 5,
+                backgroundColor: '#E0E0E0',
+                paddingVertical: 5,
+                borderRadius: 5,
+                marginTop: 30,
+              }}>
+              <Ionicons
+                name='person'
+                size={24}
+                color='gray'
+                style={{marginLeft: 8}}
+              />
+              <TextInput
+                value={name}
+                onChangeText={text => setName(text)}
+                style={{color: 'gray', marginVertical: 10, width: 300}}
+                placeholder='Nhập tên hiển thị'
+              />
+            </View>
+
+            {/* EMAIL */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 5,
+                backgroundColor: '#E0E0E0',
+                paddingVertical: 5,
+                borderRadius: 5,
+                marginTop: 30,
+              }}>
+              <MaterialIcons
+                style={{marginLeft: 8}}
+                name='email'
+                size={24}
+                color='gray'
+              />
+              <TextInput
+                value={email}
+                onChangeText={text => setEmail(text)}
+                style={{color: 'gray', marginVertical: 10, width: 300}}
+                placeholder='Nhập địa chỉ E-mail'
+              />
+            </View>
+
+            {/* SDT */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 5,
+                backgroundColor: '#E0E0E0',
+                paddingVertical: 5,
+                borderRadius: 5,
+                marginTop: 30,
+              }}>
+              <MaterialIcons
+                style={{marginLeft: 8}}
+                name='smartphone'
+                size={24}
+                color='gray'
+              />
+              <TextInput
+                value={email}
+                onChangeText={text => setEmail(text)}
+                style={{color: 'gray', marginVertical: 10, width: 300}}
+                placeholder='Nhập số điện thoại'
+              />
+            </View>
+
+            {/* DOB */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 5,
+                backgroundColor: '#E0E0E0',
+                paddingVertical: 5,
+                borderRadius: 5,
+                marginTop: 30,
+              }}>
+              <MaterialIcons
+                style={{marginLeft: 8}}
+                name='card-giftcard'
+                size={24}
+                color='gray'
+              />
+              <TextInput
+                value={email}
+                onChangeText={text => setEmail(text)}
+                style={{color: 'gray', marginVertical: 10, width: 300}}
+                placeholder='Nhập ngày sinh'
+              />
+            </View>
+
+            {/* START: GIOI TINH */}
+            <View
+              style={[
+                {
+                  marginBottom: 15,
+
+                  // temp
+                  borderWidth: 0,
+                  paddingTop: 25,
+                },
+              ]}>
+              <View>
+                <RadioButtonGroup
+                  containerStyle={{
+                    // marginBottom: 10,
+                    marginTop: 14,
+                    flexDirection: 'row',
+                    // borderWidth: 1,
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                  // selected={userInfo2.gtinh}
+                  selected={'other'}
+                  // onSelected={value => setCurrentGioiTinh(value)}
+                  // onSelected={value => {
+                  //   if (enableEditing) {
+                  //     handleValueChange('gtinh', value);
+                  //   }
+                  // }}
+                  radioBackground='lightblue'>
+                  <RadioButtonItem
+                    value='male'
+                    label={
+                      <View
+                        style={{
+                          paddingLeft: 6,
+                          flexDirection: 'row',
+                          // borderWidth: 1,
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            color: 'red',
+                            fontSize: 15,
+                          }}>
+                          Nam
+                        </Text>
+                        <Ionicons
+                          name={'male'}
+                          size={18}
+                          color={'rgba(19, 19, 21, 0.6)'}
+                          style={{paddingLeft: 2}}
+                        />
+                      </View>
+                    }
+                  />
+                  <RadioButtonItem
+                    value='female'
+                    label={
+                      <View
+                        style={{
+                          paddingLeft: 6,
+                          flexDirection: 'row',
+                          // borderWidth: 1,
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            color: 'red',
+                            paddingLeft: 6,
+                            fontSize: 15,
+                          }}>
+                          Nữ
+                        </Text>
+                        <Ionicons
+                          name={'female'}
+                          size={18}
+                          color={'rgba(19, 19, 21, 0.6)'}
+                          style={{paddingLeft: 2}}
+                        />
+                      </View>
+                    }
+                  />
+                  <RadioButtonItem
+                    value='other'
+                    label={
+                      <View
+                        style={{
+                          paddingLeft: 6,
+                          flexDirection: 'row',
+                          // borderWidth: 1,
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            color: 'red',
+                            paddingLeft: 6,
+                            fontSize: 15,
+                          }}>
+                          Khác
+                        </Text>
+                        <Ionicons
+                          name={'male-female'}
+                          size={18}
+                          color={'rgba(19, 19, 21, 0.6)'}
+                          style={{paddingLeft: 2}}
+                        />
+                      </View>
+                    }
+                  />
+                </RadioButtonGroup>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={{
+                    position: 'absolute',
+                    top: 12, // Adjust as per your design
+                    left: 10, // Adjust as per your design
+                    zIndex: 1,
+                    flexDirection: 'row',
+                  }}>
+                  <Text
+                    style={[
+                      {color: 'rgba(19, 19, 21, 0.6)'},
+                      {
+                        top: -18,
+                        fontSize: 12, // Adjust as per your design
+                        color: 'rgba(19, 19, 21, 1)', // Adjust as per your design
+                        fontWeight: '700',
+                      },
+                    ]}>
+                    {/* {formName.gtinh} */}
+                    Giới tính
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            {/* END: GIOI TINH */}
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 5,
+                backgroundColor: '#E0E0E0',
+                paddingVertical: 5,
+                borderRadius: 5,
+                // marginTop: 30,
+              }}>
+              <AntDesign
+                style={{marginLeft: 8}}
+                name='lock1'
+                size={24}
+                color='black'
+              />
+              <TextInput
+                value={password}
+                onChangeText={text => setPassword(text)}
+                style={{color: 'gray', marginVertical: 10, width: 300}}
+                placeholder='Nhập mật khẩu'
+                secureTextEntry={!showPassword} // Sử dụng secureTextEntry để ẩn mật khẩu nếu showPassword là false
+              />
+              {/* Nút để hiển thị/ẩn mật khẩu */}
+              <Pressable onPress={toggleShowPassword} style={{padding: 10}}>
+                {showPassword ? (
+                  <MaterialIcons name='visibility-off' size={24} color='gray' />
+                ) : (
+                  <MaterialIcons name='visibility' size={24} color='gray' />
+                )}
+              </Pressable>
+            </View>
+
+            {/* Confirm password */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 5,
+                backgroundColor: '#E0E0E0',
+                paddingVertical: 5,
+                borderRadius: 5,
+                marginTop: 30,
+              }}>
+              <AntDesign
+                style={{marginLeft: 8}}
+                name='lock1'
+                size={24}
+                color='black'
+              />
+              <TextInput
+                // value={password}
+                // onChangeText={text => setPassword(text)}
+                style={{color: 'gray', marginVertical: 10, width: 300}}
+                placeholder='Xác nhận mật khẩu'
+                secureTextEntry={!showPassword} // Sử dụng secureTextEntry để ẩn mật khẩu nếu showPassword là false
+              />
+              {/* Nút để hiển thị/ẩn mật khẩu */}
+              <Pressable onPress={toggleShowPassword} style={{padding: 10}}>
+                {showPassword ? (
+                  <MaterialIcons name='visibility-off' size={24} color='gray' />
+                ) : (
+                  <MaterialIcons name='visibility' size={24} color='gray' />
+                )}
+              </Pressable>
+            </View>
+
+            <View style={{marginTop: 14}}>
+              <Text style={{textAlign: 'center', color: 'gray', fontSize: 14}}>
+                Bằng cách nhấp vào Đăng ký, bạn đồng ý với Điều khoản và Chính
+                sách quyền riêng tư của chúng tôi.
+              </Text>
+            </View>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
-              backgroundColor: '#E0E0E0',
-              paddingVertical: 5,
-              borderRadius: 5,
-              marginTop: 30,
-            }}>
-            <MaterialIcons
-              style={{marginLeft: 8}}
-              name='email'
-              size={24}
-              color='gray'
-            />
-            <TextInput
-              value={email}
-              onChangeText={text => setEmail(text)}
-              style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder='Nhập địa chỉ E-mail'
+
+          <View style={{marginTop: 20}}>
+            <Button
+              title={'Đăng ký'}
+              onPress={() => signUpNewUser(email, password, name)}
+              // loading={loading.buttonLoading}
+              // disabled={loading.buttonLoading}
+              buttonStyleCustom={{
+                borderRadius: '15%',
+                paddingVertical: 16,
+                backgroundColor: '#ff4c4c',
+              }}
+              textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
             />
           </View>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
-              backgroundColor: '#E0E0E0',
-              paddingVertical: 5,
-              borderRadius: 5,
-              marginTop: 30,
-            }}>
-            <AntDesign
-              style={{marginLeft: 8}}
-              name='lock1'
-              size={24}
-              color='black'
-            />
-            <TextInput
-              value={password}
-              onChangeText={text => setPassword(text)}
-              style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder='Nhập mật khẩu'
-              secureTextEntry={!showPassword} // Sử dụng secureTextEntry để ẩn mật khẩu nếu showPassword là false
-            />
-            {/* Nút để hiển thị/ẩn mật khẩu */}
-            <Pressable onPress={toggleShowPassword} style={{padding: 10}}>
-              {showPassword ? (
-                <MaterialIcons name='visibility-off' size={24} color='gray' />
-              ) : (
-                <MaterialIcons name='visibility' size={24} color='gray' />
-              )}
-            </Pressable>
-          </View>
-
-          {/* Confirm password */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
-              backgroundColor: '#E0E0E0',
-              paddingVertical: 5,
-              borderRadius: 5,
-              marginTop: 30,
-            }}>
-            <AntDesign
-              style={{marginLeft: 8}}
-              name='lock1'
-              size={24}
-              color='black'
-            />
-            <TextInput
-              // value={password}
-              // onChangeText={text => setPassword(text)}
-              style={{color: 'gray', marginVertical: 10, width: 300}}
-              placeholder='Xác nhận mật khẩu'
-              secureTextEntry={!showPassword} // Sử dụng secureTextEntry để ẩn mật khẩu nếu showPassword là false
-            />
-            {/* Nút để hiển thị/ẩn mật khẩu */}
-            <Pressable onPress={toggleShowPassword} style={{padding: 10}}>
-              {showPassword ? (
-                <MaterialIcons name='visibility-off' size={24} color='gray' />
-              ) : (
-                <MaterialIcons name='visibility' size={24} color='gray' />
-              )}
-            </Pressable>
-          </View>
-
-          <View style={{marginTop: 14}}>
-            <Text style={{textAlign: 'center', color: 'gray', fontSize: 14}}>
-              Bằng cách nhấp vào Đăng ký, bạn đồng ý với Điều khoản và Chính
-              sách quyền riêng tư của chúng tôi.
+          <Pressable
+            onPress={() =>
+              navi.reset({
+                index: 0,
+                routes: [{name: 'LoginScreen'}],
+              })
+            }
+            style={{marginTop: 15}}>
+            <Text style={{textAlign: 'center', color: 'gray', fontSize: 16}}>
+              Bạn đã có tài khoản? Đăng nhập ngay
             </Text>
-          </View>
-        </View>
-
-        <Pressable
-          onPress={() => signUpNewUser(email, password, name)}
-          android_ripple={{color: 'rgba(0, 0, 0, 0.1)'}} // Hiệu ứng opacity cho Android
-          // style={{
-          //   width: 200,
-          //   backgroundColor: '#fd5c63',
-          //   borderRadius: 6,
-          //   marginLeft: 'auto',
-          //   marginRight: 'auto',
-          //   padding: 15,
-          //   marginTop: 50,
-          // }}>
-          style={({pressed}) => [
-            {
-              opacity: pressed ? 0.5 : 1, // Thay đổi opacity khi nhấn
-            },
-            {
-              width: 200,
-              backgroundColor: '#fd5c63',
-              borderRadius: 6,
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              padding: 15,
-              marginTop: 50,
-            },
-          ]}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: 16,
-              color: 'white',
-            }}>
-            ĐĂNG KÝ
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() =>
-            navi.reset({
-              index: 0,
-              routes: [{name: 'LoginScreen'}],
-            })
-          }
-          style={{marginTop: 15}}>
-          <Text style={{textAlign: 'center', color: 'gray', fontSize: 16}}>
-            Bạn đã có tài khoản? Đăng nhập ngay
-          </Text>
-        </Pressable>
-      </KeyboardAvoidingView>
+          </Pressable>
+        </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
