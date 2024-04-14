@@ -7,7 +7,9 @@
 - phần Storage ../user/ thêm id user để phân loại mỗi avt trong 1 folder riêng => ok
 
 # next `timeline` in Future
-- Chỉnh lại trang Register (Thêm các form như SDT, Giới tính, DOB)
-- Chỉnh lại trang Login (Thêm button -> Login vs Quyền ADMIN `check role`)
+- Chỉnh lại trang Register (Thêm các form như SDT, Giới tính, DOB) => ok
+- Chỉnh lại trang Login (Thêm button -> Login vs Quyền ADMIN `check role`) => ok
 - Tạo ra Screen cho Admin gồm: Thống kê (Analytics, 
 chart...), Đơn hàng (Sort by (A-Z, Z-A, Time order, Price), item state(ordered, delivering, completed, cancel order)), Sản phẩm (CRUD)
+
+- nếu là `admin` thì trang profile có nút chuyển qua `AdminDashboardScreen`

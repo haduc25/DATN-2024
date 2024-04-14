@@ -6,16 +6,15 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import React, {useEffect, useState} from 'react';
 import {MaterialIcons, AntDesign} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
-import {db, auth} from '../firebase';
+import {db, auth, getDoc, doc, signInWithEmailAndPassword} from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
-import {signInWithEmailAndPassword} from 'firebase/auth';
 import Brand from '../components/Brand';
 import Button from '../components/Button';
 
@@ -54,7 +53,7 @@ export default function LoginScreen({navigation}) {
     checkLogin();
   }, []);
 
-  const signInWithEmail = async (email, password) => {
+  const signInWithEmail = async (email, password, isAdmin) => {
     if (!email || !password) {
       console.log('Vui lòng nhập email và mật khẩu');
       alert('Vui lòng nhập email và mật khẩu');
@@ -70,6 +69,33 @@ export default function LoginScreen({navigation}) {
       const user = userCredential.user;
       const token = await user.getIdToken(); // Lấy token từ Firebase
 
+      console.log('USER: ', user.displayName);
+      const _userId = user.uid;
+
+      // Kiểm tra quyền của người dùng nếu là admin
+      if (isAdmin) {
+        // Đọc dữ liệu role từ Firestore
+        const role = await readDataFromFireStore(_userId);
+
+        switch (role) {
+          case 'admin':
+            console.log('Chuyển sang screen khác');
+            // Chuyển hướng đến màn hình khác sau khi đăng nhập thành công
+            navigation.navigate('AdminDashboardScreen');
+            return;
+          case 'user':
+            console.log('Bạn không có quyền truy cập');
+            alert('Bạn không có quyền truy cập');
+            break;
+          default:
+            console.log('Bạn không có quyền truy cập');
+            alert('Bạn không có quyền truy cập');
+            return;
+        }
+      }
+
+      console.log('SIGN IN');
+
       // Lưu thông tin người dùng vào AsyncStorage
       // await AsyncStorage.setItem('user', JSON.stringify(user));
       // Lưu token vào AsyncStorage
@@ -77,7 +103,6 @@ export default function LoginScreen({navigation}) {
 
       console.log('user: ', user);
       console.log('token: ', token);
-      const _userId = user.uid;
 
       const userProfileData = {
         currentUser: {
@@ -94,10 +119,6 @@ export default function LoginScreen({navigation}) {
       );
       console.log('User profiles saved successfully');
 
-      // console.log('success sign-in user: ', user.email);
-      // console.log('success sign-in user: ', user.uid);
-      // console.log('\n\n ===> success sign-in user: ', user);
-
       // Chuyển hướng đến màn hình khác sau khi đăng nhập thành công
       navigation.navigate('Trang chủ');
     } catch (error) {
@@ -105,6 +126,28 @@ export default function LoginScreen({navigation}) {
       const errorMessage = error.message;
       console.log('false: ', error.message);
       console.log('false-code: ', error.code);
+    }
+  };
+
+  // read
+  const readDataFromFireStore = async _uid => {
+    try {
+      const docSnap = await getDoc(doc(db, 'Users', _uid));
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        if (userData.role) {
+          return userData.role; // Trả về role nếu có
+        } else {
+          console.log('User role does not exist');
+          return null; // Trả về null nếu không có role
+        }
+      } else {
+        console.log('Document does not exist');
+        alert('Document does not exist');
+      }
+    } catch (error) {
+      console.log('Error getting document:', error);
+      alert('Error getting document:', error);
     }
   };
 
@@ -200,7 +243,10 @@ export default function LoginScreen({navigation}) {
               Lưu tài khoản {isSaveAccount ? '👍' : '👎'}
             </Text>
           </View>
-          <Text>Quên mật khẩu?</Text>
+          <TouchableOpacity
+            onPress={() => alert('Go to Forgot Password Screen')}>
+            <Text>Quên mật khẩu?</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={{marginTop: 50}}>
@@ -220,10 +266,6 @@ export default function LoginScreen({navigation}) {
 
         <Pressable
           onPress={() =>
-            // navi.reset({
-            //   index: 0,
-            //   routes: [{name: 'RegisterScreen'}],
-            // })
             navi.reset({
               index: 0,
               routes: [{name: 'RegisterScreen'}],
@@ -234,6 +276,47 @@ export default function LoginScreen({navigation}) {
             Bạn chưa có tài khoản? Đăng ký ngay
           </Text>
         </Pressable>
+
+        <View
+          style={{
+            alignItems: 'center',
+            borderWidth: 0,
+            paddingVertical: 50,
+            // borderWidth: 1,
+          }}>
+          {/* <TouchableOpacity
+            onPress={() => alert('Go to admin screen')}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text style={{color: 'gray', fontSize: 16, fontWeight: '600'}}>
+              Đăng nhập với quyền quản trị viên
+            </Text>
+            <MaterialIcons
+              style={{marginLeft: 4}}
+              name='admin-panel-settings'
+              size={26}
+              color='gray'
+            />
+          </TouchableOpacity> */}
+
+          <Button
+            title={'Đăng nhập với quyền quản trị viên'}
+            onPress={() => signInWithEmail(email, password, true)}
+            // loading={loading.buttonLoading}
+            // disabled={loading.buttonLoading}
+            buttonStyleCustom={{
+              borderRadius: '15%',
+              paddingVertical: 16,
+              backgroundColor: '#fff',
+              borderWidth: 1,
+              borderColor: 'red',
+              width: '100%',
+            }}
+            textStyleInsideButtonCustom={{color: 'red', fontWeight: '600'}}
+          />
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

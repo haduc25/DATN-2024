@@ -18,6 +18,7 @@ import DynamicHeaderScrollView from './screens/DynamicHeaderScrollView';
 import ImageAnimation from './screens/ImageAnimation';
 import EditProfileScreen from './screens/EditProfileScreen';
 import UploadImageToStorageDemo from './screens/UploadImageToStorageDemo';
+import AdminDashboardScreen from './screens/AdminDashboardScreen';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -198,6 +199,16 @@ export default function App() {
           <BottomTab.Screen
             name={registerName}
             component={RegisterScreen}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          {/* ADMIN */}
+          <BottomTab.Screen
+            name={'AdminDashboardScreen'}
+            component={AdminDashboardScreen}
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới

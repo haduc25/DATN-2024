@@ -21,6 +21,7 @@ import {
   initializeAuth,
   getReactNativePersistence,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -77,6 +78,7 @@ export {
   getDownloadURL,
   uploadBytesResumable,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   updateProfile,
   addDoc,
   collection,
