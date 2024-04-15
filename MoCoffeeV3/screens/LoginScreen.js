@@ -54,13 +54,13 @@ export default function LoginScreen({navigation}) {
   }, []);
 
   const signInWithEmail = async (email, password, isAdmin) => {
-    if (!email || !password) {
-      console.log('Vui lòng nhập email và mật khẩu');
-      alert('Vui lòng nhập email và mật khẩu');
-      return;
-    }
-
     try {
+      if (!email || !password) {
+        console.log('Vui lòng nhập email và mật khẩu');
+        alert('Vui lòng nhập email và mật khẩu');
+        return;
+      }
+
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -71,30 +71,6 @@ export default function LoginScreen({navigation}) {
 
       console.log('USER: ', user.displayName);
       const _userId = user.uid;
-
-      // Kiểm tra quyền của người dùng nếu là admin
-      if (isAdmin) {
-        // Đọc dữ liệu role từ Firestore
-        const role = await readDataFromFireStore(_userId);
-
-        switch (role) {
-          case 'admin':
-            console.log('Chuyển sang screen khác');
-            // Chuyển hướng đến màn hình khác sau khi đăng nhập thành công
-            navigation.navigate('AdminDashboardScreen');
-            return;
-          case 'user':
-            console.log('Bạn không có quyền truy cập');
-            alert('Bạn không có quyền truy cập');
-            break;
-          default:
-            console.log('Bạn không có quyền truy cập');
-            alert('Bạn không có quyền truy cập');
-            return;
-        }
-      }
-
-      console.log('SIGN IN');
 
       // Lưu thông tin người dùng vào AsyncStorage
       // await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -119,13 +95,31 @@ export default function LoginScreen({navigation}) {
       );
       console.log('User profiles saved successfully');
 
-      // Chuyển hướng đến màn hình khác sau khi đăng nhập thành công
+      // Kiểm tra quyền của người dùng nếu là admin
+      if (isAdmin) {
+        // Đọc dữ liệu role từ Firestore
+        const role = await readDataFromFireStore(_userId);
+
+        switch (role) {
+          case 'admin':
+            console.log('Chuyển sang screen khác');
+            // Chuyển hướng đến màn hình khác sau khi đăng nhập thành công
+            navigation.navigate('AdminDashboardScreen');
+            return;
+          case 'user':
+          default:
+            console.log('Bạn không có quyền truy cập');
+            alert('Bạn không có quyền truy cập');
+            return;
+        }
+      }
+
       navigation.navigate('Trang chủ');
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log('false: ', error.message);
-      console.log('false-code: ', error.code);
+      console.log('false: ', errorMessage);
+      console.log('false-code: ', errorCode);
     }
   };
 

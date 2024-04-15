@@ -149,7 +149,7 @@ export default function RegisterScreen({navigation}) {
       const regexPatterns = {
         email: /^\S+@\S+\.\S+$/,
         phoneNumber: /^\d{10,11}$/,
-        name: /^[a-zA-Z0-9\s]+$/,
+        name: /^[a-zA-Z0-9\sÀ-ỹ]+$/,
       };
 
       let isValid = true;

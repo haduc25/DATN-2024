@@ -31,6 +31,7 @@ export default function ProfileScreen({navigation}) {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [userPhotoURL, setUserPhotoURL] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [showUIAdmin, setShowUIAdmin] = useState(false);
 
   const [userInfo, setUserInfo] = useState(null);
 
@@ -57,6 +58,11 @@ export default function ProfileScreen({navigation}) {
           const mergedData = mergeObjects(user, userData);
           setUserInfo(mergedData);
           console.log('Merged data:', mergedData);
+          console.log('Merged data - role:', mergedData.role);
+
+          if (mergedData.role === 'admin') {
+            setShowUIAdmin(true);
+          }
 
           // set cho 1 so propertiesmac dinh (ve sau cos the doi lai)
 
@@ -343,6 +349,32 @@ export default function ProfileScreen({navigation}) {
             </View>
             <AntDesign name={'right'} size={18} color={'#000'} />
           </TouchableOpacity>
+
+          {/* ADMIN */}
+          {showUIAdmin && (
+            <TouchableOpacity
+              onPress={() => navi.navigate('AdminDashboardScreen')}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: '#ccc',
+                paddingTop: 20,
+                padding: 18,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <View
+                style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+                <AntDesign
+                  name={'Safety'}
+                  size={18}
+                  color={'#000'}
+                  // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+                />
+                <Text style={{paddingLeft: 10}}>Giao diện quản trị viên</Text>
+              </View>
+              <AntDesign name={'right'} size={18} color={'#000'} />
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             onPress={() => alert('navigate to Quản lý thẻ')}
