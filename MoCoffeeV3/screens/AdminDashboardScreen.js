@@ -108,7 +108,9 @@ export default function AdminDashboardScreen({navigation}) {
                   Đơn hàng
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.itemsContainer}>
+              <TouchableOpacity
+                style={styles.itemsContainer}
+                onPress={() => navi.navigate('AdminProductsCRUD')}>
                 <Image
                   style={{width: 125, height: 125}}
                   source={{

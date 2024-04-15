@@ -19,6 +19,7 @@ import ImageAnimation from './screens/ImageAnimation';
 import EditProfileScreen from './screens/EditProfileScreen';
 import UploadImageToStorageDemo from './screens/UploadImageToStorageDemo';
 import AdminDashboardScreen from './screens/AdminDashboardScreen';
+import AdminProductsCRUD from './screens/AdminProductsCRUD';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -209,6 +210,17 @@ export default function App() {
           <BottomTab.Screen
             name={'AdminDashboardScreen'}
             component={AdminDashboardScreen}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+
+          {/* AdminProductsCRUD */}
+          <BottomTab.Screen
+            name={'AdminProductsCRUD'}
+            component={AdminProductsCRUD}
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới

@@ -10,9 +10,9 @@
 - Chỉnh lại trang Register (Thêm các form như SDT, Giới tính, DOB) => ok
 - Chỉnh lại trang Login (Thêm button -> Login vs Quyền ADMIN `check role`) => ok
 - Tạo ra Screen cho Admin gồm: Thống kê (Analytics, 
-chart...), Đơn hàng (Sort by (A-Z, Z-A, Time order, Price), item state(ordered, delivering, completed, cancel order)), Sản phẩm (CRUD)
+chart...), Đơn hàng (Sort by (A-Z, Z-A, Time order, Price), item state(ordered, delivering, completed, cancel order)), Sản phẩm (CRUD) => 30%
 
-- nếu là `admin` thì trang profile có nút chuyển qua `AdminDashboardScreen`
+- nếu là `admin` thì trang profile có nút chuyển qua `AdminDashboardScreen` => ok
 
 #Style for a item container
 
