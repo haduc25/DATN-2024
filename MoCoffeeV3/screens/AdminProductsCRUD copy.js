@@ -1,17 +1,7 @@
 import * as React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Button from '../components/Button';
-
-import {AntDesign} from '@expo/vector-icons';
 
 export default function AdminProductsCRUD({navigation}) {
   return (
@@ -34,15 +24,16 @@ export default function AdminProductsCRUD({navigation}) {
           flex: 1,
           paddingTop: 100,
           backgroundColor: '#fff',
+          borderWidth: 1,
         }}>
         {/* PARENT OF THIS COMPONENT */}
         <View
           style={{
             flex: 1,
             alignItems: 'center',
-            // justifyContent: 'center',
-            borderTopColor: '#ccc',
-            borderTopWidth: 0.5,
+            justifyContent: 'center',
+            borderWidth: 1,
+            backgroundColor: 'yellow',
             height: 800,
           }}>
           {/* ITEMS */}
@@ -60,7 +51,6 @@ export default function AdminProductsCRUD({navigation}) {
               backgroundColor: '#fff',
               borderRadius: 10,
               margin: 10,
-              marginTop: 8,
               marginBottom: 8,
               shadowColor: '#000',
               shadowOpacity: 0.25,
@@ -118,22 +108,8 @@ export default function AdminProductsCRUD({navigation}) {
                       justifyContent: 'space-between',
                       paddingTop: 12,
                     }}>
-                    <View style={{flexDirection: 'row'}}>
-                      <AntDesign
-                        name={'tago'}
-                        size={18}
-                        style={{paddingRight: 6}}
-                      />
-                      <Text>Đã bán: 10</Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <AntDesign
-                        name={'hearto'}
-                        size={18}
-                        style={{paddingRight: 6}}
-                      />
-                      <Text>Lượt thích: 10</Text>
-                    </View>
+                    <Text>(icon)Đã bán: 10</Text>
+                    <Text>(icon)Lượt thích: 10</Text>
                   </View>
                 </View>
                 <Image
@@ -202,56 +178,6 @@ export default function AdminProductsCRUD({navigation}) {
           </View>
         </View>
       </ScrollView>
-      {/* BUTTON */}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 40,
-          left: 0,
-          right: 0,
-          // backgroundColor: 'yellow',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          // paddingHorizontal: 20,
-          // paddingVertical: 10,
-          // backgroundColor: '#fff', // Change this to match your background color
-          borderColor: '#ccc', // Change this to match your border color
-          paddingHorizontal: 10,
-          paddingVertical: 10,
-        }}>
-        {/* <TouchableOpacity
-          onPress={() => navi.navigate('Trang chủ')}
-          style={{
-            justifyContent: 'center',
-            // borderWidth: 1,
-            borderRadius: '15%',
-            width: '100%',
-            alignItems: 'center',
-            backgroundColor: '#000',
-          }}>
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: 16,
-              fontWeight: '600',
-            }}>
-            Trang chủ
-          </Text>
-        </TouchableOpacity> */}
-        <Button
-          title={'Thêm 1 sản phẩm mới'}
-          // onPress={() => signUpNewUser(userValue)}
-          // loading={loading.buttonLoading}
-          // disabled={loading.buttonLoading}
-          buttonStyleCustom={{
-            borderRadius: '15%',
-            paddingVertical: 16,
-            backgroundColor: '#ff4c4c',
-            width: '100%',
-          }}
-          textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
-        />
-      </View>
     </SafeAreaProvider>
   );
 }
