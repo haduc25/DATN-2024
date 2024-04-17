@@ -22,7 +22,10 @@ export default function AdminCRUDItem({navigation}) {
     name: 'SAN PHAM 1',
     description:
       'MO TA SAN PHAM 1There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form',
+    // price: '100.000 ₫',
+    price: '100000',
     category: 'tea',
+    size: 'M',
     // displayName: userInfo.displayName,
     // email: userInfo.email,
     // dob: userInfo.dob,
@@ -39,8 +42,9 @@ export default function AdminCRUDItem({navigation}) {
   const [isFocused, setIsFocused] = useState({
     name: false,
     description: false,
+    price: false,
     category: false,
-    phoneNumber: false,
+    size: false,
     dob: false,
     createdAt: false,
     location: false, // true => có dữ liệu, ngược lại
@@ -50,8 +54,9 @@ export default function AdminCRUDItem({navigation}) {
   const [formName, setFormName] = useState({
     name: 'Tên sản phẩm *',
     description: 'Mô tả sản phẩm *',
+    price: 'Giá sản phẩm *',
     category: 'Phân loại sản phẩm *',
-    phoneNumber: 'Số điện thoại',
+    size: 'Size sản phẩm',
     dob: 'Ngày sinh',
     createdAt: 'Ngày tạo tài khoản',
     location: 'Địa chỉ',
@@ -63,25 +68,37 @@ export default function AdminCRUDItem({navigation}) {
   const [errors, setErrors] = useState({
     name: 'meow meow',
     description: 'error 1',
+    price: 'vui long nhap giá',
     category: 'vui lòng chọn đê',
-    dob: '',
+    size: '',
     email: '',
     displayName: '',
   });
 
   // ####################### LIBRARY ####################### //
+  // CATEGORY
   const [selectedItem, setSelectedItem] = useState('');
 
   const CategoriesData = [
-    {key: '3', value: 'Cà phê', category: 'coffee'},
+    {key: '0', value: 'Cà phê', category: 'coffee'},
     {key: '1', value: 'Trà', category: 'tea'},
     {key: '2', value: 'Trà sữa', category: 'milk-tea'},
-    {key: '4', value: 'Đồ ăn vặt', disabled: true, category: 'food'},
+    {key: '3', value: 'Đồ ăn vặt', disabled: true, category: 'food'},
   ];
 
   const handleSelectedItem = index => {
     console.log('index: ', index);
     console.log('Category:', CategoriesData[index].category);
+  };
+
+  // AVAILABLE_SIZES
+  const SizeData = [
+    {key: '0', value: 'M'},
+    {key: '1', value: 'L'},
+  ];
+
+  const handleSizeItem = value => {
+    console.log('Size: ', value);
   };
   // ####################### FUNCIONS ####################### //
   // HANDLE INPUT BLUR
@@ -94,6 +111,10 @@ export default function AdminCRUDItem({navigation}) {
 
   // HANDLE INPUT FOCUS
   const handleInputFocus = fieldName => {
+    console.log(
+      'formatCurrency(itemInfo.price): ',
+      formatCurrency(itemInfo.price),
+    );
     setIsFocused(prevState => ({
       ...prevState,
       [fieldName]: true,
@@ -102,10 +123,23 @@ export default function AdminCRUDItem({navigation}) {
 
   // HANDLE INPUT VALUE CHANGE
   const handleValueChange = (key, value) => {
+    console.log('key & value: ', key, value);
+    console.log('typeof value: ', typeof value);
     if (typeof value !== 'undefined' && value !== null) {
+      let newValue = value;
+      if (key === 'price') {
+        // Kiểm tra nếu giá trị mới không phải là số hoặc là một chuỗi rỗng
+        // thì gán giá trị mới là '0'
+        if (isNaN(value) || value === '') {
+          newValue = '0';
+        }
+        // Kiểm tra nếu giá trị mới nhỏ hơn 0 thì gán giá trị mới là '0'
+        else if (parseFloat(value) < 0) {
+          newValue = '0';
+        }
+      }
       setItemInfo(prevState => {
-        const newState = {...prevState, [key]: value};
-
+        const newState = {...prevState, [key]: newValue};
         // // So sánh giá trị mới với giá trị ban đầu
         // const hasValueChanged = newState[key] !== initialValues[key];
 
@@ -119,6 +153,14 @@ export default function AdminCRUDItem({navigation}) {
       });
     }
   };
+
+  function formatCurrency(value) {
+    // Chuyển đổi chuỗi số thành số nguyên
+    const intValue = parseInt(value, 10);
+
+    // Sử dụng phương thức toLocaleString để thêm dấu chấm phân tách hàng nghìn
+    return intValue.toLocaleString('en-US');
+  }
 
   return (
     <SafeAreaProvider>
@@ -352,6 +394,62 @@ export default function AdminCRUDItem({navigation}) {
           </View>
         </View>
 
+        {/* PRICE */}
+        <View style={styles.inputGroup}>
+          <View
+            style={[
+              styles.inputUserInfo,
+              isFocused.price && styles.inputFocused,
+            ]}>
+            <TextInput
+              style={[
+                styles.input,
+                isFocused.price && {
+                  borderBottomColor: 'rgba(19, 19, 21, 1)',
+                },
+              ]}
+              keyboardType='numeric'
+              maxLength={20}
+              onFocus={() => handleInputFocus('price')}
+              onBlur={() => handleInputBlur('price')}
+              onChangeText={text => handleValueChange('price', text)}
+              value={itemInfo.price}
+            />
+            <TouchableOpacity
+              activeOpacity={1}
+              style={styles.inputLabelTouchable}>
+              <Text
+                style={[
+                  styles.inputLabel,
+                  isFocused.price || itemInfo.price !== ''
+                    ? styles.inputLabelFocused
+                    : null,
+                ]}>
+                {formName.price}
+              </Text>
+            </TouchableOpacity>
+            <AntDesign
+              name={isFocused.price ? 'checkcircle' : 'checkcircleo'}
+              size={18}
+              color={'rgba(50, 205, 50, 0.6)'}
+              style={[
+                {
+                  position: 'absolute',
+                  right: 0,
+                  bottom: 0,
+                  top: 10,
+                },
+                isFocused.price && {
+                  color: 'rgba(50, 205, 50, 1)',
+                },
+              ]}
+            />
+            {errors.price ? (
+              <Text style={styles.inputHelper}>{errors.price}</Text>
+            ) : null}
+          </View>
+        </View>
+
         {/* START: CATEGORY */}
         <View style={styles.inputGroup}>
           <View
@@ -363,7 +461,8 @@ export default function AdminCRUDItem({navigation}) {
               setSelected={val => handleSelectedItem(val)}
               data={CategoriesData}
               // save='value'
-              searchPlaceholder={'Chọn đê'}
+              searchPlaceholder={'Phân loại sản phẩm của bạn'}
+              placeholder={'Chọn loại sản phẩm'}
             />
             <TouchableOpacity
               activeOpacity={1}
@@ -385,6 +484,41 @@ export default function AdminCRUDItem({navigation}) {
           </View>
         </View>
         {/* END: CATEGORY */}
+
+        {/* START: AVAILABLE_SIZES */}
+        <View style={styles.inputGroup}>
+          <View
+            style={[
+              styles.inputUserInfo,
+              isFocused.size && styles.inputFocused,
+            ]}>
+            <SelectList
+              setSelected={val => handleSizeItem(val)}
+              data={SizeData}
+              save='value'
+              searchPlaceholder={'Size sản phẩm của bạn'}
+              placeholder={'Chọn size cho sản phẩm'}
+            />
+            <TouchableOpacity
+              activeOpacity={1}
+              style={[styles.inputLabelTouchable, {top: 0}]}>
+              <Text
+                style={[
+                  styles.inputLabel,
+                  isFocused.size || itemInfo.size !== ''
+                    ? styles.inputLabelFocused
+                    : null,
+                ]}>
+                {formName.size}
+              </Text>
+            </TouchableOpacity>
+
+            {errors.size ? (
+              <Text style={styles.inputHelper}>{errors.size}</Text>
+            ) : null}
+          </View>
+        </View>
+        {/* END: AVAILABLE_SIZES */}
 
         <View style={{height: 800}}></View>
       </ScrollView>
