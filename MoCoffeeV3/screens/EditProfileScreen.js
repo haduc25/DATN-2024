@@ -509,6 +509,14 @@ export default function EditProfileScreen({navigation}) {
         canGoBack={true}
         heightOfTop={50}
         customStyleIconBack={{marginBottom: 20}}
+        customStyleFormStatusBar={{
+          shadowColor: '#000',
+          shadowOpacity: 0.25,
+          shadowRadius: 10,
+          shadowOffset: {width: 0, height: 0},
+          elevation: 5,
+          maxHeight: 200,
+        }}
         arrowIconColor={'#fff'}
         arrowIconBackgroundColor={'#6E5532'}
         titleOfScreen={'Chỉnh sửa hồ sơ'}

@@ -27,3 +27,13 @@ marginLeft: 18,
 marginRight: 18,
 marginBottom: 20,
 shadowOffset: {width: 0, height: 0},
+
+
+# 1 số key cần thêm trong `AdminCRUDItem`
+
+available true/false
+available_sizes ['M', 'L']
+category 'tea'/'milk-tea'/'coffee'
+featured_image []
+preparation_time '10' (có thể bỏ)
+price '99' / 99.000đ

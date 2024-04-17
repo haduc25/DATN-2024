@@ -17,6 +17,7 @@ const CustomStatusBar = ({
   heightOfTop = 0,
   dataNavigation = null, // Thêm prop data để nhận dữ liệu từ bên ngoài
   customStyleIconBack,
+  customStyleFormStatusBar,
   titleOfScreen = null,
   arrowIconColor = '#000',
   arrowIconBackgroundColor = 'rgba(110, 85, 50, .4)',
@@ -68,21 +69,24 @@ const CustomStatusBar = ({
 
   return (
     <View
-      style={{
-        // height: insets.top + 28,
-        height: insets.top + heightOfTop,
-        backgroundColor,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 999, // Đảm bảo StatusBar hiển thị trên cùng
-        flexDirection: 'row', // Để nút và StatusBar có thể hiển thị cùng nhau
-        alignItems: 'center', // Canh giữa các thành phần theo chiều dọc
-        justifyContent: 'space-between', // Canh nút quay lại về phía trái và StatusBar về phía phải
-        paddingHorizontal: 10, // Khoảng cách giữa các phần tử
-        borderWidth: 0,
-      }}>
+      style={[
+        {
+          // height: insets.top + 28,
+          height: insets.top + heightOfTop,
+          backgroundColor,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 999, // Đảm bảo StatusBar hiển thị trên cùng
+          flexDirection: 'row', // Để nút và StatusBar có thể hiển thị cùng nhau
+          alignItems: 'center', // Canh giữa các thành phần theo chiều dọc
+          justifyContent: 'space-between', // Canh nút quay lại về phía trái và StatusBar về phía phải
+          paddingHorizontal: 10, // Khoảng cách giữa các phần tử
+          borderWidth: 0,
+        },
+        customStyleFormStatusBar,
+      ]}>
       {canGoBack && dataNavigation && (
         <Text
           style={[

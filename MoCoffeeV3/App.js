@@ -20,6 +20,7 @@ import EditProfileScreen from './screens/EditProfileScreen';
 import UploadImageToStorageDemo from './screens/UploadImageToStorageDemo';
 import AdminDashboardScreen from './screens/AdminDashboardScreen';
 import AdminProductsCRUD from './screens/AdminProductsCRUD';
+import AdminCRUDItem from './screens/AdminCRUDItem';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -221,6 +222,17 @@ export default function App() {
           <BottomTab.Screen
             name={'AdminProductsCRUD'}
             component={AdminProductsCRUD}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+
+          {/* AdminCRUDItem */}
+          <BottomTab.Screen
+            name={'AdminCRUDItem'}
+            component={AdminCRUDItem}
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
