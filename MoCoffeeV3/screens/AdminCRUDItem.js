@@ -13,6 +13,9 @@ import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {AntDesign} from '@expo/vector-icons';
 
+// dropdown
+import SelectDropdown from 'react-native-select-dropdown';
+
 export default function AdminCRUDItem({navigation}) {
   // VALUE OF ITEM
   const [itemInfo, setItemInfo] = useState({
@@ -46,7 +49,7 @@ export default function AdminCRUDItem({navigation}) {
   const [formName, setFormName] = useState({
     name: 'Tên sản phẩm *',
     description: 'Mô tả sản phẩm *',
-    email: 'E-mail',
+    category: 'Phân loại sản phẩm *',
     phoneNumber: 'Số điện thoại',
     dob: 'Ngày sinh',
     createdAt: 'Ngày tạo tài khoản',
@@ -65,6 +68,23 @@ export default function AdminCRUDItem({navigation}) {
     displayName: '',
   });
 
+  // ####################### LIBRARY ####################### //
+  const emojisWithIcons = [
+    {title: 'happy', icon: 'exclamationcircle'},
+    {title: 'cool', icon: 'exclamationcircle'},
+    {title: 'lol', icon: 'exclamationcircle'},
+    {title: 'sad', icon: 'exclamationcircle'},
+    {title: 'cry', icon: 'exclamationcircle'},
+    {title: 'angry', icon: 'exclamationcircle'},
+    {title: 'confused', icon: 'exclamationcircle'},
+    {title: 'excited', icon: 'exclamationcircle'},
+    {title: 'kiss', icon: 'exclamationcircle'},
+    {title: 'devil', icon: 'exclamationcircle'},
+    {title: 'dead', icon: 'exclamationcircle'},
+    {title: 'wink', icon: 'exclamationcircle'},
+    {title: 'sick', icon: 'exclamationcircle'},
+    {title: 'frown', icon: 'exclamationcircle'},
+  ];
   // ####################### FUNCIONS ####################### //
   // HANDLE INPUT BLUR
   const handleInputBlur = fieldName => {
@@ -334,6 +354,51 @@ export default function AdminCRUDItem({navigation}) {
           </View>
         </View>
 
+        {/* START: CATEGORY */}
+        <SelectDropdown
+          data={emojisWithIcons}
+          onSelect={(selectedItem, index) => {
+            console.log(selectedItem, index);
+          }}
+          renderButton={(selectedItem, isOpened) => {
+            return (
+              <View style={styles.dropdownButtonStyle}>
+                {selectedItem && (
+                  <AntDesign
+                    name={selectedItem.icon}
+                    style={styles.dropdownButtonIconStyle}
+                  />
+                )}
+                <Text style={styles.dropdownButtonTxtStyle}>
+                  {(selectedItem && selectedItem.title) || 'Select your mood'}
+                </Text>
+                <AntDesign
+                  name={isOpened ? 'arrowup' : 'arrowdown'}
+                  style={styles.dropdownButtonArrowStyle}
+                />
+              </View>
+            );
+          }}
+          renderItem={(item, index, isSelected) => {
+            return (
+              <View
+                style={{
+                  ...styles.dropdownItemStyle,
+                  ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                }}>
+                <AntDesign
+                  name={item.icon}
+                  style={styles.dropdownItemIconStyle}
+                />
+                <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+          dropdownStyle={styles.dropdownMenuStyle}
+        />
+        {/* END: CATEGORY */}
+
         <View style={{height: 800}}></View>
       </ScrollView>
     </SafeAreaProvider>
@@ -442,5 +507,52 @@ const styles = StyleSheet.create({
   selectedGender: {
     marginTop: 20,
     fontSize: 16,
+  },
+
+  //
+  dropdownButtonStyle: {
+    width: 200,
+    height: 50,
+    backgroundColor: '#E9ECEF',
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownButtonArrowStyle: {
+    fontSize: 28,
+  },
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownItemIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
   },
 });

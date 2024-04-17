@@ -64,3 +64,6 @@ npx expo install expo-image-picker
     }
     ]
 ],
+
+#SELECT FOR CATEGORY
+`npm install react-native-select-dropdown`
