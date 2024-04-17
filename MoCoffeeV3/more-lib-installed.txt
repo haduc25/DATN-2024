@@ -65,5 +65,8 @@ npx expo install expo-image-picker
     ]
 ],
 
-#SELECT FOR CATEGORY
+#SELECT FOR CATEGORY (Cái này trông dài hơn và cồng kềnh hơn - nhưng có icon cho mỗi select => đã xóa)
 `npm install react-native-select-dropdown`
+
+#SELECT FOR CATEGORY VERSION 2 (TRÔNG UI ĐẸP HƠN VÀ ĐƠN GIẢN HƠN)
+`npm i react-native-dropdown-select-list`

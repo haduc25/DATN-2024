@@ -13,8 +13,8 @@ import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {AntDesign} from '@expo/vector-icons';
 
-// dropdown
-import SelectDropdown from 'react-native-select-dropdown';
+// DROPDOWN
+import {SelectList} from 'react-native-dropdown-select-list';
 
 export default function AdminCRUDItem({navigation}) {
   // VALUE OF ITEM
@@ -22,6 +22,7 @@ export default function AdminCRUDItem({navigation}) {
     name: 'SAN PHAM 1',
     description:
       'MO TA SAN PHAM 1There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form',
+    category: 'tea',
     // displayName: userInfo.displayName,
     // email: userInfo.email,
     // dob: userInfo.dob,
@@ -38,7 +39,7 @@ export default function AdminCRUDItem({navigation}) {
   const [isFocused, setIsFocused] = useState({
     name: false,
     description: false,
-    email: false,
+    category: false,
     phoneNumber: false,
     dob: false,
     createdAt: false,
@@ -62,29 +63,26 @@ export default function AdminCRUDItem({navigation}) {
   const [errors, setErrors] = useState({
     name: 'meow meow',
     description: 'error 1',
-    createdAt: '',
+    category: 'vui lòng chọn đê',
     dob: '',
     email: '',
     displayName: '',
   });
 
   // ####################### LIBRARY ####################### //
-  const emojisWithIcons = [
-    {title: 'happy', icon: 'exclamationcircle'},
-    {title: 'cool', icon: 'exclamationcircle'},
-    {title: 'lol', icon: 'exclamationcircle'},
-    {title: 'sad', icon: 'exclamationcircle'},
-    {title: 'cry', icon: 'exclamationcircle'},
-    {title: 'angry', icon: 'exclamationcircle'},
-    {title: 'confused', icon: 'exclamationcircle'},
-    {title: 'excited', icon: 'exclamationcircle'},
-    {title: 'kiss', icon: 'exclamationcircle'},
-    {title: 'devil', icon: 'exclamationcircle'},
-    {title: 'dead', icon: 'exclamationcircle'},
-    {title: 'wink', icon: 'exclamationcircle'},
-    {title: 'sick', icon: 'exclamationcircle'},
-    {title: 'frown', icon: 'exclamationcircle'},
+  const [selectedItem, setSelectedItem] = useState('');
+
+  const CategoriesData = [
+    {key: '3', value: 'Cà phê', category: 'coffee'},
+    {key: '1', value: 'Trà', category: 'tea'},
+    {key: '2', value: 'Trà sữa', category: 'milk-tea'},
+    {key: '4', value: 'Đồ ăn vặt', disabled: true, category: 'food'},
   ];
+
+  const handleSelectedItem = index => {
+    console.log('index: ', index);
+    console.log('Category:', CategoriesData[index].category);
+  };
   // ####################### FUNCIONS ####################### //
   // HANDLE INPUT BLUR
   const handleInputBlur = fieldName => {
@@ -355,48 +353,37 @@ export default function AdminCRUDItem({navigation}) {
         </View>
 
         {/* START: CATEGORY */}
-        <SelectDropdown
-          data={emojisWithIcons}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index);
-          }}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.dropdownButtonStyle}>
-                {selectedItem && (
-                  <AntDesign
-                    name={selectedItem.icon}
-                    style={styles.dropdownButtonIconStyle}
-                  />
-                )}
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(selectedItem && selectedItem.title) || 'Select your mood'}
-                </Text>
-                <AntDesign
-                  name={isOpened ? 'arrowup' : 'arrowdown'}
-                  style={styles.dropdownButtonArrowStyle}
-                />
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && {backgroundColor: '#D2D9DF'}),
-                }}>
-                <AntDesign
-                  name={item.icon}
-                  style={styles.dropdownItemIconStyle}
-                />
-                <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-          dropdownStyle={styles.dropdownMenuStyle}
-        />
+        <View style={styles.inputGroup}>
+          <View
+            style={[
+              styles.inputUserInfo,
+              isFocused.category && styles.inputFocused,
+            ]}>
+            <SelectList
+              setSelected={val => handleSelectedItem(val)}
+              data={CategoriesData}
+              // save='value'
+              searchPlaceholder={'Chọn đê'}
+            />
+            <TouchableOpacity
+              activeOpacity={1}
+              style={[styles.inputLabelTouchable, {top: 0}]}>
+              <Text
+                style={[
+                  styles.inputLabel,
+                  isFocused.category || itemInfo.category !== ''
+                    ? styles.inputLabelFocused
+                    : null,
+                ]}>
+                {formName.category}
+              </Text>
+            </TouchableOpacity>
+
+            {errors.category ? (
+              <Text style={styles.inputHelper}>{errors.category}</Text>
+            ) : null}
+          </View>
+        </View>
         {/* END: CATEGORY */}
 
         <View style={{height: 800}}></View>
