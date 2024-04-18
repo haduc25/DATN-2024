@@ -21,19 +21,6 @@ import Button from '../components/Button';
 // PICK IMAGE
 import * as ImagePicker from 'expo-image-picker';
 
-// FIREBASE UPLOAD IMAGE
-import {
-  auth,
-  storage,
-  ref,
-  getDownloadURL,
-  uploadBytesResumable,
-  updateProfile,
-  db,
-  doc,
-  updateDoc,
-} from '../firebase';
-
 export default function AdminCRUDItem({navigation}) {
   // VALUE OF ITEM
   const [itemInfo, setItemInfo] = useState({
@@ -120,6 +107,7 @@ export default function AdminCRUDItem({navigation}) {
 
   // PICK IMAGE
   // PICK IMAGE FROM LIBRARY
+  const [selectedImages, setSelectedImages] = useState([]);
   const handlePickImageFromLibrary = async () => {
     const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -152,6 +140,8 @@ export default function AdminCRUDItem({navigation}) {
       console.log('result.assets[0].uri: ', result.assets[0].uri);
       console.log('result.assets: ', result.assets);
       console.log('result.assets-length: ', result.assets.length);
+      console.log('selectedImages: ', selectedImages);
+      setSelectedImages(result.assets);
 
       // Cái này lưu lại ảnh cũ
       // setItemInfo(prevItemInfo => ({
@@ -170,103 +160,12 @@ export default function AdminCRUDItem({navigation}) {
     }
   };
 
-  // IGNORE
   // Ignore specific warning for deprecated 'cancelled' key
   useEffect(() => {
     LogBox.ignoreLogs([
       'Key "cancelled" in the image picker result is deprecated',
     ]);
   }, []);
-
-  // UPLOAD IMAGES
-  let savePhotoURL = null;
-  const uploadAndSaveURL = async () => {
-    try {
-      console.log('111');
-      const currentDate = new Date();
-      const day = currentDate.getDate().toString().padStart(2, '0');
-      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-      const year = currentDate.getFullYear().toString();
-      const dateString = `${day}${month}${year}`;
-
-      await Promise.all(
-        itemInfo.featured_image.map(async image => {
-          try {
-            const response = await fetch(image.uri);
-
-            const blob = await response.blob();
-            const imageName = image.uri.substring(
-              image.uri.lastIndexOf('/') + 1,
-            );
-
-            const storageRef = ref(
-              storage,
-              `assets/products/${dateString}/${imageName}`,
-            );
-            const uploadTask = uploadBytesResumable(storageRef, blob);
-
-            // console.log('image: ', image.uri);
-            // console.log('response: ', response);
-            // console.log('imageName: ', imageName);
-
-            // return;
-            await new Promise((resolve, reject) => {
-              uploadTask.on(
-                'state_changed',
-                snapshot => {
-                  const progress =
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  console.log('Upload image is ' + progress + '% done');
-                },
-                error => {
-                  console.error('Error uploading image:', error);
-                  alert('Error uploading image!');
-                  reject(error);
-                },
-                async () => {
-                  try {
-                    const downloadURL = await getDownloadURL(
-                      uploadTask.snapshot.ref,
-                    );
-                    console.log('File available at', downloadURL);
-
-                    // Save URLs outside if needed
-                    // savePhotoURL = downloadURL;
-
-                    console.log('UPLOAD SUCCESS!');
-
-                    resolve();
-                  } catch (error) {
-                    console.error('Error getting download URL:', error);
-                    alert('Error getting download URL!');
-                    reject(error);
-                  }
-                },
-              );
-            });
-          } catch (error) {
-            console.error('Error uploading image:', error);
-            alert('Error uploading image!');
-          }
-        }),
-      );
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Error uploading image!');
-    }
-  };
-
-  const waitUpload = async () => {
-    if (
-      Array.isArray(itemInfo.featured_image) &&
-      itemInfo.featured_image.length > 0
-    ) {
-      await uploadAndSaveURL();
-      console.log('done');
-      return;
-    }
-    console.log('out111');
-  };
 
   // ####################### FUNCTIONS ####################### //
   // HANDLE INPUT BLUR
@@ -397,9 +296,6 @@ export default function AdminCRUDItem({navigation}) {
   const handlePress = () => {
     console.log('itemInfo.featured_image: ', itemInfo.featured_image);
     console.log(itemInfo.featured_image.length);
-    waitUpload();
-    return;
-
     const isValid = validateData();
     if (isValid) {
       // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
@@ -558,6 +454,7 @@ export default function AdminCRUDItem({navigation}) {
               flexWrap: 'wrap',
               justifyContent: 'space-between',
             }}>
+            {/* {selectedImages.map((image, index) => ( */}
             {itemInfo.featured_image.map((image, index) => (
               <View key={index} style={{position: 'relative'}}>
                 <Image

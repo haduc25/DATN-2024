@@ -368,7 +368,12 @@ export default function EditProfileScreen({navigation}) {
           );
           const uploadTask = uploadBytesResumable(storageRef, blob);
           console.log('imageName: ', imageName);
+          // console.log('userInfo2.photoURL: ', userInfo2.photoURL);
+          // console.log('response: ', response);
+          // console.log('blob: ', blob);
+          // console.log('storageRef: ', storageRef);
 
+          // return;
           await new Promise((resolve, reject) => {
             uploadTask.on(
               'state_changed',
