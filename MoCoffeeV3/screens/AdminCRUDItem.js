@@ -15,6 +15,7 @@ import {AntDesign} from '@expo/vector-icons';
 
 // DROPDOWN
 import {SelectList} from 'react-native-dropdown-select-list';
+import {activate} from 'firebase/remote-config';
 
 export default function AdminCRUDItem({navigation}) {
   // VALUE OF ITEM
@@ -23,9 +24,10 @@ export default function AdminCRUDItem({navigation}) {
     description:
       'MO TA SAN PHAM 1There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form',
     // price: '100.000 ₫',
-    price: '100000',
+    price: '',
     category: 'tea',
     size: 'M',
+    available: true,
     // displayName: userInfo.displayName,
     // email: userInfo.email,
     // dob: userInfo.dob,
@@ -45,7 +47,7 @@ export default function AdminCRUDItem({navigation}) {
     price: false,
     category: false,
     size: false,
-    dob: false,
+    available: false,
     createdAt: false,
     location: false, // true => có dữ liệu, ngược lại
   });
@@ -57,7 +59,7 @@ export default function AdminCRUDItem({navigation}) {
     price: 'Giá sản phẩm *',
     category: 'Phân loại sản phẩm *',
     size: 'Size sản phẩm',
-    dob: 'Ngày sinh',
+    available: 'Chế độ hiển thị',
     createdAt: 'Ngày tạo tài khoản',
     location: 'Địa chỉ',
     gtinh: 'Giới tính',
@@ -70,8 +72,8 @@ export default function AdminCRUDItem({navigation}) {
     description: 'error 1',
     price: 'vui long nhap giá',
     category: 'vui lòng chọn đê',
-    size: '',
-    email: '',
+    size: 'Vui long chon size',
+    available: 'Vui long chon chế độ hiển thị',
     displayName: '',
   });
 
@@ -100,16 +102,49 @@ export default function AdminCRUDItem({navigation}) {
   const handleSizeItem = value => {
     console.log('Size: ', value);
   };
+
+  // AVAILABLE
+  const AvailableData = [
+    {key: '0', value: 'Công khai', activate: true},
+    {key: '1', value: 'Ẩn', activate: false},
+  ];
+
+  const handleAvailableItem = index => {
+    console.log('AVAILABLE: ', AvailableData[index].activate);
+  };
   // ####################### FUNCIONS ####################### //
   // HANDLE INPUT BLUR
+  // const handleInputBlur = fieldName => {
+  //   setIsFocused(prevState => ({
+  //     ...prevState,
+  //     [fieldName]: false,
+  //   }));
+  // };
   const handleInputBlur = fieldName => {
     setIsFocused(prevState => ({
       ...prevState,
       [fieldName]: false,
     }));
+
+    if (fieldName === 'price') {
+      setItemInfo(prevState => ({
+        ...prevState,
+        [fieldName]: prevState[fieldName] + '₫', // Thêm ký hiệu tiền tệ vào cuối
+      }));
+    }
   };
 
   // HANDLE INPUT FOCUS
+  // const handleInputFocus = fieldName => {
+  //   console.log(
+  //     'formatCurrency(itemInfo.price): ',
+  //     formatCurrency(itemInfo.price),
+  //   );
+  //   setIsFocused(prevState => ({
+  //     ...prevState,
+  //     [fieldName]: true,
+  //   }));
+  // };
   const handleInputFocus = fieldName => {
     console.log(
       'formatCurrency(itemInfo.price): ',
@@ -119,6 +154,13 @@ export default function AdminCRUDItem({navigation}) {
       ...prevState,
       [fieldName]: true,
     }));
+
+    if (fieldName === 'price' && itemInfo.price.endsWith('₫')) {
+      setItemInfo(prevState => ({
+        ...prevState,
+        [fieldName]: prevState[fieldName].slice(0, -1), // Xóa ký hiệu tiền tệ khỏi cuối chuỗi
+      }));
+    }
   };
 
   // HANDLE INPUT VALUE CHANGE
@@ -128,14 +170,20 @@ export default function AdminCRUDItem({navigation}) {
     if (typeof value !== 'undefined' && value !== null) {
       let newValue = value;
       if (key === 'price') {
+        // Xóa các ký tự không phải số và không phải dấu chấm
+        newValue = newValue.replace(/[^\d.]/g, '');
         // Kiểm tra nếu giá trị mới không phải là số hoặc là một chuỗi rỗng
         // thì gán giá trị mới là '0'
-        if (isNaN(value) || value === '') {
+        if (isNaN(newValue) || newValue === '') {
           newValue = '0';
         }
         // Kiểm tra nếu giá trị mới nhỏ hơn 0 thì gán giá trị mới là '0'
-        else if (parseFloat(value) < 0) {
+        else if (parseFloat(newValue) < 0) {
           newValue = '0';
+        }
+        // Chuyển đổi giá trị sang định dạng tiền tệ
+        else {
+          newValue = parseFloat(newValue).toLocaleString('en-US');
         }
       }
       setItemInfo(prevState => {
@@ -519,6 +567,41 @@ export default function AdminCRUDItem({navigation}) {
           </View>
         </View>
         {/* END: AVAILABLE_SIZES */}
+
+        {/* START: AVAILABLE */}
+        <View style={styles.inputGroup}>
+          <View
+            style={[
+              styles.inputUserInfo,
+              isFocused.available && styles.inputFocused,
+            ]}>
+            <SelectList
+              setSelected={val => handleAvailableItem(val)}
+              data={AvailableData}
+              // save='value'
+              searchPlaceholder={'Chế độ hiển thị sản phẩm'}
+              placeholder={'Chọn chế độ hiển thị cho sản phẩm'}
+            />
+            <TouchableOpacity
+              activeOpacity={1}
+              style={[styles.inputLabelTouchable, {top: 0}]}>
+              <Text
+                style={[
+                  styles.inputLabel,
+                  isFocused.available || itemInfo.available !== ''
+                    ? styles.inputLabelFocused
+                    : null,
+                ]}>
+                {formName.available}
+              </Text>
+            </TouchableOpacity>
+
+            {errors.available ? (
+              <Text style={styles.inputHelper}>{errors.available}</Text>
+            ) : null}
+          </View>
+        </View>
+        {/* END: AVAILABLE */}
 
         <View style={{height: 800}}></View>
       </ScrollView>
