@@ -1,0 +1,18 @@
+#Tutorial - Youtube
+https://youtu.be/V13tFNFELiQ?si=zDjhNReqxkLHNCRT
+
+#Tutorial - Website
+https://d2dreamdevelopers.blogspot.com/2021/11/how-to-export-import-database-from.html
+
+#Detail
+1. Go to Firebase Settings -> Project Settings -> Service Account -> Generate New Private Key 
+2. Save this file and rename (example: mo-cooffee.json)
+3. Open Cmd & run this code
+#export
+`npx -p node-firestore-import-export firestore-export -a export.json -b backup.json`
+
+export.json: mo-cooffee.json
+backup.json: file này sẽ chứa database
+
+#import
+`npx -p node-firestore-import-export firestore-import -a import.json -b backup.json `
