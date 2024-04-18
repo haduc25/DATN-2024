@@ -7,6 +7,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  LogBox,
 } from 'react-native';
 
 import CustomStatusBar from '../components/CustomStatusBar';
@@ -17,9 +18,13 @@ import {AntDesign} from '@expo/vector-icons';
 import {SelectList} from 'react-native-dropdown-select-list';
 import Button from '../components/Button';
 
+// PICK IMAGE
+import * as ImagePicker from 'expo-image-picker';
+
 export default function AdminCRUDItem({navigation}) {
   // VALUE OF ITEM
   const [itemInfo, setItemInfo] = useState({
+    featured_image: [],
     name: '',
     description: '',
     price: '',
@@ -40,6 +45,7 @@ export default function AdminCRUDItem({navigation}) {
 
   // FORM NAME
   const [formName, setFormName] = useState({
+    featured_image: 'Hình ảnh sản phẩm *',
     name: 'Tên sản phẩm *',
     description: 'Mô tả sản phẩm *',
     price: 'Giá sản phẩm *',
@@ -50,6 +56,7 @@ export default function AdminCRUDItem({navigation}) {
 
   //   ERRORS
   const [errors, setErrors] = useState({
+    featured_image: '',
     name: '',
     description: '',
     price: '',
@@ -59,6 +66,7 @@ export default function AdminCRUDItem({navigation}) {
   });
 
   // ####################### LIBRARY ####################### //
+  // # DROPDOWN
   // CATEGORY
   const [selectedItem, setSelectedItem] = useState('');
 
@@ -96,7 +104,70 @@ export default function AdminCRUDItem({navigation}) {
     console.log('AVAILABLE: ', AvailableData[index].activate);
     handleValueChange('available', AvailableData[index].activate);
   };
-  // ####################### FUNCIONS ####################### //
+
+  // PICK IMAGE
+  // PICK IMAGE FROM LIBRARY
+  const [selectedImages, setSelectedImages] = useState([]);
+  const handlePickImageFromLibrary = async () => {
+    const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission to access media library is required!');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      // allowsEditing: true,
+      quality: 5,
+      // multiple: true, // Cho phép chọn nhiều ảnh
+      allowsMultipleSelection: true,
+    });
+
+    if (result.assets.length >= 6) {
+      console.log('result.assets.length: ', result.assets.length);
+      setErrorWithTimeout(
+        'featured_image',
+        'Bạn đã chọn đủ số lượng tối đa là ảnh (5 ảnh)',
+        5000,
+      );
+      return;
+    }
+
+    if (!result.canceled) {
+      // case khi mà đã chọn vào image (selected)
+      // setImageURI(result.assets[0].uri);
+      // handleValueChange('photoURL', result.assets[0].uri);
+      console.log('result.assets[0].uri: ', result.assets[0].uri);
+      console.log('result.assets: ', result.assets);
+      console.log('result.assets-length: ', result.assets.length);
+      console.log('selectedImages: ', selectedImages);
+      setSelectedImages(result.assets);
+
+      // Cái này lưu lại ảnh cũ
+      // setItemInfo(prevItemInfo => ({
+      //   ...prevItemInfo,
+      //   featured_image: [
+      //     ...prevItemInfo.featured_image,
+      //     ...result.assets,
+      //   ].slice(0, 5),
+      // }));
+
+      // Cái này khi chọn ảnh mới `replace` vào image cũ luôn
+      setItemInfo(prevItemInfo => ({
+        ...prevItemInfo,
+        featured_image: result.assets.slice(0, 5),
+      }));
+    }
+  };
+
+  // Ignore specific warning for deprecated 'cancelled' key
+  useEffect(() => {
+    LogBox.ignoreLogs([
+      'Key "cancelled" in the image picker result is deprecated',
+    ]);
+  }, []);
+
+  // ####################### FUNCTIONS ####################### //
   // HANDLE INPUT BLUR
   const handleInputBlur = fieldName => {
     setIsFocused(prevState => ({
@@ -182,6 +253,10 @@ export default function AdminCRUDItem({navigation}) {
   const validateData = () => {
     const newErrors = {};
 
+    if (itemInfo.featured_image.length === 0) {
+      newErrors.featured_image = 'Vui lòng chọn ít nhất một hình ảnh nổi bật';
+    }
+
     if (!itemInfo.name.trim()) {
       newErrors.name = 'Vui lòng nhập tên sản phẩm';
     }
@@ -219,6 +294,8 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   const handlePress = () => {
+    console.log('itemInfo.featured_image: ', itemInfo.featured_image);
+    console.log(itemInfo.featured_image.length);
     const isValid = validateData();
     if (isValid) {
       // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
@@ -227,6 +304,24 @@ export default function AdminCRUDItem({navigation}) {
       console.log('ERROR: ', itemInfo);
       console.log('Dữ liệu không hợp lệ:', errors);
     }
+  };
+
+  // SET ERROR WITH TIMEOUT
+  const setErrorWithTimeout = (field, message, timeout) => {
+    // Thiết lập lỗi với thông báo và trường xác định (field)
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [field]: message,
+    }));
+
+    // Thiết lập thời gian chờ để xóa lỗi sau khi đã được hiển thị
+    setTimeout(() => {
+      // Xóa lỗi bằng cách thiết lập lại thông báo thành chuỗi rỗng
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [field]: '',
+      }));
+    }, timeout);
   };
 
   return (
@@ -259,14 +354,14 @@ export default function AdminCRUDItem({navigation}) {
           paddingTop: 100,
         }}>
         {/* IMAGE */}
-        <View
+        {/* <View
           style={{
             alignItems: 'left',
-            backgroundColor: 'red',
+            // backgroundColor: 'red',
             padding: 10,
           }}>
           <Text style={{fontSize: 16, fontWeight: '600'}}>
-            Hình ảnh sản phẩm *
+            {formName.featured_image}
           </Text>
           <View
             style={{
@@ -327,7 +422,8 @@ export default function AdminCRUDItem({navigation}) {
                 uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
               }}
             />
-            <View
+            <TouchableOpacity
+              onPress={handlePickImageFromLibrary}
               style={{
                 width: 110,
                 height: 110,
@@ -341,8 +437,74 @@ export default function AdminCRUDItem({navigation}) {
               }}>
               <Text>Thêm ảnh</Text>
               <AntDesign name={'picture'} size={18} style={{paddingRight: 6}} />
-            </View>
+            </TouchableOpacity>
           </View>
+          {errors.featured_image ? (
+            <Text style={styles.inputHelper}>{errors.featured_image}</Text>
+          ) : null}
+        </View> */}
+
+        <View style={{alignItems: 'left', padding: 10}}>
+          <Text style={{fontSize: 16, fontWeight: '600'}}>
+            {formName.featured_image}
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+            }}>
+            {/* {selectedImages.map((image, index) => ( */}
+            {itemInfo.featured_image.map((image, index) => (
+              <View key={index} style={{position: 'relative'}}>
+                <Image
+                  style={{width: 110, height: 110, borderRadius: 8, margin: 8}}
+                  source={{uri: image.uri}}
+                />
+                {index === 0 && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      backgroundColor: 'rgba(0,0,0,.45)',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      zIndex: 999,
+                      height: 25,
+                      marginHorizontal: 8,
+                      marginBottom: 8,
+                      borderRadius: 8,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={{color: '#fff', fontSize: 14, fontWeight: '600'}}>
+                      Ảnh bìa
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ))}
+            <TouchableOpacity
+              onPress={handlePickImageFromLibrary}
+              style={{
+                width: 110,
+                height: 110,
+                borderRadius: 8,
+                margin: 8,
+                borderWidth: 1,
+                borderColor: '#ccc',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#fff',
+              }}>
+              <Text>Thêm ảnh</Text>
+              <AntDesign name={'picture'} size={18} style={{paddingRight: 6}} />
+            </TouchableOpacity>
+          </View>
+          {errors.featured_image ? (
+            <Text style={styles.inputHelper}>{errors.featured_image}</Text>
+          ) : null}
         </View>
 
         {/* NAME */}
@@ -609,7 +771,7 @@ export default function AdminCRUDItem({navigation}) {
         </View>
         {/* END: AVAILABLE */}
 
-        <View style={{height: 800}}></View>
+        <View style={{height: 300}}></View>
       </ScrollView>
 
       {/* BUTTON */}
