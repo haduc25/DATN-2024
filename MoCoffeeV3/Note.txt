@@ -32,7 +32,7 @@ shadowOffset: {width: 0, height: 0},
 # 1 số key cần thêm trong `AdminCRUDItem`
 
 available true/false
-available_sizes ['M', 'L'] => ok
+available_sizes ['M', 'L'] => ok (cần chỉnh lại sang array để chọn nhiều)
 category 'tea'/'milk-tea'/'coffee' => ok
 featured_image []
 preparation_time '10' (có thể bỏ)

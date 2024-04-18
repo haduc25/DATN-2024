@@ -15,17 +15,30 @@ import {AntDesign} from '@expo/vector-icons';
 
 // DROPDOWN
 import {SelectList} from 'react-native-dropdown-select-list';
+
 import Button from '../components/Button';
 
 export default function AdminCRUDItem({navigation}) {
   // VALUE OF ITEM
   const [itemInfo, setItemInfo] = useState({
-    name: '',
-    description: '',
+    name: 'SAN PHAM 1',
+    description:
+      'MO TA SAN PHAM 1There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form',
+    // price: '100.000 ₫',
     price: '',
-    category: '',
-    size: '',
-    available: null,
+    category: 'tea',
+    size: 'M',
+    available: true,
+    // displayName: userInfo.displayName,
+    // email: userInfo.email,
+    // dob: userInfo.dob,
+    // createdAt: formatDate(userInfo.createdAt),
+    // gtinh: userInfo.gtinh,
+    // photoURL: userInfo.photoURL,
+    // phoneNumber: userInfo.phoneNumber,
+    // location: userInfo.location,
+    // uid: userInfo.uid.trim(),
+    // Thêm các trường thông tin khác cần thiết
   });
 
   // FOCUS
@@ -36,6 +49,8 @@ export default function AdminCRUDItem({navigation}) {
     category: false,
     size: false,
     available: false,
+    createdAt: false,
+    location: false, // true => có dữ liệu, ngược lại
   });
 
   // FORM NAME
@@ -44,18 +59,23 @@ export default function AdminCRUDItem({navigation}) {
     description: 'Mô tả sản phẩm *',
     price: 'Giá sản phẩm *',
     category: 'Phân loại sản phẩm *',
-    size: 'Size sản phẩm *',
-    available: 'Chế độ hiển thị *',
+    size: 'Size sản phẩm',
+    available: 'Chế độ hiển thị',
+    createdAt: 'Ngày tạo tài khoản',
+    location: 'Địa chỉ',
+    gtinh: 'Giới tính',
+    uploadedImageName: null,
   });
 
   //   ERRORS
   const [errors, setErrors] = useState({
-    name: '',
-    description: '',
-    price: '',
-    category: '',
-    size: '',
-    available: '',
+    name: 'meow meow',
+    description: 'error 1',
+    price: 'vui long nhap giá',
+    category: 'vui lòng chọn đê',
+    size: 'Vui long chon size',
+    available: 'Vui long chon chế độ hiển thị',
+    displayName: '',
   });
 
   // ####################### LIBRARY ####################### //
@@ -72,7 +92,6 @@ export default function AdminCRUDItem({navigation}) {
   const handleSelectedItem = index => {
     console.log('index: ', index);
     console.log('Category:', CategoriesData[index].category);
-    handleValueChange('category', CategoriesData[index].category);
   };
 
   // AVAILABLE_SIZES
@@ -83,7 +102,6 @@ export default function AdminCRUDItem({navigation}) {
 
   const handleSizeItem = value => {
     console.log('Size: ', value);
-    handleValueChange('size', value);
   };
 
   // AVAILABLE
@@ -94,10 +112,15 @@ export default function AdminCRUDItem({navigation}) {
 
   const handleAvailableItem = index => {
     console.log('AVAILABLE: ', AvailableData[index].activate);
-    handleValueChange('available', AvailableData[index].activate);
   };
   // ####################### FUNCIONS ####################### //
   // HANDLE INPUT BLUR
+  // const handleInputBlur = fieldName => {
+  //   setIsFocused(prevState => ({
+  //     ...prevState,
+  //     [fieldName]: false,
+  //   }));
+  // };
   const handleInputBlur = fieldName => {
     setIsFocused(prevState => ({
       ...prevState,
@@ -113,6 +136,16 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   // HANDLE INPUT FOCUS
+  // const handleInputFocus = fieldName => {
+  //   console.log(
+  //     'formatCurrency(itemInfo.price): ',
+  //     formatCurrency(itemInfo.price),
+  //   );
+  //   setIsFocused(prevState => ({
+  //     ...prevState,
+  //     [fieldName]: true,
+  //   }));
+  // };
   const handleInputFocus = fieldName => {
     console.log(
       'formatCurrency(itemInfo.price): ',
@@ -177,57 +210,6 @@ export default function AdminCRUDItem({navigation}) {
     // Sử dụng phương thức toLocaleString để thêm dấu chấm phân tách hàng nghìn
     return intValue.toLocaleString('en-US');
   }
-
-  // HANDLE VALIDATE WHEN SUBMIT
-  const validateData = () => {
-    const newErrors = {};
-
-    if (!itemInfo.name.trim()) {
-      newErrors.name = 'Vui lòng nhập tên sản phẩm';
-    }
-
-    if (!itemInfo.description.trim()) {
-      newErrors.description = 'Vui lòng nhập mô tả sản phẩm';
-    }
-
-    if (!itemInfo.price.trim()) {
-      newErrors.price = 'Vui lòng nhập giá sản phẩm';
-    } else {
-      // Loại bỏ ký tự ₫ và ,
-      const cleanedPrice = itemInfo.price.replace(/[₫,]/g, '');
-      if (isNaN(cleanedPrice)) {
-        newErrors.price = 'Giá sản phẩm phải là số';
-      }
-    }
-
-    if (!itemInfo.category.trim()) {
-      newErrors.category = 'Vui lòng chọn danh mục sản phẩm';
-    }
-
-    if (!itemInfo.size.trim()) {
-      newErrors.size = 'Vui lòng chọn kích thước sản phẩm';
-    }
-
-    if (itemInfo.available === null) {
-      newErrors.available = 'Vui lòng chọn chế độ hiển thị';
-    }
-
-    setErrors(newErrors);
-
-    // Return true if there are no errors, false otherwise
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handlePress = () => {
-    const isValid = validateData();
-    if (isValid) {
-      // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
-      console.log('Dữ liệu hợp lệ:', itemInfo);
-    } else {
-      console.log('ERROR: ', itemInfo);
-      console.log('Dữ liệu không hợp lệ:', errors);
-    }
-  };
 
   return (
     <SafeAreaProvider>
@@ -534,7 +516,13 @@ export default function AdminCRUDItem({navigation}) {
             <TouchableOpacity
               activeOpacity={1}
               style={[styles.inputLabelTouchable, {top: 0}]}>
-              <Text style={[styles.inputLabel, styles.inputLabelFocused]}>
+              <Text
+                style={[
+                  styles.inputLabel,
+                  isFocused.category || itemInfo.category !== ''
+                    ? styles.inputLabelFocused
+                    : null,
+                ]}>
                 {formName.category}
               </Text>
             </TouchableOpacity>
@@ -563,7 +551,13 @@ export default function AdminCRUDItem({navigation}) {
             <TouchableOpacity
               activeOpacity={1}
               style={[styles.inputLabelTouchable, {top: 0}]}>
-              <Text style={[styles.inputLabel, styles.inputLabelFocused]}>
+              <Text
+                style={[
+                  styles.inputLabel,
+                  isFocused.size || itemInfo.size !== ''
+                    ? styles.inputLabelFocused
+                    : null,
+                ]}>
                 {formName.size}
               </Text>
             </TouchableOpacity>
@@ -595,8 +589,9 @@ export default function AdminCRUDItem({navigation}) {
               <Text
                 style={[
                   styles.inputLabel,
-                  isFocused.available,
-                  styles.inputLabelFocused,
+                  isFocused.available || itemInfo.available !== ''
+                    ? styles.inputLabelFocused
+                    : null,
                 ]}>
                 {formName.available}
               </Text>
@@ -629,11 +624,29 @@ export default function AdminCRUDItem({navigation}) {
           paddingHorizontal: 10,
           paddingVertical: 10,
         }}>
+        {/* <TouchableOpacity
+          onPress={() => navi.navigate('Trang chủ')}
+          style={{
+            justifyContent: 'center',
+            // borderWidth: 1,
+            borderRadius: '15%',
+            width: '100%',
+            alignItems: 'center',
+            backgroundColor: '#000',
+          }}>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 16,
+              fontWeight: '600',
+            }}>
+            Trang chủ
+          </Text>
+        </TouchableOpacity> */}
         <Button
-          title={'Thêm sản phẩm'}
+          title={'Thêm 1 sản phẩm mới'}
           // onPress={() => navi.navigate('AdminCRUDItem')}
-          // onPress={() => console.log('itemInfo: ', itemInfo)}
-          onPress={handlePress}
+          onPress={() => console.log('itemInfo: ', itemInfo)}
           // loading={loading.buttonLoading}
           // disabled={loading.buttonLoading}
           buttonStyleCustom={{
