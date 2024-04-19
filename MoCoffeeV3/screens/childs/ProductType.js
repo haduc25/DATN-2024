@@ -23,7 +23,7 @@ import FoodItem from '../../components/FoodItem';
 import {useSelector} from 'react-redux';
 
 // Navigation router
-import {useRoute} from '@react-navigation/native';
+import {useRoute, useNavigation} from '@react-navigation/native';
 
 // get data from firestore
 import {collection, query, where, getDocs} from 'firebase/firestore';
@@ -35,6 +35,7 @@ export default function ProductType({navigation}) {
   //
   //   const params = useLocalSearchParams();
   const route = useRoute();
+  const navi = useNavigation();
   console.log('router123: ', route);
   const cart = useSelector(state => state.cart.cart);
   console.log('ProductType-Cart: ', cart);
@@ -199,7 +200,7 @@ export default function ProductType({navigation}) {
               }}>
               <Text style={{color: 'white', fontSize: 14, fontWeight: 'bold'}}>
                 {/* {aggregate_rating} */}
-                10
+                4.8
               </Text>
               <Ionicons name='ios-star' size={15} color='white' />
             </View>
@@ -217,7 +218,7 @@ export default function ProductType({navigation}) {
               paddingVertical: 5,
               marginTop: 12,
             }}>
-            <Text>30 - 40 phút • 6 km | Bắc Kạn</Text>
+            <Text>10 - 15 phút • 2 km | Bắc Kạn</Text>
           </View>
         </View>
         {/* {recievedMenu?.map((item, index) => (
@@ -306,12 +307,14 @@ export default function ProductType({navigation}) {
         {cart?.length > 0 && (
           <Pressable
             onPress={() =>
-              router.push({
-                pathname: '/cart',
-                params: {
-                  name: params.name,
-                },
-              })
+              // router.push({
+              //   pathname: '/cart',
+              //   params: {
+              //     name: params.name,
+              //   },
+              // })
+
+              navi.navigate('Cart', {name})
             }
             style={{
               backgroundColor: '#fd5c63',

@@ -109,7 +109,8 @@ export default function AdminProductsCRUD({navigation}) {
           <Image
             style={{width: 100, height: 100, borderRadius: 8}}
             source={{
-              uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              uri: item.featured_image[0],
+              // uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
             }}
           />
         </View>

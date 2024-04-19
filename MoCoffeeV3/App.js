@@ -58,8 +58,8 @@ export default function App() {
           // initialRouteName={'ImageAnimation'}
           // initialRouteName={'DynamicHeaderScrollView'}
 
-          // initialRouteName={loginName} //current
-          initialRouteName={'AdminCRUDItem'} //test
+          initialRouteName={loginName} //current
+          // initialRouteName={'AdminCRUDItem'} //test
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;
@@ -108,10 +108,10 @@ export default function App() {
           <BottomTab.Screen
             name={cartName}
             component={CartScreen}
-            initialParams={{name: 'haduc25'}}
+            // initialParams={{name: 'haduc25'}}
             options={{
               headerShown: false,
-              // tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
               tabBarButton: () => null,
             }}
           />
