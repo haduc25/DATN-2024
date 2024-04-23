@@ -307,6 +307,10 @@ export default function DetailScreen({}) {
   //   'https://quangon.vn/resources/2020/04/22/cach-pha-tra-chanh-leo-3.jpg',
   // ];
 
+  console.log('currentScreen: ', currentScreen);
+  console.log('productInfo.name: ', productInfo.name);
+  console.log('productInfo.category: ', productInfo.category);
+
   return (
     <View style={{flex: 1}}>
       <View style={{position: 'relative'}}>

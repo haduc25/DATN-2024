@@ -16,15 +16,32 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 import {useDispatch, useSelector} from 'react-redux';
+import {
+  addToCart,
+  removeFromCart,
+  incrementQuantity,
+  decrementQuantity,
+  cleanCart,
+} from '../redux/CartReducer';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {
+  convertPriceStringToInteger,
+  convertIntegerToPriceString,
+} from '../utils/globalHelpers';
 
-export default function CartScreen({navigation, route}) {
+export default function CartScreen({navigation}) {
   console.log('navigation: ', navigation);
-  console.log('route: ', route);
+  // console.log('route: ', route);
 
   // #################### VALUE #################### //
+  // REDUX
   const cart = useSelector(state => state.cart.cart);
+  const productInfo = useSelector(state => state.productInfo);
+  const isCartClean = useSelector(state => state.cart.isClean);
+  console.log('DATA FROM REDUX: ', productInfo);
+  console.log('DATA FROM REDUX222_Cart: ', isCartClean);
   const dispatch = useDispatch();
   const instructions = [
     {
@@ -53,10 +70,19 @@ export default function CartScreen({navigation, route}) {
     },
   ];
 
-  const total = cart
-    ?.map(item => item.quantity * item.price)
+  let total = cart
+    ?.map(item => item.quantity * convertPriceStringToInteger(item.price))
     .reduce((curr, prev) => curr + prev, 0);
-  console.log(total);
+  console.log('total_CART: ', total);
+
+  //
+  const route = useRoute();
+  const {currentScreen, category} = route?.params;
+
+  console.log('currentScreen_CART:  ', currentScreen);
+  //  PHÍ GIAO HÀNG
+  const phiship = 15000;
+  const phiapdung = 6000;
 
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -85,7 +111,8 @@ export default function CartScreen({navigation, route}) {
         titleOfScreen={'Giỏ hàng'}
         onPressBack={data => console.log(data)}
         dataNavigation={{
-          screen: 'AdminProductsCRUD',
+          screen: currentScreen,
+          category: category,
         }}
       />
       <ScrollView
@@ -144,6 +171,8 @@ export default function CartScreen({navigation, route}) {
                     borderColor: '#BEBEBE',
                     borderWidth: 0.5,
                     borderRadius: 10,
+                    minWidth: 100,
+                    maxWidth: 100,
                   }}>
                   <Pressable
                     onPress={() => {
@@ -196,7 +225,11 @@ export default function CartScreen({navigation, route}) {
                   justifyContent: 'space-between',
                 }}>
                 <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-                  {item.price * item.quantity}.000 ₫
+                  {/* {item.price * item.quantity}.000 ₫ */}
+                  {/* {item.price * item.quantity} */}
+                  {convertIntegerToPriceString(
+                    convertPriceStringToInteger(item.price) * item.quantity,
+                  )}
                 </Text>
                 <Text style={{fontSize: 15, fontWeight: '500'}}>
                   Số lượng: {item?.quantity}
@@ -426,7 +459,11 @@ export default function CartScreen({navigation, route}) {
             </View>
           </View> */}
 
-          <View style={{marginVertical: 10}}>
+          <View
+            style={{
+              marginVertical: 10,
+              paddingBottom: 140,
+            }}>
             <Text style={{fontSize: 16, fontWeight: 'bold'}}>
               Chi tiết hóa đơn
             </Text>
@@ -449,7 +486,7 @@ export default function CartScreen({navigation, route}) {
                 </Text>
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  {total}.000 ₫
+                  {convertIntegerToPriceString(total)}
                 </Text>
               </View>
               <View
@@ -463,9 +500,10 @@ export default function CartScreen({navigation, route}) {
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
                   Phí giao hàng (3.5km)
                 </Text>
+
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  15.000 ₫
+                  15.000₫
                 </Text>
               </View>
               <View
@@ -505,7 +543,11 @@ export default function CartScreen({navigation, route}) {
                     Tổng cộng
                   </Text>
                   <Text style={{fontWeight: 'bold', fontSize: 15}}>
-                    {total + 21}.000 ₫
+                    {/* {convertIntegerToPriceString(total)} */}
+                    {/* Tính phí ship + phí áp dụng */}
+                    {convertIntegerToPriceString(
+                      (total = total + phiship + phiapdung),
+                    )}
                   </Text>
                 </View>
               </View>

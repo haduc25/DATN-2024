@@ -22,8 +22,7 @@ import {MaterialCommunityIcons} from '@expo/vector-icons';
 import FoodItem from '../../components/FoodItem';
 
 // Redux
-import {useDispatch, useSelector} from 'react-redux';
-import {cleanCart, cleanCartUI} from '../../redux/CartReducer';
+import {useSelector} from 'react-redux';
 
 // Navigation router
 import {useRoute, useNavigation} from '@react-navigation/native';
@@ -38,12 +37,7 @@ import {translateCategory} from '../../utils/globalHelpers';
 
 // export default function ProductType({navigation, route}) {
 export default function ProductType({navigation}) {
-  // Redux
-  const dispatch = useDispatch();
-  const isCartClean = useSelector(state => state.cart.isClean);
-
-  console.log('isCartClean_PRODUCTTYPE: ', isCartClean);
-
+  //
   //   const params = useLocalSearchParams();
   const route = useRoute();
   const navi = useNavigation();
@@ -126,11 +120,10 @@ export default function ProductType({navigation}) {
   // );
 
   return (
-    <SafeAreaProvider>
+    <>
       <ScrollView
         ref={scrollViewRef}
-        // style={{backgroundColor: 'white', paddingTop: 40}}>
-        style={{backgroundColor: 'white', paddingTop: 60}}>
+        style={{backgroundColor: 'white', paddingTop: 40}}>
         <View
           style={{
             marginTop: 5,
@@ -173,10 +166,6 @@ export default function ProductType({navigation}) {
               name='share-outline'
               size={24}
               color='black'
-              onPress={() => {
-                dispatch(cleanCart());
-                alert('CLEAN');
-              }}
             />
           </View>
         </View>
@@ -338,17 +327,18 @@ export default function ProductType({navigation}) {
       </View>
 
       <View style={{backgroundColor: '#fff', paddingBottom: 40}}>
-        {cart?.length > 0 && !isCartClean && (
+        {cart?.length > 0 && (
           <Pressable
-            onPress={() => {
-              // XÓA CART UI
-              dispatch(cleanCartUI());
+            onPress={() =>
+              // router.push({
+              //   pathname: '/cart',
+              //   params: {
+              //     name: params.name,
+              //   },
+              // })
 
-              navi.navigate('Cart', {
-                currentScreen: 'ProductTypeScreen',
-                category,
-              });
-            }}
+              navi.navigate('Cart', {name})
+            }
             style={{
               backgroundColor: '#fd5c63',
               paddingHorizontal: 10,
@@ -372,6 +362,6 @@ export default function ProductType({navigation}) {
           </Pressable>
         )}
       </View>
-    </SafeAreaProvider>
+    </>
   );
 }

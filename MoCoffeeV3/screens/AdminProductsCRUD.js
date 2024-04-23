@@ -258,6 +258,7 @@ export default function AdminProductsCRUD({navigation}) {
           screen: 'AdminDashboardScreen',
         }}
       />
+
       <View
         style={{
           flex: 1,

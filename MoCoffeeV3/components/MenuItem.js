@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {FontAwesome, Ionicons} from '@expo/vector-icons';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   addToCart,
   decrementQuantity,
@@ -17,17 +17,27 @@ import {
 } from '../redux/CartReducer';
 import {useRouter} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
+import {useEffect} from 'react';
 
 const MenuItem = ({item}) => {
   const [additems, setAddItems] = useState(0);
   const [selected, setSelected] = useState(false);
   const dispatch = useDispatch();
+  const isCartClean = useSelector(state => state.cart.isClean);
+
+  useEffect(() => {
+    if (isCartClean) {
+      // Nếu mà ấn clean thì set lại cái dữ liệu
+      setAddItems(0);
+      setSelected(false);
+    }
+  }, [isCartClean]);
 
   // const router = useRouter();
   const navi = useNavigation();
 
   console.log('\n\n ================== \n\n');
-  console.log('item: ', item);
+  console.log('item_MenuItem: ', item);
 
   console.log('additems: ', additems);
   return (

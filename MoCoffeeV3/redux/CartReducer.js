@@ -1,49 +1,60 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {createSlice} from '@reduxjs/toolkit';
 
 export const CartSlice = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState: {
     cart: [],
+    isClean: false,
   },
   reducers: {
     addToCart: (state, action) => {
+      state.isClean = false;
       const itemPresent = state.cart.find(
-        (item) => item.id === action.payload.id
+        item => item.id === action.payload.id,
       );
 
       if (itemPresent) {
         itemPresent.quantity++;
       } else {
-        state.cart.push({ ...action.payload, quantity: 1 });
+        state.cart.push({...action.payload, quantity: 1});
       }
     },
     removeFromCart: (state, action) => {
+      state.isClean = true;
       const removeItem = state.cart.filter(
-        (item) => item.id !== action.payload.id
+        item => item.id !== action.payload.id,
       );
       state.cart = removeItem;
     },
     incrementQuantity: (state, action) => {
+      state.isClean = false;
       const itemPresent = state.cart.find(
-        (item) => item.id === action.payload.id
+        item => item.id === action.payload.id,
       );
-      itemPresent.quantity++;
-    },
-    decrementQuantity: (state, action) => {
-      const itemPresent = state.cart.find(
-        (item) => item.id === action.payload.id
-      );
-      if (itemPresent.quantity === 1) {
-        const removeItem = state.cart.filter(
-          (item) => item.id !== action.payload.id
-        );
-        state.cart = removeItem;
-      } else {
-        itemPresent.quantity--;
+      if (itemPresent) {
+        itemPresent.quantity++;
       }
     },
-    cleanCart: (state) => {
+    decrementQuantity: (state, action) => {
+      state.isClean = false;
+      const itemPresent = state.cart.find(
+        item => item.id === action.payload.id,
+      );
+      if (itemPresent) {
+        if (itemPresent.quantity === 1) {
+          state.cart = state.cart.filter(item => item.id !== action.payload.id);
+          state.isClean = true;
+        } else {
+          itemPresent.quantity--;
+        }
+      }
+    },
+    cleanCart: state => {
       state.cart = [];
+      state.isClean = true;
+    },
+    cleanCartUI: state => {
+      state.isClean = true;
     },
   },
 });
@@ -54,6 +65,7 @@ export const {
   incrementQuantity,
   decrementQuantity,
   cleanCart,
+  cleanCartUI,
 } = CartSlice.actions;
 
 export default CartSlice.reducer;
