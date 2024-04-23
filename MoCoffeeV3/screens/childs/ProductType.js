@@ -30,6 +30,9 @@ import {collection, query, where, getDocs} from 'firebase/firestore';
 // Import `db` từ file firebase.js
 import {db} from '../../firebase';
 
+// Helper
+import {translateCategory} from '../../utils/globalHelpers';
+
 // export default function ProductType({navigation, route}) {
 export default function ProductType({navigation}) {
   //
@@ -170,7 +173,10 @@ export default function ProductType({navigation}) {
             alignItems: 'center',
             marginVertical: 12,
           }}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>{name}</Text>
+          {/* <Text style={{fontSize: 20, fontWeight: 'bold'}}>{name}</Text> */}
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+            {translateCategory(category)} ({categoryItems.length})
+          </Text>
           <Text
             style={{
               marginTop: 5,
@@ -239,10 +245,25 @@ export default function ProductType({navigation}) {
           <FoodItem key={index} item={item} />
           // <Text key={index}>123</Text>
         ))} */}
+
+        {/* START: DANH SACH SAN PHAM */}
+        {/* <Text style={{fontSize: 19, fontWeight: 'bold'}}>{item?.name}</Text> */}
+        <Text
+          style={{
+            marginTop: 10,
+            marginLeft: 12,
+            // marginBottom: -14,
+            fontSize: 19,
+            fontWeight: 'bold',
+          }}>
+          Các sản phẩm từ {translateCategory(category)}
+        </Text>
+        {/* <AntDesign name='down' size={20} color='black' /> */}
         {categoryItems.map((item, index) => (
           <FoodItem key={index} item={item} />
           // <Text key={index}>123</Text>
         ))}
+        {/* END: DANH SACH SAN PHAM */}
         {/* Đệm dưới */}
         <View style={{height: 40}}></View>
       </ScrollView>

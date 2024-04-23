@@ -59,9 +59,9 @@ export default function App() {
           // initialRouteName={'ImageAnimation'}
           // initialRouteName={'DynamicHeaderScrollView'}
 
-          // initialRouteName={loginName} //current
+          initialRouteName={loginName} //current
           // initialRouteName={'AdminCRUDItem'} //test
-          initialRouteName={'AdminOrders'} //test
+          // initialRouteName={'AdminOrders'} //test
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let iconName;

@@ -26,14 +26,16 @@ const FoodItem = ({item}) => {
           <Pressable
             style={{
               margin: 10,
-              marginTop: -10,
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
             {/* Title */}
-            {/* <Text style={{fontSize: 19, fontWeight: 'bold'}}>{item?.name}</Text>
-            <AntDesign name='down' size={20} color='black' /> */}
+            <Text style={{fontSize: 19, fontWeight: 'bold'}}>
+              {/* {item?.name} ({item?.items?.length}) */}
+              {item?.name} ({data?.length})
+            </Text>
+            <AntDesign name='down' size={20} color='black' />
           </Pressable>
 
           {/* {item?.items?.map((item, subIndex) => ( */}

@@ -11,6 +11,9 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {setProductInfo} from '../redux/ProductReducer';
 
+// Helper
+import {translateCategory} from '../utils/globalHelpers';
+
 const Products = ({naviagation, item, menu, listItems}) => {
   const router = useRouter();
   const router2 = useNavigation();
@@ -53,17 +56,6 @@ const Products = ({naviagation, item, menu, listItems}) => {
 
   // console.log('ListItem: ', listItems);
   // console.log('typeof listItems: ', typeof listItems);
-
-  function translateCategory(category) {
-    const translations = {
-      tea: 'Trà',
-      coffee: 'Cà phê',
-      'milk-tea': 'Trà sữa',
-    };
-    // Nếu có, trả về giá trị tương ứng
-    // Nếu không, trả về category ban đầu
-    return translations[category] || category;
-  }
 
   const dispatch = useDispatch();
 

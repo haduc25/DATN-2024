@@ -534,8 +534,8 @@ export default function AdminCRUDItem({navigation}) {
           elevation: 5,
           maxHeight: 200,
         }}
-        arrowIconColor={'#fff'}
-        arrowIconBackgroundColor={'#6E5532'}
+        arrowIconColor={'#000'}
+        arrowIconBackgroundColor={'#fff'}
         titleOfScreen={'Thêm sản phẩm mới'}
         onPressBack={data => console.log(data)}
         dataNavigation={{
