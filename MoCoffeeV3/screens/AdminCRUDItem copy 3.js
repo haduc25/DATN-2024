@@ -21,9 +21,6 @@ import Button from '../components/Button';
 // PICK IMAGE
 import * as ImagePicker from 'expo-image-picker';
 
-// NAVIGATION
-import {useNavigation} from '@react-navigation/native';
-
 // FIREBASE UPLOAD IMAGE
 import {
   auth,
@@ -82,8 +79,6 @@ export default function AdminCRUDItem({navigation}) {
     size: '',
     available: '',
   });
-
-  const navi = useNavigation();
 
   // ####################### LIBRARY ####################### //
   // # DROPDOWN
@@ -271,7 +266,7 @@ export default function AdminCRUDItem({navigation}) {
     }
   };
 
-  const waitUpload = async dataObject => {
+  const waitUpload = async () => {
     if (
       Array.isArray(itemInfo.featured_image) &&
       itemInfo.featured_image.length > 0
@@ -283,12 +278,10 @@ export default function AdminCRUDItem({navigation}) {
         return;
       } else {
         console.log('Mảng không rỗng.', savePhotoURL);
-
-        // hanlde tiếp sau khi upload image thành công
-        createNewItemOnFireStore(dataObject, savePhotoURL);
       }
       return;
     }
+    console.log('out111');
   };
 
   // ####################### FUNCTIONS ####################### //
@@ -417,14 +410,16 @@ export default function AdminCRUDItem({navigation}) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePress = dataObject => {
+  const handlePress = () => {
+    console.log('itemInfo.featured_image: ', itemInfo.featured_image);
+    console.log(itemInfo.featured_image.length);
+    waitUpload();
+    return;
+
     const isValid = validateData();
     if (isValid) {
       // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
       console.log('Dữ liệu hợp lệ:', itemInfo);
-
-      // Upload Image
-      waitUpload(dataObject);
     } else {
       console.log('ERROR: ', itemInfo);
       console.log('Dữ liệu không hợp lệ:', errors);
@@ -450,17 +445,17 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   // CREATE NEW ITEM ON FIRESTORE
-  const createNewItemOnFireStore = (dataObject, imageURL) => {
-    console.log('USERDATA(itemInfo): ', dataObject);
-    const {available, category, description, name, price, size} = dataObject;
-
-    console.log('imageURL: ', imageURL);
-
-    const timeNow = new Date().toISOString();
-    const createdAt = convertISOToFormattedDate(timeNow);
-    const updatedAt = createdAt;
-
-    console.log('createdAt: ', createdAt);
+  const createNewItemOnFireStore = dataObject => {
+    console.log('USERDATA(itemInfo): ', itemInfo);
+    const {
+      available,
+      category,
+      description,
+      featured_image,
+      name,
+      price,
+      size,
+    } = itemInfo;
 
     // auto_id
     addDoc(collection(db, 'MenuMoC&T'), {
@@ -469,54 +464,25 @@ export default function AdminCRUDItem({navigation}) {
       available,
       available_sizes: [size],
       category,
-      featured_image: imageURL,
+      featured_image: [
+        'https://c4.wallpaperflare.com/wallpaper/756/58/323/women-asian-brunette-fishnet-stockings-wallpaper-preview.jpg',
+      ],
       price,
       // DEFAULT VALUE
       likes: '0',
       // preparation_time # bỏ
       ratings: {average_rating: '5', total_ratings: '0'},
       sold_count: '0',
-      createdAt,
-      updatedAt,
     })
       .then(() => {
         // Data create successfully!
-        console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
-        alert('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
-        resetItemInfo();
-
-        setTimeout(() => {
-          navi.navigate('AdminProductsCRUD');
-        }, 3000);
+        console.log('Data created');
+        alert('Data created');
       })
       .catch(error => {
         console.log('error: ', error);
         alert('error: ', error);
       });
-  };
-
-  const convertISOToFormattedDate = isoDateString => {
-    const date = new Date(isoDateString);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-
-    return `${hours}:${minutes}:${seconds}, ${day}/${month}/${year}`;
-  };
-
-  const resetItemInfo = () => {
-    setItemInfo({
-      featured_image: [],
-      name: '',
-      description: '',
-      price: '',
-      category: '',
-      size: '',
-      available: null,
-    });
   };
 
   return (
@@ -549,6 +515,96 @@ export default function AdminCRUDItem({navigation}) {
           paddingTop: 100,
         }}>
         {/* IMAGE */}
+        {/* <View
+          style={{
+            alignItems: 'left',
+            // backgroundColor: 'red',
+            padding: 10,
+          }}>
+          <Text style={{fontSize: 16, fontWeight: '600'}}>
+            {formName.featured_image}
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+            }}>
+            <View style={{position: 'relative'}}>
+              <Image
+                style={{width: 110, height: 110, borderRadius: 8, margin: 8}}
+                source={{
+                  uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+                }}
+              />
+              <View
+                style={{
+                  position: 'absolute',
+                  backgroundColor: 'rgba(0,0,0,.45)',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  zIndex: 999,
+                  height: 25,
+                  marginLeft: 8,
+                  marginRight: 8,
+                  marginBottom: 8,
+                  borderBottomRightRadius: 8,
+                  borderBottomLeftRadius: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{color: '#fff', fontSize: 14, fontWeight: '600'}}>
+                  Ảnh bìa
+                </Text>
+              </View>
+            </View>
+            <Image
+              style={{width: 110, height: 110, borderRadius: 8, margin: 8}}
+              source={{
+                uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              }}
+            />
+            <Image
+              style={{width: 110, height: 110, borderRadius: 8, margin: 8}}
+              source={{
+                uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              }}
+            />
+            <Image
+              style={{width: 110, height: 110, borderRadius: 8, margin: 8}}
+              source={{
+                uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              }}
+            />
+            <Image
+              style={{width: 110, height: 110, borderRadius: 8, margin: 8}}
+              source={{
+                uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              }}
+            />
+            <TouchableOpacity
+              onPress={handlePickImageFromLibrary}
+              style={{
+                width: 110,
+                height: 110,
+                borderRadius: 8,
+                margin: 8,
+                borderWidth: 1,
+                borderColor: '#ccc',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#fff',
+              }}>
+              <Text>Thêm ảnh</Text>
+              <AntDesign name={'picture'} size={18} style={{paddingRight: 6}} />
+            </TouchableOpacity>
+          </View>
+          {errors.featured_image ? (
+            <Text style={styles.inputHelper}>{errors.featured_image}</Text>
+          ) : null}
+        </View> */}
+
         <View style={{alignItems: 'left', padding: 10}}>
           <Text style={{fontSize: 16, fontWeight: '600'}}>
             {formName.featured_image}
@@ -900,10 +956,8 @@ export default function AdminCRUDItem({navigation}) {
           // onPress={() => navi.navigate('AdminCRUDItem')}
           // onPress={() => console.log('itemInfo: ', itemInfo)}
           // onPress={handlePress}
-          onPress={() => handlePress(itemInfo)}
-          // onPress={() => resetItemInfo}
           // onPress={createNewItemOnFireStore}
-          // onPress={() => createNewItemOnFireStore(itemInfo)}
+          onPress={() => createNewItemOnFireStore(itemInfo)}
           // loading={loading.buttonLoading}
           // disabled={loading.buttonLoading}
           buttonStyleCustom={{

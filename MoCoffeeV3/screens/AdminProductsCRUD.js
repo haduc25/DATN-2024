@@ -17,7 +17,7 @@ import {db, getDocs, collection} from '../firebase';
 import {useNavigation} from '@react-navigation/native';
 
 export default function AdminProductsCRUD({navigation}) {
-  const renderItem = ({item}) => (
+  const renderItem = ({item, index}) => (
     <View
       key={item._id}
       style={{
@@ -33,7 +33,8 @@ export default function AdminProductsCRUD({navigation}) {
         backgroundColor: '#fff',
         borderRadius: 10,
         margin: 10,
-        marginBottom: 8,
+        // marginBottom: 8,
+        marginBottom: index === products.length - 1 ? 120 : 8, // Kiểm tra nếu là phần tử cuối cùng, thêm 120 vào marginBottom, nếu không thì thêm 8
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 10,
@@ -74,6 +75,7 @@ export default function AdminProductsCRUD({navigation}) {
                 color: 'gray',
                 fontWeight: '600',
                 maxWidth: 245,
+                minWidth: 245,
               }}>
               {item.description}
             </Text>
@@ -84,7 +86,7 @@ export default function AdminProductsCRUD({navigation}) {
                 fontWeight: '600',
                 fontSize: 18,
               }}>
-              {item.price}.000 ₫
+              {item.price}
             </Text>
             <View
               style={{
@@ -248,8 +250,8 @@ export default function AdminProductsCRUD({navigation}) {
           elevation: 5,
           maxHeight: 200,
         }}
-        arrowIconColor={'#fff'}
-        arrowIconBackgroundColor={'#6E5532'}
+        arrowIconColor={'#000'}
+        arrowIconBackgroundColor={'#fff'}
         titleOfScreen={'Danh sách sản phẩm'}
         onPressBack={data => console.log(data)}
         dataNavigation={{
@@ -267,23 +269,15 @@ export default function AdminProductsCRUD({navigation}) {
           style={{
             flex: 1,
             alignItems: 'center',
-            // justifyContent: 'center',
-            // borderTopColor: '#ccc',
-            // borderTopWidth: 0.5,
+            // backgroundColor: 'yellow',
           }}>
           {/* ITEMS */}
           <FlatList
-            style={{width: '100%', paddingBottom: 250}}
+            style={{width: '100%'}}
             data={products}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
           />
-
-          {/* {products.map(product => (
-            <View key={product._id}>
-              <Text>{product.name}</Text>
-            </View>
-          ))} */}
         </View>
       </View>
       {/* BUTTON */}

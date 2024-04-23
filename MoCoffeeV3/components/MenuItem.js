@@ -67,7 +67,7 @@ const MenuItem = ({item}) => {
             {item?.name}
           </Text>
           <Text style={{marginTop: 4, fontSize: 15, fontWeight: '500'}}>
-            {item?.price}.000 ₫
+            {item?.price}
           </Text>
           <Text
             style={{

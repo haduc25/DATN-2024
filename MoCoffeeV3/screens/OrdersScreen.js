@@ -174,7 +174,7 @@ export default function FavouriteScreen({navigation}) {
               fontSize: 18,
               marginTop: 10,
             }}>
-            {item.data.price}.000 ₫
+            {item.data.price}
           </Text>
         </View>
 

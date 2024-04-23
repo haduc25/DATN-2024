@@ -300,12 +300,13 @@ export default function DetailScreen({}) {
   };
 
   //
-  const imagesSlider = [
-    item.featured_image[0],
-    'https://scontent.fhan15-1.fna.fbcdn.net/v/t39.30808-6/237037430_1178782892533825_3904563212716546943_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=chAgwQH2-esAX_0pN9J&_nc_ht=scontent.fhan15-1.fna&oh=00_AfAxMSUXfwqTfK6Ia3j-RJ3F8cjug74wu45wHhMveckI1Q&oe=65EE4A8F',
-    'https://www.crane-tea.com/wp-content/uploads/2021/07/HONG-TRA-CHANH.jpg',
-    'https://quangon.vn/resources/2020/04/22/cach-pha-tra-chanh-leo-3.jpg',
-  ];
+  // const imagesSlider = [
+  //   item.featured_image[0],
+  //   'https://scontent.fhan15-1.fna.fbcdn.net/v/t39.30808-6/237037430_1178782892533825_3904563212716546943_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=chAgwQH2-esAX_0pN9J&_nc_ht=scontent.fhan15-1.fna&oh=00_AfAxMSUXfwqTfK6Ia3j-RJ3F8cjug74wu45wHhMveckI1Q&oe=65EE4A8F',
+  //   'https://www.crane-tea.com/wp-content/uploads/2021/07/HONG-TRA-CHANH.jpg',
+  //   'https://quangon.vn/resources/2020/04/22/cach-pha-tra-chanh-leo-3.jpg',
+  // ];
+
   return (
     <View style={{flex: 1}}>
       <View style={{position: 'relative'}}>
@@ -329,7 +330,8 @@ export default function DetailScreen({}) {
                 },
               ]}>
               <SliderBox
-                images={imagesSlider}
+                // images={imagesSlider}
+                images={item.featured_image}
                 dotColor={'brown'}
                 inactiveDotColor={'lightblue'}
                 sliderBoxHeight={'100%'}
@@ -419,7 +421,7 @@ export default function DetailScreen({}) {
             <Text style={{fontSize: 20, marginBottom: 8}}>
               {/* Giá bán:{' '} */}
               <Text style={{color: '#ee4d2d', fontWeight: '600'}}>
-                {item.price}.000 ₫
+                {item.price}
               </Text>
             </Text>
             {/* <Text style={{fontSize: 16, marginBottom: 8}}>
@@ -646,7 +648,7 @@ export default function DetailScreen({}) {
                 fontWeight: 'bold',
                 paddingRight: 20,
               }}>
-              {item.price}.000 ₫ | Giao hàng ngay
+              {item.price} | Giao hàng ngay
             </Text>
             <Image
               style={{width: 40, height: 40}}
