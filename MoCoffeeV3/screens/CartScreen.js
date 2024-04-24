@@ -6,6 +6,8 @@ import {
   ScrollView,
   Pressable,
   Image,
+  TextInput,
+  Alert,
 } from 'react-native';
 import {
   Ionicons,
@@ -29,7 +31,16 @@ import {useRoute, useNavigation} from '@react-navigation/native';
 import {
   convertPriceStringToInteger,
   convertIntegerToPriceString,
+  generateKeyID,
 } from '../utils/globalHelpers';
+import {
+  db,
+  addDoc,
+  getDocs,
+  collection,
+  query,
+  collectionGroup,
+} from '../firebase';
 
 export default function CartScreen({navigation}) {
   // console.log('navigation: ', navigation);
@@ -51,6 +62,8 @@ export default function CartScreen({navigation}) {
       url: 'https://cdn-icons-png.flaticon.com/512/1052/1052866.png',
       urlQRPayment:
         'https://ae01.alicdn.com/kf/S6a9c7c41476e4e3f8e23cd5eb00adc181.jpg',
+      sotk: '0964103861',
+      paymentMethod: 'Thanh toán khi nhận hàng',
     },
     {
       id: '1',
@@ -59,6 +72,8 @@ export default function CartScreen({navigation}) {
       url: 'https://cdn-icons-png.flaticon.com/128/8983/8983163.png',
       urlQRPayment:
         'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fpayment-QR%2Fbidv-qr.jpg?alt=media&token=db041e7b-552a-4507-8c4d-f1285e00e8b0',
+      sotk: '3901397142',
+      paymentMethod: 'Thanh toán ngay qua thẻ ATM',
     },
     {
       id: '2',
@@ -67,6 +82,8 @@ export default function CartScreen({navigation}) {
       url: 'https://i.pinimg.com/736x/0a/21/61/0a2161c76c50b3a7615cb470f25e4096.jpg',
       urlQRPayment:
         'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fpayment-QR%2Fmomo-qr.jpg?alt=media&token=7b457eea-e268-4721-864d-5b290dfe8d3d',
+      sotk: '0964103861',
+      paymentMethod: 'Thanh toán ngay với ví Momo',
     },
     {
       id: '3',
@@ -75,6 +92,8 @@ export default function CartScreen({navigation}) {
       url: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Ficons%2Fzalopay-icon.jpg?alt=media&token=e414910c-dd0d-47ed-9178-639968ace449',
       urlQRPayment:
         'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fpayment-QR%2Fzalopay-qr.jpg?alt=media&token=1a64e81a-0a97-45c2-922e-fa55732d05eb',
+      sotk: '0964103861',
+      paymentMethod: 'Thanh toán ngay với ví ZaloPay',
     },
   ];
 
@@ -85,6 +104,7 @@ export default function CartScreen({navigation}) {
 
   //
   const route = useRoute();
+  const navi = useNavigation();
   const {currentScreen, category} = route?.params;
 
   // console.log('currentScreen_CART:  ', currentScreen);
@@ -128,6 +148,108 @@ export default function CartScreen({navigation}) {
         break;
     }
   };
+
+  const handlePlaceOrder = () => {
+    // Hiển thị alert hỏi người dùng xác nhận đặt đơn hàng
+    Alert.alert(
+      'Xác nhận đặt đơn hàng',
+      'Bạn có chắc chắn muốn đặt đơn hàng này không?',
+      [
+        {
+          text: 'Hủy',
+          onPress: () => console.log('Hủy đặt hàng'),
+          style: 'cancel',
+        },
+        {
+          text: 'Xác nhận',
+          // onPress: () => console.log('Xác nhận đặt hàng'),
+          // Qua screen dặt hàng thành công
+          onPress: () => handleOrderConfirmation(),
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  // Địa chỉ
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [errorDeliveryAddress, setErrorDeliveryAddress] = useState(null);
+
+  // sdt
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [errorPhoneNumber, setErrorPhoneNumber] = useState(null);
+
+  // order confirm
+  let timeOutForChecking = 0;
+  const handleOrderConfirmation = () => {
+    if (ordersConfirmationLength !== null) {
+      // timeOutForChecking = 0;
+      // sau khi upload leen db thì chờ 3s mới chuyển qua screen `OrderConfirmationSuccessfully`
+      console.log(generateKeyID(category, ordersConfirmationLength));
+    } else {
+      timeOutForChecking++;
+      console.log('timeOutForChecking: ', timeOutForChecking);
+      if (timeOutForChecking > 2) {
+        console.log('da set lai: setOrdersConfirmationLength');
+        setOrdersConfirmationLength(1);
+        timeOutForChecking = 0;
+      }
+    }
+
+    return;
+    setTimeout(() => {
+      navi.navigate('OrderConfirmationSuccessfully');
+    }, 3000);
+  };
+
+  //   Create2
+  const createOrders = () => {
+    // summit data
+    addDoc(collection(db, 'OrdersConfirmation'), {
+      ma_don,
+      email,
+      nguoi_nhan: '',
+      dia_chi: '',
+      sdt: '',
+      san_pham_order: [{ten_sp: 'Tra Chanh 2', gia_sp: '1200', so_luong: '5'}],
+      tong_tien: '1000',
+
+      // DEFAULT
+      status: 'pendding',
+    })
+      .then(() => {
+        // Data create successfully!
+        console.log('Data created');
+        alert('Data created');
+      })
+      .catch(error => {
+        console.log('error: ', error);
+        alert('error: ', error);
+      });
+  };
+
+  // lấy số lượng bản ghi có trong `OrdersConfirmation`
+  const [ordersConfirmationLength, setOrdersConfirmationLength] =
+    useState(null);
+
+  useEffect(() => {
+    const getOrdersConfirmationLength = async () => {
+      try {
+        const q = query(collectionGroup(db, 'OrdersConfirmation'));
+        const querySnapshot = await getDocs(q);
+        const numberOfOrders = querySnapshot.size; // Đếm số lượng bản ghi
+        console.log(
+          'Số lượng bản ghi trong bảng OrdersConfirmation:',
+          numberOfOrders,
+        );
+        setOrdersConfirmationLength(numberOfOrders);
+      } catch (error) {
+        console.error('Lỗi khi lấy số lượng bản ghi:', error);
+      }
+    };
+
+    getOrdersConfirmationLength();
+  }, []);
 
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -409,21 +531,93 @@ export default function CartScreen({navigation}) {
                     paddingVertical: 10,
                   }}>
                   <Text>SỐ TÀI KHOẢN</Text>
-                  <Text style={{fontWeight: '600'}}>0964103861</Text>
+                  <Text style={{fontWeight: '600'}}>
+                    {paymentMethods[activeIndex].sotk}
+                  </Text>
                 </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingVertical: 10,
-                  }}>
-                  <Text>NGÂN HÀNG</Text>
-                  <Text style={{fontWeight: '600'}}>BIDV-CN THAI NGUYÊN</Text>
-                </View>
+                {paymentMethods[activeIndex].value === 'credit' && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      paddingVertical: 10,
+                    }}>
+                    <Text>NGÂN HÀNG</Text>
+                    <Text style={{fontWeight: '600'}}>BIDV-CN THAI NGUYÊN</Text>
+                  </View>
+                )}
               </View>
             </View>
           )}
           {/* END: PAYMENT ATM, MOMO, ZALO */}
+
+          {/* START: ĐỊA CHỈ */}
+          <View style={{marginVertical: 10}}>
+            <Text style={{fontSize: 16, fontWeight: '600'}}>Địa chỉ</Text>
+            <TextInput
+              value={deliveryAddress}
+              onChangeText={text => setDeliveryAddress(text)}
+              style={{
+                color: 'gray',
+                marginVertical: 10,
+                width: '100%',
+                backgroundColor: '#fff',
+                borderWidth: 1,
+                borderColor: '#ccc',
+                borderRadius: 12,
+                height: 50,
+                padding: 10,
+              }}
+              placeholder='Nhập địa chỉ nhận hàng của bạn'
+            />
+            {errorDeliveryAddress ? (
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: 'red',
+                  marginLeft: 10,
+                  marginRight: 10,
+                }}>
+                {errorDeliveryAddress}
+              </Text>
+            ) : null}
+          </View>
+          {/* END: ĐỊA CHỈ */}
+
+          {/* START: SỐ ĐIỆN THOẠI */}
+          <View style={{marginVertical: 10}}>
+            <Text style={{fontSize: 16, fontWeight: '600'}}>Số điện thoại</Text>
+            <TextInput
+              maxLength={10}
+              keyboardType='numeric'
+              value={phoneNumber}
+              onChangeText={text => setPhoneNumber(text)}
+              style={{
+                color: 'gray',
+                marginVertical: 10,
+                width: '100%',
+                backgroundColor: '#fff',
+                borderWidth: 1,
+                borderColor: '#ccc',
+                borderRadius: 12,
+                height: 50,
+                padding: 10,
+              }}
+              placeholder='Nhập số điện thoại nhận hàng của bạn'
+            />
+            {errorPhoneNumber ? (
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: 'red',
+                  marginLeft: 10,
+                  marginRight: 10,
+                }}>
+                {errorPhoneNumber}
+              </Text>
+            ) : null}
+          </View>
+          {/* END: SỐ ĐIỆN THOẠI */}
 
           <View>
             <View
@@ -702,10 +896,10 @@ export default function CartScreen({navigation}) {
             justifyContent: 'space-between',
             backgroundColor: 'white',
           }}>
-          {console.log('total___ ', total)}
+          {/* {console.log('total___ ', total)} */}
           <View>
             <Text style={{fontSize: 16, fontWeight: '600', maxWidth: 150}}>
-              Thanh toán khi nhận hàng
+              {paymentMethods[activeIndex].paymentMethod}
             </Text>
             {/* <Text style={{fontSize: 16, fontWeight: '600'}}>
               Thanh toán bằng thẻ
@@ -765,11 +959,35 @@ export default function CartScreen({navigation}) {
               // });
 
               // alert('Chuyen qua thanh toan: ', activeIndex);
-              console.log('activeIndex: ', activeIndex);
-              console.log('cart: ', cart);
-              console.log('cart.length: ', cart.length);
+              // console.log('activeIndex: ', activeIndex);
+              // console.log('deliveryAddress: ', deliveryAddress);
               //
               kiemTraPhuongThucThanhToan(activeIndex, paymentMethods);
+              // validate Dia chi
+              const isDeliveryAddressNotEmpty = deliveryAddress.trim() !== '';
+              if (isDeliveryAddressNotEmpty) {
+                setErrorDeliveryAddress(null);
+
+                const regex = /^\d{10,11}$/;
+
+                if (regex.test(phoneNumber)) {
+                  setErrorPhoneNumber(null);
+                  console.log('Thông báo', 'Số điện thoại hợp lệ.');
+
+                  // Navigate qua screen đặt hàng thành công
+                  handlePlaceOrder();
+                } else {
+                  setErrorPhoneNumber('Số điện thoại không hợp lệ.');
+                  console.log('Thông báo', 'Số điện thoại không hợp lệ.');
+                }
+
+                return;
+              } else {
+                setErrorDeliveryAddress(
+                  'Địa chỉ giao hàng không được để trống',
+                );
+                return;
+              }
             }}
             style={{
               backgroundColor: '#fd5c63',
@@ -782,7 +1000,13 @@ export default function CartScreen({navigation}) {
               justifyContent: 'center',
               gap: 10,
             }}>
-            <Text style={{fontSize: 16, fontWeight: '500', color: 'white'}}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: '500',
+                color: 'white',
+                textTransform: 'uppercase',
+              }}>
               Đặt đơn
             </Text>
           </Pressable>

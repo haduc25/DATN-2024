@@ -22,6 +22,7 @@ import AdminDashboardScreen from './screens/AdminDashboardScreen';
 import AdminProductsCRUD from './screens/AdminProductsCRUD';
 import AdminCRUDItem from './screens/AdminCRUDItem';
 import AdminOrders from './screens/AdminOrders';
+import OrderConfirmationSuccessfully from './screens/OrderConfirmationSuccessfully';
 
 // Redux
 import {Provider} from 'react-redux';
@@ -110,6 +111,16 @@ export default function App() {
           <BottomTab.Screen
             name={cartName}
             component={CartScreen}
+            // initialParams={{name: 'haduc25'}}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+          <BottomTab.Screen
+            name={'OrderConfirmationSuccessfully'}
+            component={OrderConfirmationSuccessfully}
             // initialParams={{name: 'haduc25'}}
             options={{
               headerShown: false,
