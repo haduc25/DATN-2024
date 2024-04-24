@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -32,7 +32,7 @@ import {
 } from '../utils/globalHelpers';
 
 export default function CartScreen({navigation}) {
-  console.log('navigation: ', navigation);
+  // console.log('navigation: ', navigation);
   // console.log('route: ', route);
 
   // #################### VALUE #################### //
@@ -40,49 +40,94 @@ export default function CartScreen({navigation}) {
   const cart = useSelector(state => state.cart.cart);
   const productInfo = useSelector(state => state.productInfo);
   const isCartClean = useSelector(state => state.cart.isClean);
-  console.log('DATA FROM REDUX: ', productInfo);
-  console.log('DATA FROM REDUX222_Cart: ', isCartClean);
+  // console.log('DATA FROM REDUX: ', productInfo);
+  // console.log('DATA FROM REDUX222_Cart: ', isCartClean);
   const dispatch = useDispatch();
-  const instructions = [
+  const paymentMethods = [
     {
       id: '0',
       name: 'Tiền mặt',
-      iconName: 'bell',
+      value: 'cash',
       url: 'https://cdn-icons-png.flaticon.com/512/1052/1052866.png',
+      urlQRPayment:
+        'https://ae01.alicdn.com/kf/S6a9c7c41476e4e3f8e23cd5eb00adc181.jpg',
     },
     {
       id: '1',
       name: 'Thẻ tín dụng',
-      iconName: 'door-open',
+      value: 'credit',
       url: 'https://cdn-icons-png.flaticon.com/128/8983/8983163.png',
+      urlQRPayment:
+        'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fpayment-QR%2Fbidv-qr.jpg?alt=media&token=db041e7b-552a-4507-8c4d-f1285e00e8b0',
     },
     {
       id: '2',
       name: 'Ví Momo',
-      iconName: 'directions',
+      value: 'momowallet',
       url: 'https://i.pinimg.com/736x/0a/21/61/0a2161c76c50b3a7615cb470f25e4096.jpg',
+      urlQRPayment:
+        'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fpayment-QR%2Fmomo-qr.jpg?alt=media&token=7b457eea-e268-4721-864d-5b290dfe8d3d',
     },
     {
       id: '3',
       name: 'Ví ZaloPay',
-      iconName: 'phone-alt',
+      value: 'zalopaywallet',
       url: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Ficons%2Fzalopay-icon.jpg?alt=media&token=e414910c-dd0d-47ed-9178-639968ace449',
+      urlQRPayment:
+        'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fpayment-QR%2Fzalopay-qr.jpg?alt=media&token=1a64e81a-0a97-45c2-922e-fa55732d05eb',
     },
   ];
 
   let total = cart
     ?.map(item => item.quantity * convertPriceStringToInteger(item.price))
     .reduce((curr, prev) => curr + prev, 0);
-  console.log('total_CART: ', total);
+  // console.log('total_CART: ', total);
 
   //
   const route = useRoute();
   const {currentScreen, category} = route?.params;
 
-  console.log('currentScreen_CART:  ', currentScreen);
+  // console.log('currentScreen_CART:  ', currentScreen);
   //  PHÍ GIAO HÀNG
   const phiship = 15000;
   const phiapdung = 6000;
+
+  // state của `Thanh toán`
+  const [activeIndex, setActiveIndex] = useState(0); // Lưu trạng thái của phần tử được chọn
+  useEffect(() => {
+    setActiveIndex(0);
+  }, []);
+
+  const [showQR, setShowQR] = useState(false);
+
+  const kiemTraPhuongThucThanhToan = (index, value) => {
+    console.log('value[index]: ', value[index]);
+    switch (value[index].value) {
+      case 'cash':
+        console.log(
+          'cash - chuyển qua màn hình đặt hàng thành công  (đơn hàng đang được xử lý)',
+        );
+        break;
+
+      case 'credit':
+        console.log('credit - hiện ra thông tin thanh toán, mã QR các thứ');
+        break;
+
+      case 'momowallet':
+        console.log('momowallet - hiện ra thông tin thanh toán, mã QR các thứ');
+        break;
+
+      case 'zalopaywallet':
+        console.log(
+          'zalopaywallet - hiện ra thông tin thanh toán, mã QR các thứ',
+        );
+        break;
+
+      default:
+        console.log('Thanh toán k hợp lệ!!!');
+        break;
+    }
+  };
 
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -143,7 +188,7 @@ export default function CartScreen({navigation}) {
               fontSize: 15,
               color: 'gray',
             }}>
-            CÁC SẢN PHẨM TRONG GIỎ HÀNG
+            {cart.length ? 'CÁC SẢN PHẨM TRONG GIỎ HÀNG' : 'GIỎ HÀNG TRỐNG'}
           </Text>
         </View>
 
@@ -243,8 +288,46 @@ export default function CartScreen({navigation}) {
               Phương thức thanh toán
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {instructions?.map((item, index) => (
+              {paymentMethods?.map((item, index) => (
                 <Pressable
+                  onPress={() => {
+                    setActiveIndex(index);
+                    console.log('index: ', index);
+                    switch (paymentMethods[index].value) {
+                      case 'cash':
+                        setShowQR(false);
+                        console.log(
+                          'cash - chuyển qua màn hình đặt hàng thành công  (đơn hàng đang được xử lý)',
+                        );
+                        break;
+
+                      case 'credit':
+                        setShowQR(true);
+                        console.log(
+                          'credit - hiện ra thông tin thanh toán, mã QR các thứ',
+                        );
+                        break;
+
+                      case 'momowallet':
+                        setShowQR(true);
+                        console.log(
+                          'momowallet - hiện ra thông tin thanh toán, mã QR các thứ',
+                        );
+                        break;
+
+                      case 'zalopaywallet':
+                        setShowQR(true);
+                        console.log(
+                          'zalopaywallet - hiện ra thông tin thanh toán, mã QR các thứ',
+                        );
+                        break;
+
+                      default:
+                        setShowQR(false);
+                        console.log('Thanh toán k hợp lệ!!!');
+                        break;
+                    }
+                  }}
                   key={index}
                   style={{
                     margin: 10,
@@ -252,19 +335,16 @@ export default function CartScreen({navigation}) {
                     paddingTop: 10,
                     paddingBottom: 10,
                     paddingHorizontal: 8,
-                    backgroundColor: 'white',
+                    backgroundColor:
+                      activeIndex === index ? 'lightblue' : 'white', // Thay đổi màu nền nếu được chọn
+                    borderWidth: 1,
+                    borderColor: activeIndex === index ? '#ccc' : 'transparent',
                   }}>
                   <View
                     style={{
                       justifyContent: 'center',
                       alignItems: 'center',
-                      // backgroundColor: 'red',
                     }}>
-                    {/* <FontAwesome5
-                      name={item?.iconName}
-                      size={22}
-                      color={'gray'}
-                    /> */}
                     <Image
                       style={{
                         width: 42,
@@ -293,6 +373,57 @@ export default function CartScreen({navigation}) {
               ))}
             </ScrollView>
           </View>
+
+          {/* START: PAYMENT ATM, MOMO, ZALO */}
+          {showQR && (
+            <View>
+              <Text>Vui lòng thanh toán qua</Text>
+              <View style={{alignItems: 'center', padding: 14}}>
+                <Image
+                  style={{
+                    width: 250,
+                    height: 250,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                  }}
+                  source={{
+                    uri: paymentMethods[activeIndex].urlQRPayment,
+                  }}
+                />
+              </View>
+              <View style={{paddingBottom: 20, paddingTop: 20}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingVertical: 10,
+                  }}>
+                  <Text>CHỦ TÀI KHOẢN {activeIndex}</Text>
+                  <Text style={{fontWeight: '600'}}>HÀ MINH ĐỨC</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingVertical: 10,
+                  }}>
+                  <Text>SỐ TÀI KHOẢN</Text>
+                  <Text style={{fontWeight: '600'}}>0964103861</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingVertical: 10,
+                  }}>
+                  <Text>NGÂN HÀNG</Text>
+                  <Text style={{fontWeight: '600'}}>BIDV-CN THAI NGUYÊN</Text>
+                </View>
+              </View>
+            </View>
+          )}
+          {/* END: PAYMENT ATM, MOMO, ZALO */}
 
           <View>
             <View
@@ -340,7 +471,7 @@ export default function CartScreen({navigation}) {
               {/* <View
                 style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
                 <Entypo name='new-message' size={24} color='black' />
-                <Text>Add more cooking instructions</Text>
+                <Text>Add more cooking paymentMethods</Text>
               </View> */}
               <View
                 style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
@@ -503,7 +634,9 @@ export default function CartScreen({navigation}) {
 
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  15.000₫
+                  {cart.length
+                    ? convertIntegerToPriceString(phiship)
+                    : convertIntegerToPriceString(0)}
                 </Text>
               </View>
               <View
@@ -527,7 +660,9 @@ export default function CartScreen({navigation}) {
 
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  6.000 ₫
+                  {cart.length
+                    ? convertIntegerToPriceString(phiapdung)
+                    : convertIntegerToPriceString(0)}
                 </Text>
               </View>
 
@@ -545,9 +680,11 @@ export default function CartScreen({navigation}) {
                   <Text style={{fontWeight: 'bold', fontSize: 15}}>
                     {/* {convertIntegerToPriceString(total)} */}
                     {/* Tính phí ship + phí áp dụng */}
-                    {convertIntegerToPriceString(
-                      (total = total + phiship + phiapdung),
-                    )}
+                    {cart.length
+                      ? convertIntegerToPriceString(
+                          (total = total + phiship + phiapdung),
+                        )
+                      : convertIntegerToPriceString(0)}
                   </Text>
                 </View>
               </View>
@@ -565,6 +702,7 @@ export default function CartScreen({navigation}) {
             justifyContent: 'space-between',
             backgroundColor: 'white',
           }}>
+          {console.log('total___ ', total)}
           <View>
             <Text style={{fontSize: 16, fontWeight: '600', maxWidth: 150}}>
               Thanh toán khi nhận hàng
@@ -618,13 +756,20 @@ export default function CartScreen({navigation}) {
 
           <Pressable
             onPress={() => {
-              dispatch(cleanCart());
-              router.replace({
-                pathname: '/order',
-                params: {
-                  name: params?.name,
-                },
-              });
+              // dispatch(cleanCart());
+              // router.replace({
+              //   pathname: '/order',
+              //   params: {
+              //     name: params?.name,
+              //   },
+              // });
+
+              // alert('Chuyen qua thanh toan: ', activeIndex);
+              console.log('activeIndex: ', activeIndex);
+              console.log('cart: ', cart);
+              console.log('cart.length: ', cart.length);
+              //
+              kiemTraPhuongThucThanhToan(activeIndex, paymentMethods);
             }}
             style={{
               backgroundColor: '#fd5c63',
