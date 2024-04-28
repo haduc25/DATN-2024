@@ -32,6 +32,7 @@ import {
   convertPriceStringToInteger,
   convertIntegerToPriceString,
   generateKeyID,
+  convertISOToFormattedDate,
 } from '../utils/globalHelpers';
 import {
   db,
@@ -40,6 +41,7 @@ import {
   collection,
   query,
   collectionGroup,
+  auth,
 } from '../firebase';
 
 export default function CartScreen({navigation}) {
@@ -102,6 +104,8 @@ export default function CartScreen({navigation}) {
     .reduce((curr, prev) => curr + prev, 0);
   // console.log('total_CART: ', total);
 
+  let cartLength = cart?.length;
+
   //
   const route = useRoute();
   const navi = useNavigation();
@@ -127,29 +131,30 @@ export default function CartScreen({navigation}) {
         console.log(
           'cash - chuyển qua màn hình đặt hàng thành công  (đơn hàng đang được xử lý)',
         );
-        break;
+        return 'cash';
 
       case 'credit':
         console.log('credit - hiện ra thông tin thanh toán, mã QR các thứ');
-        break;
+        return 'credit';
 
       case 'momowallet':
         console.log('momowallet - hiện ra thông tin thanh toán, mã QR các thứ');
-        break;
+        return 'momowallet';
 
       case 'zalopaywallet':
         console.log(
           'zalopaywallet - hiện ra thông tin thanh toán, mã QR các thứ',
         );
-        break;
+        return 'zalopaywallet';
 
       default:
         console.log('Thanh toán k hợp lệ!!!');
-        break;
+        return null;
     }
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = obj => {
+    // console.log(obj);
     // Hiển thị alert hỏi người dùng xác nhận đặt đơn hàng
     Alert.alert(
       'Xác nhận đặt đơn hàng',
@@ -164,7 +169,7 @@ export default function CartScreen({navigation}) {
           text: 'Xác nhận',
           // onPress: () => console.log('Xác nhận đặt hàng'),
           // Qua screen dặt hàng thành công
-          onPress: () => handleOrderConfirmation(),
+          onPress: () => handleOrderConfirmation(obj),
         },
       ],
       {cancelable: false},
@@ -181,11 +186,57 @@ export default function CartScreen({navigation}) {
 
   // order confirm
   let timeOutForChecking = 0;
-  const handleOrderConfirmation = () => {
-    if (ordersConfirmationLength !== null) {
+  const handleOrderConfirmation = isValidData => {
+    if (ordersConfirmationLength !== null && isValidData) {
+      console.log('isValidData: ', isValidData);
+      const {dia_chi, phuong_thuc_thanh_toan, so_dien_thoai, tong_tien} =
+        isValidData;
+      const displayName = auth.currentUser.displayName;
+      const userId = auth.currentUser.uid;
+      console.log('Người nhận: ', displayName);
+      console.log('Đia chỉ: ', dia_chi);
+      console.log('SDT: ', so_dien_thoai);
+      console.log('PTTT: ', phuong_thuc_thanh_toan);
+      console.log('tong_tien: ', tong_tien);
+
+      // console.log('cart_handleOrderConfirmation: ', cart);
+
+      // handle cart
+      // Mảng chứa thông tin sản phẩm đơn hàng
+      let san_pham_order = [];
+
+      // Duyệt qua mỗi đối tượng trong mảng cart
+      cart.forEach(item => {
+        // Tạo một đối tượng mới chứa thông tin sản phẩm đơn hàng
+        let sp_order = {
+          ten_sp: item.name,
+          gia_sp: item.price,
+          so_luong: item.quantity,
+          size_sp: item.available_sizes.join(', '), // Chuyển mảng available_sizes thành chuỗi
+        };
+
+        // Thêm đối tượng này vào mảng san_pham_order
+        san_pham_order.push(sp_order);
+      });
+
+      // Hiển thị mảng san_pham_order
+      console.log('san_pham_order: ', san_pham_order);
+
       // timeOutForChecking = 0;
       // sau khi upload leen db thì chờ 3s mới chuyển qua screen `OrderConfirmationSuccessfully`
-      console.log(generateKeyID(category, ordersConfirmationLength));
+
+      let ma_don_hang = generateKeyID(category, ordersConfirmationLength);
+
+      console.log('ma_don_hang: ', ma_don_hang);
+
+      // Thêm trường còn lại vào đối tượng isValidData
+      isValidData.ma_don_hang = ma_don_hang;
+      isValidData.san_pham_order = san_pham_order;
+      isValidData.nguoi_nhan = displayName;
+      isValidData.user_id_ordered = userId;
+
+      // PUSH TO SERVER
+      createOrders(isValidData);
     } else {
       timeOutForChecking++;
       console.log('timeOutForChecking: ', timeOutForChecking);
@@ -203,24 +254,38 @@ export default function CartScreen({navigation}) {
   };
 
   //   Create2
-  const createOrders = () => {
+  const createOrders = validData => {
+    console.log('validData: ', validData);
+    const timeNow = new Date().toISOString();
+    const createdAt = convertISOToFormattedDate(timeNow);
+    const updatedAt = createdAt;
+
     // summit data
     addDoc(collection(db, 'OrdersConfirmation'), {
-      ma_don,
-      email,
-      nguoi_nhan: '',
-      dia_chi: '',
-      sdt: '',
-      san_pham_order: [{ten_sp: 'Tra Chanh 2', gia_sp: '1200', so_luong: '5'}],
-      tong_tien: '1000',
+      // ma_don,
+      // nguoi_nhan: '',
+      // dia_chi: '',
+      // sdt: '',
+      // san_pham_order: [{ten_sp: 'Tra Chanh 2', gia_sp: '1200', so_luong: '5'}],
+      // tong_tien: '1000',
 
       // DEFAULT
       status: 'pendding',
+      thoi_gian_tao_don_hang: createdAt,
+      thoi_gian_cap_nhat_don_hang_moi_nhat: updatedAt,
+
+      // Thêm tất cả các giá trị của validData vào đây
+      ...validData,
     })
       .then(() => {
         // Data create successfully!
         console.log('Data created');
-        alert('Data created');
+        alert('ĐÃ TẠO ĐƠN HÀNG THÀNH CÔNG!!!');
+
+        // Chuyển sang Trang khác
+        setTimeout(() => {
+          navi.navigate('OrderConfirmationSuccessfully');
+        }, 3000);
       })
       .catch(error => {
         console.log('error: ', error);
@@ -250,6 +315,10 @@ export default function CartScreen({navigation}) {
 
     getOrdersConfirmationLength();
   }, []);
+
+  // // GET CURRENT USER
+  // const displayName = auth.currentUser.displayName;
+  // console.log('displayName: ', displayName);
 
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -310,7 +379,7 @@ export default function CartScreen({navigation}) {
               fontSize: 15,
               color: 'gray',
             }}>
-            {cart.length ? 'CÁC SẢN PHẨM TRONG GIỎ HÀNG' : 'GIỎ HÀNG TRỐNG'}
+            {cartLength ? 'CÁC SẢN PHẨM TRONG GIỎ HÀNG' : 'GIỎ HÀNG TRỐNG'}
           </Text>
         </View>
 
@@ -326,6 +395,7 @@ export default function CartScreen({navigation}) {
                   justifyContent: 'space-between',
                   marginVertical: 6,
                 }}>
+                {console.log('cart?.map: ', item)}
                 <Text style={{width: 200, fontSize: 16, fontWeight: '600'}}>
                   {item?.name}
                 </Text>
@@ -807,7 +877,7 @@ export default function CartScreen({navigation}) {
                 }}>
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  Tổng cộng (1 món)
+                  Tổng cộng ({cartLength} món)
                 </Text>
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
@@ -828,7 +898,7 @@ export default function CartScreen({navigation}) {
 
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  {cart.length
+                  {cartLength
                     ? convertIntegerToPriceString(phiship)
                     : convertIntegerToPriceString(0)}
                 </Text>
@@ -854,7 +924,7 @@ export default function CartScreen({navigation}) {
 
                 <Text
                   style={{fontSize: 15, fontWeight: '400', color: '#505050'}}>
-                  {cart.length
+                  {cartLength
                     ? convertIntegerToPriceString(phiapdung)
                     : convertIntegerToPriceString(0)}
                 </Text>
@@ -874,7 +944,7 @@ export default function CartScreen({navigation}) {
                   <Text style={{fontWeight: 'bold', fontSize: 15}}>
                     {/* {convertIntegerToPriceString(total)} */}
                     {/* Tính phí ship + phí áp dụng */}
-                    {cart.length
+                    {cartLength
                       ? convertIntegerToPriceString(
                           (total = total + phiship + phiapdung),
                         )
@@ -961,21 +1031,40 @@ export default function CartScreen({navigation}) {
               // alert('Chuyen qua thanh toan: ', activeIndex);
               // console.log('activeIndex: ', activeIndex);
               // console.log('deliveryAddress: ', deliveryAddress);
-              //
-              kiemTraPhuongThucThanhToan(activeIndex, paymentMethods);
+
+              //check valid
+              let paymentValid = kiemTraPhuongThucThanhToan(
+                activeIndex,
+                paymentMethods,
+              );
               // validate Dia chi
               const isDeliveryAddressNotEmpty = deliveryAddress.trim() !== '';
               if (isDeliveryAddressNotEmpty) {
+                let deliveryAddressValid = deliveryAddress.trim();
                 setErrorDeliveryAddress(null);
 
                 const regex = /^\d{10,11}$/;
 
                 if (regex.test(phoneNumber)) {
+                  let phoneNumberValid = phoneNumber;
                   setErrorPhoneNumber(null);
                   console.log('Thông báo', 'Số điện thoại hợp lệ.');
 
+                  console.log('Phone & Address is Valid');
+                  // console.log('TỔNG TIỀN: ', total);
                   // Navigate qua screen đặt hàng thành công
-                  handlePlaceOrder();
+
+                  // console.log(
+                  //   paymentMethod,
+                  //   deliveryAddressValid,
+                  //   phoneNumberValid,
+                  // );
+                  handlePlaceOrder({
+                    phuong_thuc_thanh_toan: paymentValid,
+                    dia_chi: deliveryAddressValid,
+                    so_dien_thoai: phoneNumberValid,
+                    tong_tien: convertIntegerToPriceString(total),
+                  });
                 } else {
                   setErrorPhoneNumber('Số điện thoại không hợp lệ.');
                   console.log('Thông báo', 'Số điện thoại không hợp lệ.');

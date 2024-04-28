@@ -38,6 +38,7 @@ import {
   addDoc,
   collection,
 } from '../firebase';
+import {convertISOToFormattedDate} from '../utils/globalHelpers';
 
 export default function AdminCRUDItem({navigation}) {
   // VALUE OF ITEM
@@ -495,17 +496,18 @@ export default function AdminCRUDItem({navigation}) {
       });
   };
 
-  const convertISOToFormattedDate = isoDateString => {
-    const date = new Date(isoDateString);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
+  // dùng chung của globalHelpers
+  // const convertISOToFormattedDate = isoDateString => {
+  //   const date = new Date(isoDateString);
+  //   const hours = date.getHours().toString().padStart(2, '0');
+  //   const minutes = date.getMinutes().toString().padStart(2, '0');
+  //   const seconds = date.getSeconds().toString().padStart(2, '0');
+  //   const day = date.getDate().toString().padStart(2, '0');
+  //   const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  //   const year = date.getFullYear();
 
-    return `${hours}:${minutes}:${seconds}, ${day}/${month}/${year}`;
-  };
+  //   return `${hours}:${minutes}:${seconds}, ${day}/${month}/${year}`;
+  // };
 
   const resetItemInfo = () => {
     setItemInfo({
