@@ -282,9 +282,13 @@ export default function CartScreen({navigation}) {
         console.log('Data created');
         alert('ĐÃ TẠO ĐƠN HÀNG THÀNH CÔNG!!!');
 
+        dispatch(cleanCart());
+        setToDefault();
         // Chuyển sang Trang khác
         setTimeout(() => {
-          navi.navigate('OrderConfirmationSuccessfully');
+          navi.navigate('OrderConfirmationSuccessfully', {
+            payment_method: validData.phuong_thuc_thanh_toan,
+          });
         }, 3000);
       })
       .catch(error => {
@@ -319,6 +323,14 @@ export default function CartScreen({navigation}) {
   // // GET CURRENT USER
   // const displayName = auth.currentUser.displayName;
   // console.log('displayName: ', displayName);
+
+  // SET TO DEFAULT
+  const setToDefault = () => {
+    setActiveIndex(0);
+    setShowQR(false);
+    setDeliveryAddress('');
+    setPhoneNumber('');
+  };
 
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -567,7 +579,7 @@ export default function CartScreen({navigation}) {
           </View>
 
           {/* START: PAYMENT ATM, MOMO, ZALO */}
-          {showQR && (
+          {showQR && paymentMethods[activeIndex].value !== 'cash' && (
             <View>
               <Text>Vui lòng thanh toán qua</Text>
               <View style={{alignItems: 'center', padding: 14}}>

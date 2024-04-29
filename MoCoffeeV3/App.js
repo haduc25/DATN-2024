@@ -60,8 +60,9 @@ export default function App() {
           // initialRouteName={'ImageAnimation'}
           // initialRouteName={'DynamicHeaderScrollView'}
 
-          initialRouteName={loginName} //current
+          // initialRouteName={loginName} //current
           // initialRouteName={'AdminCRUDItem'} //test
+          initialRouteName={'OrderConfirmationSuccessfully'} //test
           // initialRouteName={'AdminOrders'} //test
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
@@ -121,7 +122,7 @@ export default function App() {
           <BottomTab.Screen
             name={'OrderConfirmationSuccessfully'}
             component={OrderConfirmationSuccessfully}
-            // initialParams={{name: 'haduc25'}}
+            initialParams={{payment_method: 'cash'}}
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
