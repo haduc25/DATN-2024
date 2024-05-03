@@ -18,7 +18,13 @@ import {useNavigation, useIsFocused} from '@react-navigation/native';
 
 export default function AdminProductsCRUD({navigation}) {
   const renderItem = ({item, index}) => (
-    <View
+    <TouchableOpacity
+      onPress={() =>
+        navi.navigate('DetailScreen', {
+          item,
+          currentScreen: 'AdminProductsCRUD',
+        })
+      }
       key={item._id}
       style={{
         width: 395,
@@ -149,6 +155,8 @@ export default function AdminProductsCRUD({navigation}) {
           <Text style={{fontWeight: '600'}}>Xem chi tiết</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          // onPress={() => console.log('item__L ', item)}
+          onPress={() => navi.navigate('AdminEditItem', {thisItem: item})}
           style={{
             borderWidth: 1,
             height: 45,
@@ -172,7 +180,7 @@ export default function AdminProductsCRUD({navigation}) {
           <Text style={{fontWeight: '600'}}>Xóa</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   // GET ITEMS FROM FIREBASE

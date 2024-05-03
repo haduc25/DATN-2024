@@ -26,7 +26,7 @@ import Button from '../components/Button';
 import * as ImagePicker from 'expo-image-picker';
 
 // NAVIGATION
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 
 // FIREBASE UPLOAD IMAGE
 import {
@@ -45,17 +45,47 @@ import {
 } from '../firebase';
 import {convertISOToFormattedDate} from '../utils/globalHelpers';
 
-export default function AdminCRUDItem({navigation}) {
+export default function AdminEditItem({navigation}) {
+  const navi = useNavigation();
+  const route = useRoute();
+
+  console.log('route_ADMIN-EDIT', route.params);
+  const {thisItem} = route.params;
+
   // VALUE OF ITEM
   const [itemInfo, setItemInfo] = useState({
-    featured_image: [],
-    name: '',
-    description: '',
-    price: '',
+    // featured_image: thisItem?.featured_image ?? [],
+    featured_image: thisItem?.featured_image
+      ? thisItem.featured_image.map(url => ({uri: url}))
+      : [], // => chuyển về cấu trúc giống vs chọn ảnh trong library => có uri
+    name: thisItem?.name ?? '',
+    description: thisItem?.description ?? '',
+    price: thisItem?.price ?? '',
     category: '',
     size: [],
     available: null,
   });
+  /** `name: thisItem?.name ?? ''` gán giá trị cho name của itemInfo. Nếu thisItem tồn tại và có thuộc tính name, thì name sẽ được gán bằng giá trị của name. Ngược lại, nếu thisItem không tồn tại hoặc không có thuộc tính name, thì name sẽ được gán bằng một chuỗi rỗng ''. */
+
+  const set4EditItemInfo = () => {
+    setItemInfo({
+      //   featured_image: thisItem?.featured_image ?? [],
+      featured_image: thisItem?.featured_image
+        ? thisItem.featured_image.map(url => ({uri: url}))
+        : [],
+      name: thisItem?.name ?? '',
+      description: thisItem?.description ?? '',
+      price: thisItem?.price ?? '',
+      category: '',
+      size: [],
+      available: null,
+    });
+  };
+
+  useEffect(() => {
+    set4EditItemInfo();
+    console.log('refreshing...');
+  }, [thisItem]);
 
   // FOCUS
   const [isFocused, setIsFocused] = useState({
@@ -88,8 +118,6 @@ export default function AdminCRUDItem({navigation}) {
     size: '',
     available: '',
   });
-
-  const navi = useNavigation();
 
   // ####################### LIBRARY ####################### //
   // # DROPDOWN
@@ -143,14 +171,13 @@ export default function AdminCRUDItem({navigation}) {
     // console.log('SizeProductData__: ', SizeProductData[0].size);
 
     const selectedSizes = sizeSanPham.map(index => SizeProductData[index].size);
-    console.log('Selected Sizes:', selectedSizes);
 
     setItemInfo(prevState => ({
       ...prevState,
       size: selectedSizes, // Lấy dữ liệu từ selectedSizes
     }));
 
-    console.log('UPDATE THANH CONG ');
+    // console.log('UPDATE THANH CONG ');
   }, [sizeSanPham]);
 
   // AVAILABLE
@@ -457,6 +484,14 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   const handlePress = dataObject => {
+    // console.log('featured_image: ', itemInfo);
+    // console.log('featured_image: ', itemInfo.featured_image);
+    {
+      console.log(
+        'itemInfo.featured_image__OUTSIDE: ',
+        itemInfo.featured_image,
+      );
+    }
     const isValid = validateData();
     if (isValid) {
       // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
@@ -504,51 +539,6 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   // // CREATE NEW ITEM ON FIRESTORE
-  // const createNewItemOnFireStore = (dataObject, imageURL) => {
-  //   console.log('USERDATA(itemInfo): ', dataObject);
-  //   const {available, category, description, name, price, size} = dataObject;
-
-  //   console.log('imageURL: ', imageURL);
-
-  //   const timeNow = new Date().toISOString();
-  //   const createdAt = convertISOToFormattedDate(timeNow);
-  //   const updatedAt = createdAt;
-
-  //   console.log('createdAt: ', createdAt);
-
-  //   // auto_id
-  //   addDoc(collection(db, 'MenuMoC&T'), {
-  //     name,
-  //     description,
-  //     available,
-  //     available_sizes: [size],
-  //     category,
-  //     featured_image: imageURL,
-  //     price,
-  //     // DEFAULT VALUE
-  //     likes: '0',
-  //     // preparation_time # bỏ
-  //     ratings: {average_rating: '5', total_ratings: '0'},
-  //     sold_count: '0',
-  //     createdAt,
-  //     updatedAt,
-  //   })
-  //     .then(() => {
-  //       // Data create successfully!
-  //       console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
-  //       alert('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
-  //       resetItemInfo();
-
-  //       setTimeout(() => {
-  //         navi.navigate('AdminProductsCRUD');
-  //       }, 3000);
-  //     })
-  //     .catch(error => {
-  //       console.log('error: ', error);
-  //       alert('error: ', error);
-  //     });
-  // };
-
   const createNewItemOnFireStore = (dataObject, imageURL) => {
     console.log('USERDATA(itemInfo): ', dataObject);
     const {available, category, description, name, price, size} = dataObject;
@@ -643,7 +633,7 @@ export default function AdminCRUDItem({navigation}) {
         }}
         arrowIconColor={'#000'}
         arrowIconBackgroundColor={'#fff'}
-        titleOfScreen={'Thêm sản phẩm mới'}
+        titleOfScreen={'Chỉnh sửa sản phẩm'}
         onPressBack={data => console.log(data)}
         dataNavigation={{
           screen: 'AdminProductsCRUD',
@@ -670,8 +660,18 @@ export default function AdminCRUDItem({navigation}) {
               <View key={index} style={{position: 'relative'}}>
                 <Image
                   style={{width: 110, height: 110, borderRadius: 8, margin: 8}}
+                  //   source={{uri: image.uri}}
+                  //   source={{uri: thisItem?.featured_image ? image : image.uri}}
+                  //   source={{uri: image || image.uri}}
+                  //   source={{uri: image.uri}}
                   source={{uri: image.uri}}
                 />
+                {console.log('image: ', image)}
+                {console.log('image.uri: ', image.uri)}
+                {console.log(
+                  'itemInfo.featured_image__INSIDE: ',
+                  itemInfo.featured_image,
+                )}
                 {index === 0 && (
                   <View
                     style={{
@@ -903,6 +903,7 @@ export default function AdminCRUDItem({navigation}) {
               // save='value'
               searchPlaceholder={'Phân loại sản phẩm của bạn'}
               placeholder={'Chọn loại sản phẩm'}
+              //   defaultOption={{key}}
             />
             <TouchableOpacity
               activeOpacity={1}
@@ -1035,7 +1036,7 @@ export default function AdminCRUDItem({navigation}) {
           paddingVertical: 10,
         }}>
         <Button
-          title={'Thêm sản phẩm'}
+          title={'Cập nhật sản phẩm'}
           // onPress={() => navi.navigate('AdminCRUDItem')}
           // onPress={() => console.log('itemInfo: ', itemInfo)}
           // onPress={handlePress}

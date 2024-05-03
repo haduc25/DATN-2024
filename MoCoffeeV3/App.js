@@ -21,6 +21,7 @@ import UploadImageToStorageDemo from './screens/UploadImageToStorageDemo';
 import AdminDashboardScreen from './screens/AdminDashboardScreen';
 import AdminProductsCRUD from './screens/AdminProductsCRUD';
 import AdminCRUDItem from './screens/AdminCRUDItem';
+import AdminEditItem from './screens/AdminEditItem';
 import AdminOrders from './screens/AdminOrders';
 import OrderConfirmationSuccessfully from './screens/OrderConfirmationSuccessfully';
 
@@ -61,7 +62,8 @@ export default function App() {
           // initialRouteName={'DynamicHeaderScrollView'}
 
           // initialRouteName={loginName} //current
-          initialRouteName={'AdminCRUDItem'} //test
+          // initialRouteName={'AdminCRUDItem'} //test
+          initialRouteName={'AdminProductsCRUD'} //test
           // initialRouteName={'OrderConfirmationSuccessfully'} //test
           // initialRouteName={'AdminOrders'} //test
           screenOptions={({route}) => ({
@@ -246,6 +248,17 @@ export default function App() {
           <BottomTab.Screen
             name={'AdminCRUDItem'}
             component={AdminCRUDItem}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+
+          {/* AdminEditItem */}
+          <BottomTab.Screen
+            name={'AdminEditItem'}
+            component={AdminEditItem}
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
