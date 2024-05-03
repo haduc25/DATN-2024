@@ -5,6 +5,8 @@ export const translateCategory = category => {
     tea: 'Trà',
     coffee: 'Cà phê',
     'milk-tea': 'Trà sữa',
+    yogurt: 'Sữa chua',
+    soda: 'Soda',
   };
   // Nếu có, trả về giá trị tương ứng
   // Nếu không, trả về category ban đầu

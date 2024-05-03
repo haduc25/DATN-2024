@@ -61,8 +61,8 @@ export default function App() {
           // initialRouteName={'DynamicHeaderScrollView'}
 
           // initialRouteName={loginName} //current
-          // initialRouteName={'AdminCRUDItem'} //test
-          initialRouteName={'OrderConfirmationSuccessfully'} //test
+          initialRouteName={'AdminCRUDItem'} //test
+          // initialRouteName={'OrderConfirmationSuccessfully'} //test
           // initialRouteName={'AdminOrders'} //test
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {

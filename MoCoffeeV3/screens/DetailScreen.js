@@ -597,6 +597,7 @@ export default function DetailScreen({}) {
       /> */}
 
       <CustomStatusBar
+        arrowIconBackgroundColor={'transparent'}
         canGoBack={true}
         heightOfTop={28}
         // onPressBack={data => console.log(data)}

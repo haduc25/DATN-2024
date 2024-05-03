@@ -194,6 +194,9 @@ export default function AdminProductsCRUD({navigation}) {
           }
         });
 
+        // Sắp xếp theo alphabet
+        products.sort((a, b) => a.name.localeCompare(b.name));
+
         return products;
       } catch (error) {
         console.error('Error getting documents:', error);

@@ -52,7 +52,7 @@ export default function AdminCRUDItem({navigation}) {
     description: '',
     price: '',
     category: '',
-    size: [],
+    size: '',
     available: null,
   });
 
@@ -100,8 +100,6 @@ export default function AdminCRUDItem({navigation}) {
     {key: '1', value: 'Trà', category: 'tea'},
     {key: '2', value: 'Trà sữa', category: 'milk-tea'},
     {key: '3', value: 'Đồ ăn vặt', disabled: true, category: 'food'},
-    {key: '4', value: 'Sữa chua', category: 'yogurt'},
-    {key: '5', value: 'Soda', category: 'soda'},
   ];
 
   const handleSelectedItem = index => {
@@ -111,46 +109,26 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   // AVAILABLE_SIZES
+  const SizeData = [
+    {key: '0', value: 'M'},
+    {key: '1', value: 'L'},
+  ];
+
   const handleSizeItem = value => {
     console.log('Size: ', value);
     handleValueChange('size', value);
   };
 
   // SIZE V2
-  const [sizeSanPham, setSizeSanPham] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  const SizeProductData = [
-    {key: '0', value: 'S-Small (360ml)', size: 'S'},
-    {key: '1', value: 'M-Medium (500ml)', size: 'M'},
-    {key: '2', value: 'L-Large (700ml)', size: 'L'},
-    {key: '3', value: 'XL-Extra Large (1000ml)', size: 'XL'},
+  const data = [
+    {key: 'Canada', value: 'Canada'},
+    {key: 'England', value: 'England'},
+    {key: 'Pakistan', value: 'Pakistan'},
+    {key: 'India', value: 'India'},
+    {key: 'NewZealand', value: 'NewZealand'},
   ];
-
-  const handleSizeSelection = selectedItems => {
-    const selectedSizes = selectedItems.map(item => item.size);
-    setItemInfo(prevState => ({
-      ...prevState,
-      size: selectedSizes,
-    }));
-  };
-
-  // Khi sizeSanPham thay đổi, cập nhật giá trị của size trong itemInfo
-  useEffect(() => {
-    // console.log('SizeProductData: ', SizeProductData);
-    // console.log('sizeSanPham: ', sizeSanPham);
-    // console.log('typeof sizeSanPham: ', typeof sizeSanPham);
-    // console.log('SizeProductData__: ', SizeProductData[0].size);
-
-    const selectedSizes = sizeSanPham.map(index => SizeProductData[index].size);
-    console.log('Selected Sizes:', selectedSizes);
-
-    setItemInfo(prevState => ({
-      ...prevState,
-      size: selectedSizes, // Lấy dữ liệu từ selectedSizes
-    }));
-
-    console.log('UPDATE THANH CONG ');
-  }, [sizeSanPham]);
 
   // AVAILABLE
   const AvailableData = [
@@ -441,7 +419,7 @@ export default function AdminCRUDItem({navigation}) {
       newErrors.category = 'Vui lòng chọn danh mục sản phẩm';
     }
 
-    if (itemInfo.size.length === 0) {
+    if (!itemInfo.size.trim()) {
       newErrors.size = 'Vui lòng chọn kích thước sản phẩm';
     }
 
@@ -557,7 +535,7 @@ export default function AdminCRUDItem({navigation}) {
       name,
       description,
       available,
-      available_sizes: size,
+      available_sizes: [size],
       category,
       featured_image: imageURL,
       price,
@@ -605,7 +583,7 @@ export default function AdminCRUDItem({navigation}) {
       description: '',
       price: '',
       category: '',
-      size: [],
+      size: '',
       available: null,
     });
   };
@@ -910,18 +888,10 @@ export default function AdminCRUDItem({navigation}) {
               styles.inputUserInfo,
               isFocused.size && styles.inputFocused,
             ]}>
-            {/* <SelectList
+            <SelectList
               setSelected={val => handleSizeItem(val)}
               data={SizeData}
               save='value'
-              searchPlaceholder={'Size sản phẩm của bạn'}
-              placeholder={'Chọn size cho sản phẩm'}
-            /> */}
-            <MultipleSelectList
-              setSelected={val => setSizeSanPham(val)}
-              data={SizeProductData}
-              label='Các size đã chọn'
-              // boxStyles={{marginTop: 25}}
               searchPlaceholder={'Size sản phẩm của bạn'}
               placeholder={'Chọn size cho sản phẩm'}
             />
@@ -938,31 +908,29 @@ export default function AdminCRUDItem({navigation}) {
             ) : null}
           </View>
         </View>
+        {/* END: AVAILABLE_SIZES */}
 
-        {/* ITEMS SELECTED */}
-        {/* <View style={{marginTop: 50}}>
+        {/* START: AVAILABLE_SIZES VERSION 2 */}
+        <MultipleSelectList
+          setSelected={val => setCategories(val)}
+          data={data}
+          save='value'
+          label='Categories'
+          boxStyles={{marginTop: 25}}
+        />
+
+        <View style={{marginTop: 50}}>
           <Text>Selected Categories : </Text>
-          {sizeSanPham.map(item => {
+          {categories.map(item => {
             return (
               <Text key={item} style={{marginTop: 10, color: 'gray'}}>
                 {item}
               </Text>
             );
           })}
-        </View> */}
+        </View>
 
-        {/* ITEMS SELECTED2 */}
-        {/* <View style={{marginTop: 50}}>
-          <Text>Selected Categories222 : </Text>
-          {itemInfo.size.map((item, index) => {
-            return (
-              <Text key={index} style={{marginTop: 10, color: 'gray'}}>
-                {item}
-              </Text>
-            );
-          })}
-        </View> */}
-        {/* END: AVAILABLE_SIZES */}
+        {/* END: AVAILABLE_SIZES VERSION 2 */}
 
         {/* START: AVAILABLE */}
         <View style={styles.inputGroup}>

@@ -38,4 +38,6 @@ featured_image []
 preparation_time '10' (có thể bỏ)
 price '99' / 99.000đ
 
-Phần thêm sp => thêm trường là `_id` để lưu id 
+Phần thêm sp => thêm trường là `_id` để lưu id => ok
+
+#03/05/2024
