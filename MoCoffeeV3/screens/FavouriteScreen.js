@@ -8,13 +8,10 @@ import {
   Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {doc, getDoc} from 'firebase/firestore';
-import {db} from '../firebase';
+import {db, doc, getDoc} from '../firebase';
 
-import {useRoute, useNavigation} from '@react-navigation/native';
+import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 import {Ionicons, FontAwesome} from '@expo/vector-icons';
-
-import {useIsFocused} from '@react-navigation/native';
 
 export default function FavouriteScreen({navigation}) {
   const [listItemFavorited, setListItemFavorited] = useState([]);
@@ -56,6 +53,7 @@ export default function FavouriteScreen({navigation}) {
           style={{fontSize: 16, fontWeight: '600', maxWidth: 160}}>
           {item.data.name}
         </Text>
+        {console.log('item.data_FAV: ', item.data.id)}
         <Text numberOfLines={3} style={{maxWidth: 165, minWidth: 165}}>
           {item.data.description}
         </Text>

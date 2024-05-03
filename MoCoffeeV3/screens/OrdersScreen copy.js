@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {db, doc, getDocs, collection, getDoc, query, where} from '../firebase';
+import {doc, getDoc} from 'firebase/firestore';
+import {db} from '../firebase';
 
-import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
+import {useRoute, useNavigation} from '@react-navigation/native';
 import {Ionicons, FontAwesome} from '@expo/vector-icons';
-import {translateStatusOrders} from '../utils/globalHelpers';
 
 export default function FavouriteScreen({navigation}) {
   const [listItemFavorited, setListItemFavorited] = useState([]);
@@ -14,50 +14,57 @@ export default function FavouriteScreen({navigation}) {
   const route = useRoute();
   const navi = useNavigation();
 
-  // Refresh
-  const isFocused = useIsFocused();
   useEffect(() => {
-    if (isFocused) {
-      // Gọi hàm refreshData() khi màn hình được focus
-      refreshData();
-    }
-  }, [isFocused]);
+    const readMultiple = async userIds => {
+      try {
+        const docRefs = userIds.map(userId => doc(db, 'MenuMoC&T', userId));
+        const docSnaps = await Promise.all(
+          docRefs.map(docRef => getDoc(docRef)),
+        );
 
-  const refreshData = () => {
-    // Đặt logic làm mới dữ liệu ở đây, ví dụ: gọi API để lấy danh sách sản phẩm yêu thích mới
-    console.log('Refreshing favourite data...');
-    const userId = '8zJjJu7AiseNCPzZi7FLxABgE8t1'; // ID của người dùng bạn muốn lấy đơn hàng
+        const userDataList = docSnaps.map((docSnap, index) => {
+          if (docSnap.exists()) {
+            console.log(
+              `Document data for user ${userIds[index]}:`,
+              docSnap.data(),
+            );
+            return {userId: userIds[index], data: docSnap.data()};
+          } else {
+            console.log(`Document does not exist for user ${userIds[index]}`);
+            return null;
+          }
+        });
 
-    // Gọi hàm để lấy đơn hàng của người dùng
-    getOrdersForUser(userId)
-      .then(orders => {
-        console.log('Orders for user:', orders);
-        setUserDataList(orders.filter(data => data !== null));
-      })
-      .catch(error => {
-        console.error('Error:', error);
+        setUserDataList(userDataList.filter(data => data !== null));
+      } catch (error) {
+        console.error('Error getting documents:', error);
+        alert('Error getting documents:', error);
         setUserDataList([]);
-      });
-  };
+      }
+    };
 
-  const getOrdersForUser = async userId => {
-    try {
-      const ordersRef = collection(db, 'OrdersConfirmation');
-      const q = query(ordersRef, where('user_id_ordered', '==', userId));
-      const querySnapshot = await getDocs(q);
-      const orders = [];
-      querySnapshot.forEach(doc => {
-        orders.push({id: doc.id, ...doc.data()});
-      });
-      return orders;
-    } catch (error) {
-      console.error('Error getting orders for user:', error);
-      return [];
-    }
-  };
+    const fetchData = async () => {
+      try {
+        const data = await AsyncStorage.getItem('favoritedItems');
+        if (data !== null) {
+          const userProfile = JSON.parse(data);
+          console.log('User profiles:', userProfile);
+          // Gọi hàm readMultiple với danh sách userIds
+          readMultiple(userProfile);
+        } else {
+          console.log('No user profiles found');
+        }
+      } catch (error) {
+        console.log('Error getting document:', error);
+        alert('Error getting document:', error);
+      }
+    };
+
+    fetchData();
+  }, []); // Chỉ chạy một lần khi component được mount
 
   // Hàm render item cho FlatList
-  const renderItem = ({item, index}) => (
+  const renderItem = ({item}) => (
     <TouchableOpacity
       onPress={() =>
         navi.navigate('DetailScreen', {
@@ -87,19 +94,10 @@ export default function FavouriteScreen({navigation}) {
         <Text
           numberOfLines={1}
           style={{fontSize: 16, fontWeight: '600', maxWidth: 160}}>
-          {item.san_pham_order[index].ten_sp}
+          {item.data.name}
         </Text>
-        {console.log('item.san_pham_order: ', item.san_pham_order)}
-        {/* {console.log('item2: ', item.san_pham_order[0].size_sp)}
-        {console.log('index: ', index)} */}
-        <Text numberOfLines={1} style={{maxWidth: 165}}>
-          {item.ma_don_hang}
-        </Text>
-        <Text numberOfLines={1} style={{maxWidth: 165}}>
-          {item.san_pham_order[0].size_sp}
-        </Text>
-        <Text numberOfLines={1} style={{maxWidth: 165}}>
-          {item.ma_don_hang}
+        <Text numberOfLines={2} style={{maxWidth: 165}}>
+          {item.data.description}
         </Text>
 
         <View
@@ -115,7 +113,7 @@ export default function FavouriteScreen({navigation}) {
               borderRadius: 4,
               fontSize: 16,
             }}>
-            SL: {item.san_pham_order[index].so_luong}
+            SL: 1
           </Text>
           <Text
             style={{
@@ -124,7 +122,7 @@ export default function FavouriteScreen({navigation}) {
               fontSize: 18,
               marginTop: 10,
             }}>
-            {/* {item.data.price} */}
+            {item.data.price}
           </Text>
         </View>
 
@@ -150,7 +148,7 @@ export default function FavouriteScreen({navigation}) {
               fontSize: 18,
               marginTop: 10,
             }}>
-            {item.tong_tien}
+            41.000 ₫
           </Text>
         </View>
 
@@ -175,16 +173,13 @@ export default function FavouriteScreen({navigation}) {
               }}
             />
             <Text style={{color: 'green', paddingLeft: 10}}>
-              {translateStatusOrders(item.status)}
+              Đơn hàng của bạn đang được xử lý
             </Text>
           </View>
         </View>
       </View>
       <Image
-        // source={{uri: item.data.featured_image[0]}}
-        source={{
-          uri: 'https://c4.wallpaperflare.com/wallpaper/16/699/700/women-model-blonde-lying-down-wallpaper-preview.jpg',
-        }}
+        source={{uri: item.data.featured_image[0]}}
         style={{
           width: 200,
           height: 200,

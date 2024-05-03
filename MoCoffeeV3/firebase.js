@@ -12,6 +12,7 @@ import {
   updateDoc,
   collectionGroup, //để truy vấn tất cả các bản ghi trong tất cả các bảng con có cùng tên. Điều này giúp tránh việc phải đọc toàn bộ dữ liệu của bảng để đếm số lượng bản ghi.
   query,
+  where,
 } from 'firebase/firestore';
 import {
   getStorage,
@@ -93,4 +94,5 @@ export {
   getDocs,
   setDoc,
   query,
+  where,
 };

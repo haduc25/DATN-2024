@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import {useRoute, useNavigation} from '@react-navigation/native';
+import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 
 // Icons
 import {Ionicons} from '@expo/vector-icons';
@@ -48,6 +48,8 @@ export default function DetailScreen({}) {
   console.log('DETAIL_item: ', item);
   console.log('currentScreen: ', currentScreen);
 
+  const isFocused = useIsFocused();
+
   // auth - user
   console.log('user-auth: ', userId);
 
@@ -55,14 +57,16 @@ export default function DetailScreen({}) {
     const checkFavorite = async () => {
       try {
         let itemId = item.id || item._id;
-        console.log('item.id: ', itemId);
+        console.log('itemId_DETAIL1: ', item);
+        console.log('itemId_DETAIL2: ', itemId);
         getFavoritedItems2(itemId);
       } catch (error) {
         console.log('Error checking favorite:', error);
       }
     };
     checkFavorite();
-  }, [item.id, userId, isFavorite, currentScreen]);
+    console.log('run to here1');
+  }, [item.id, userId, isFavorite, currentScreen, isFocused]);
 
   // useEffect(() => {
   //   const checkFavorite = async () => {

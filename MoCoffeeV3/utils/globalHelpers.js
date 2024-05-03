@@ -85,3 +85,17 @@ export const convertISOToFormattedDate = isoDateString => {
 
   return `${hours}:${minutes}:${seconds}, ${day}/${month}/${year}`;
 };
+
+export const translateStatusOrders = status => {
+  const translations = {
+    pendding: 'Đơn hàng của bạn đang được xử lý',
+    delivering: 'Đang giao hàng',
+    wait4pay: 'Đang chờ thanh toán',
+    processing: 'Đang được xử lý',
+    success: 'Đã giao hàng thành công',
+    cancel_order: 'Đã hủy đơn hàng',
+  };
+  // Nếu có, trả về giá trị tương ứng
+  // Nếu không, trả về status ban đầu
+  return translations[status] || status;
+};
