@@ -51,6 +51,7 @@ export default function AdminEditItem({navigation}) {
 
   console.log('route_ADMIN-EDIT', route.params);
   const {thisItem} = route.params;
+  console.log('thisItem====', thisItem.available_sizes);
 
   // VALUE OF ITEM
   const [itemInfo, setItemInfo] = useState({
@@ -61,9 +62,10 @@ export default function AdminEditItem({navigation}) {
     name: thisItem?.name ?? '',
     description: thisItem?.description ?? '',
     price: thisItem?.price ?? '',
-    category: '',
+    category: thisItem?.category ?? '',
+    // size: thisItem?.available_sizes ?? [],
     size: [],
-    available: null,
+    available: thisItem?.available ?? null,
   });
   /** `name: thisItem?.name ?? ''` gán giá trị cho name của itemInfo. Nếu thisItem tồn tại và có thuộc tính name, thì name sẽ được gán bằng giá trị của name. Ngược lại, nếu thisItem không tồn tại hoặc không có thuộc tính name, thì name sẽ được gán bằng một chuỗi rỗng ''. */
 
@@ -76,9 +78,10 @@ export default function AdminEditItem({navigation}) {
       name: thisItem?.name ?? '',
       description: thisItem?.description ?? '',
       price: thisItem?.price ?? '',
-      category: '',
+      category: thisItem?.category ?? '',
+      //   size: thisItem.available_sizes ?? [],
       size: [],
-      available: null,
+      available: thisItem?.available ?? null,
     });
   };
 
@@ -139,6 +142,12 @@ export default function AdminEditItem({navigation}) {
     handleValueChange('category', CategoriesData[index].category);
   };
 
+  const getKeyByCategory = category => {
+    const foundCategory = CategoriesData.find(
+      item => item.category === category,
+    );
+    return foundCategory ? foundCategory.key : null;
+  };
   // AVAILABLE_SIZES
   const handleSizeItem = value => {
     console.log('Size: ', value);
@@ -147,6 +156,8 @@ export default function AdminEditItem({navigation}) {
 
   // SIZE V2
   const [sizeSanPham, setSizeSanPham] = useState([]);
+
+  //   const [sizeSanPham, setSizeSanPham] = useState(true ? ['S'] : []);
 
   const SizeProductData = [
     {key: '0', value: 'S-Small (360ml)', size: 'S'},
@@ -163,22 +174,17 @@ export default function AdminEditItem({navigation}) {
     }));
   };
 
-  // Khi sizeSanPham thay đổi, cập nhật giá trị của size trong itemInfo
-  useEffect(() => {
-    // console.log('SizeProductData: ', SizeProductData);
-    // console.log('sizeSanPham: ', sizeSanPham);
-    // console.log('typeof sizeSanPham: ', typeof sizeSanPham);
-    // console.log('SizeProductData__: ', SizeProductData[0].size);
+  // // Khi sizeSanPham thay đổi, cập nhật giá trị của size trong itemInfo
+  // useEffect(() => {
+  //   const selectedSizes = sizeSanPham.map(index => SizeProductData[index].size);
 
-    const selectedSizes = sizeSanPham.map(index => SizeProductData[index].size);
+  //   setItemInfo(prevState => ({
+  //     ...prevState,
+  //     size: selectedSizes, // Lấy dữ liệu từ selectedSizes
+  //   }));
 
-    setItemInfo(prevState => ({
-      ...prevState,
-      size: selectedSizes, // Lấy dữ liệu từ selectedSizes
-    }));
-
-    // console.log('UPDATE THANH CONG ');
-  }, [sizeSanPham]);
+  //   console.log('UPDATE THANH CONG ');
+  // }, [sizeSanPham]);
 
   // AVAILABLE
   const AvailableData = [
@@ -189,6 +195,13 @@ export default function AdminEditItem({navigation}) {
   const handleAvailableItem = index => {
     console.log('AVAILABLE: ', AvailableData[index].activate);
     handleValueChange('available', AvailableData[index].activate);
+  };
+
+  const getKeyByAvailable = activate => {
+    const foundAvailable = AvailableData.find(
+      item => item.activate === activate,
+    );
+    return foundAvailable ? foundAvailable.key : null;
   };
 
   // PICK IMAGE
@@ -666,12 +679,12 @@ export default function AdminEditItem({navigation}) {
                   //   source={{uri: image.uri}}
                   source={{uri: image.uri}}
                 />
-                {console.log('image: ', image)}
+                {/* {console.log('image: ', image)}
                 {console.log('image.uri: ', image.uri)}
                 {console.log(
                   'itemInfo.featured_image__INSIDE: ',
                   itemInfo.featured_image,
-                )}
+                )} */}
                 {index === 0 && (
                   <View
                     style={{
@@ -903,8 +916,17 @@ export default function AdminEditItem({navigation}) {
               // save='value'
               searchPlaceholder={'Phân loại sản phẩm của bạn'}
               placeholder={'Chọn loại sản phẩm'}
-              //   defaultOption={{key}}
+              //   defaultOption={{key: '0', value: 'Cà phê', category: 'coffee'}}
+              //   defaultOption={CategoriesData[0]}
+              //   defaultOption={CategoriesData[getKeyByCategory('soda')]}
+              defaultOption={
+                CategoriesData[getKeyByCategory(itemInfo.category)]
+              }
             />
+            {/* {console.log(
+              'getKeyByCategory: ',
+              CategoriesData[getKeyByCategory('soda')],
+            )} */}
             <TouchableOpacity
               activeOpacity={1}
               style={[styles.inputLabelTouchable, {top: 0}]}>
@@ -927,13 +949,6 @@ export default function AdminEditItem({navigation}) {
               styles.inputUserInfo,
               isFocused.size && styles.inputFocused,
             ]}>
-            {/* <SelectList
-              setSelected={val => handleSizeItem(val)}
-              data={SizeData}
-              save='value'
-              searchPlaceholder={'Size sản phẩm của bạn'}
-              placeholder={'Chọn size cho sản phẩm'}
-            /> */}
             <MultipleSelectList
               setSelected={val => setSizeSanPham(val)}
               data={SizeProductData}
@@ -941,6 +956,8 @@ export default function AdminEditItem({navigation}) {
               // boxStyles={{marginTop: 25}}
               searchPlaceholder={'Size sản phẩm của bạn'}
               placeholder={'Chọn size cho sản phẩm'}
+              defaultOption={['S-Small (360ml)']}
+              badgeStyles={{backgroundColor: 'red'}}
             />
             <TouchableOpacity
               activeOpacity={1}
@@ -994,7 +1011,11 @@ export default function AdminEditItem({navigation}) {
               // save='value'
               searchPlaceholder={'Chế độ hiển thị sản phẩm'}
               placeholder={'Chọn chế độ hiển thị cho sản phẩm'}
+              defaultOption={
+                AvailableData[getKeyByAvailable(itemInfo.available)]
+              }
             />
+            {/* {console.log('itemInfo.available__', itemInfo.available)} */}
             <TouchableOpacity
               activeOpacity={1}
               style={[styles.inputLabelTouchable, {top: 0}]}>
