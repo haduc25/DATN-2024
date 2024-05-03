@@ -14,7 +14,7 @@ import Button from '../components/Button';
 import {AntDesign} from '@expo/vector-icons';
 import {db, getDocs, collection} from '../firebase';
 
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 
 export default function AdminProductsCRUD({navigation}) {
   const renderItem = ({item, index}) => (
@@ -177,6 +177,8 @@ export default function AdminProductsCRUD({navigation}) {
 
   // GET ITEMS FROM FIREBASE
   const [products, setProducts] = useState([]);
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     const readMultiple = async () => {
       try {
@@ -209,28 +211,11 @@ export default function AdminProductsCRUD({navigation}) {
       }
     };
 
-    fetchData();
-
-    // readMultiple()
-    // const fetchData = async () => {
-    //   try {
-    //     const data = await AsyncStorage.getItem('favoritedItems');
-    //     if (data !== null) {
-    //       const userProfile = JSON.parse(data);
-    //       console.log('User profiles:', userProfile);
-    //       // Gọi hàm readMultiple với danh sách userIds
-    //       readMultiple(userProfile);
-    //     } else {
-    //       console.log('No user profiles found');
-    //     }
-    //   } catch (error) {
-    //     console.log('Error getting document:', error);
-    //     alert('Error getting document:', error);
-    //   }
-    // };
-
-    // fetchData();
-  }, []); // Chỉ chạy một lần khi component được mount
+    if (isFocused) {
+      fetchData();
+      console.log('Fetching...');
+    }
+  }, [isFocused]); // Chỉ chạy một lần khi component được mount
 
   // navigation
   const navi = useNavigation();

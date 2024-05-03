@@ -37,6 +37,7 @@ import {
   updateDoc,
   addDoc,
   collection,
+  setDoc,
 } from '../firebase';
 import {convertISOToFormattedDate} from '../utils/globalHelpers';
 
@@ -450,7 +451,52 @@ export default function AdminCRUDItem({navigation}) {
     }, timeout);
   };
 
-  // CREATE NEW ITEM ON FIRESTORE
+  // // CREATE NEW ITEM ON FIRESTORE
+  // const createNewItemOnFireStore = (dataObject, imageURL) => {
+  //   console.log('USERDATA(itemInfo): ', dataObject);
+  //   const {available, category, description, name, price, size} = dataObject;
+
+  //   console.log('imageURL: ', imageURL);
+
+  //   const timeNow = new Date().toISOString();
+  //   const createdAt = convertISOToFormattedDate(timeNow);
+  //   const updatedAt = createdAt;
+
+  //   console.log('createdAt: ', createdAt);
+
+  //   // auto_id
+  //   addDoc(collection(db, 'MenuMoC&T'), {
+  //     name,
+  //     description,
+  //     available,
+  //     available_sizes: [size],
+  //     category,
+  //     featured_image: imageURL,
+  //     price,
+  //     // DEFAULT VALUE
+  //     likes: '0',
+  //     // preparation_time # bỏ
+  //     ratings: {average_rating: '5', total_ratings: '0'},
+  //     sold_count: '0',
+  //     createdAt,
+  //     updatedAt,
+  //   })
+  //     .then(() => {
+  //       // Data create successfully!
+  //       console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
+  //       alert('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
+  //       resetItemInfo();
+
+  //       setTimeout(() => {
+  //         navi.navigate('AdminProductsCRUD');
+  //       }, 3000);
+  //     })
+  //     .catch(error => {
+  //       console.log('error: ', error);
+  //       alert('error: ', error);
+  //     });
+  // };
+
   const createNewItemOnFireStore = (dataObject, imageURL) => {
     console.log('USERDATA(itemInfo): ', dataObject);
     const {available, category, description, name, price, size} = dataObject;
@@ -463,8 +509,15 @@ export default function AdminCRUDItem({navigation}) {
 
     console.log('createdAt: ', createdAt);
 
-    // auto_id
-    addDoc(collection(db, 'MenuMoC&T'), {
+    // Tạo một document reference mới mà không cần truyền vào ID cụ thể
+    const docRef = doc(collection(db, 'MenuMoC&T'));
+
+    // Lấy ID mới tạo và gán cho sản phẩm
+    const productId = docRef.id;
+
+    // Thêm sản phẩm vào Firestore với ID được tạo
+    setDoc(docRef, {
+      _id: productId,
       name,
       description,
       available,
@@ -482,7 +535,7 @@ export default function AdminCRUDItem({navigation}) {
     })
       .then(() => {
         // Data create successfully!
-        console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
+        console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!', productId);
         alert('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
         resetItemInfo();
 
