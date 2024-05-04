@@ -6,13 +6,14 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Alert,
 } from 'react-native';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Button from '../components/Button';
 
 import {AntDesign} from '@expo/vector-icons';
-import {db, getDocs, collection} from '../firebase';
+import {db, getDocs, collection, deleteDoc, doc} from '../firebase';
 
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 
@@ -25,7 +26,7 @@ export default function AdminProductsCRUD({navigation}) {
           currentScreen: 'AdminProductsCRUD',
         })
       }
-      key={item._id}
+      key={item.id}
       style={{
         width: 395,
         minHeight: 200,
@@ -143,6 +144,12 @@ export default function AdminProductsCRUD({navigation}) {
           borderBottomRightRadius: 10,
         }}>
         <TouchableOpacity
+          onPress={() =>
+            navi.navigate('DetailScreen', {
+              item,
+              currentScreen: 'AdminProductsCRUD',
+            })
+          }
           style={{
             borderWidth: 1,
             height: 45,
@@ -168,6 +175,7 @@ export default function AdminProductsCRUD({navigation}) {
           <Text style={{fontWeight: '600'}}>Sửa</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={() => handleRemoveItem(item.id)}
           style={{
             borderWidth: 1,
             height: 45,
@@ -187,49 +195,97 @@ export default function AdminProductsCRUD({navigation}) {
   const [products, setProducts] = useState([]);
   const isFocused = useIsFocused();
 
+  // ############################# START: FECTHING DATA #############################
+  const readMultiple = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'MenuMoC&T'));
+      const products = [];
+
+      querySnapshot.forEach(doc => {
+        if (doc.exists()) {
+          products.push({id: doc.id, ...doc.data()});
+          console.log('Document data:', doc.id, doc.data());
+        } else {
+          console.log('Document does not exist1:', doc.id);
+        }
+      });
+
+      // Sắp xếp theo alphabet
+      products.sort((a, b) => a.name.localeCompare(b.name));
+
+      return products;
+    } catch (error) {
+      console.error('Error getting documents:', error);
+      alert('Error getting documents:', error);
+      return [];
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const productsData = await readMultiple();
+      setProducts(productsData);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+  // ############################# END: FECTHING DATA #############################
+
   useEffect(() => {
-    const readMultiple = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'MenuMoC&T'));
-        const products = [];
-
-        querySnapshot.forEach(doc => {
-          if (doc.exists()) {
-            products.push({id: doc.id, ...doc.data()});
-            console.log('Document data:', doc.id, doc.data());
-          } else {
-            console.log('Document does not exist1:', doc.id);
-          }
-        });
-
-        // Sắp xếp theo alphabet
-        products.sort((a, b) => a.name.localeCompare(b.name));
-
-        return products;
-      } catch (error) {
-        console.error('Error getting documents:', error);
-        alert('Error getting documents:', error);
-        return [];
-      }
-    };
-
-    const fetchData = async () => {
-      try {
-        const productsData = await readMultiple();
-        setProducts(productsData);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-
     if (isFocused) {
       fetchData();
       console.log('Fetching...');
     }
-  }, [isFocused]); // Chỉ chạy một lần khi component được mount
+  }, [isFocused]);
 
   // navigation
   const navi = useNavigation();
+
+  // handle remove
+  const handleRemoveItem = itemId => {
+    if (itemId) {
+      Alert.alert(
+        'Xác nhận xóa sản phẩm',
+        'Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này không thể hoàn tác.',
+        [
+          {
+            text: 'Hủy bỏ',
+            style: 'cancel',
+          },
+          {
+            text: 'Xóa',
+            style: 'destructive',
+            textStyle: {
+              color: 'red',
+            },
+            onPress: () => removeItemFromFirebase(itemId),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  };
+
+  const removeItemFromFirebase = itemId => {
+    deleteDoc(doc(db, 'MenuMoC&T', itemId))
+      .then(() => {
+        console.log('Sản phẩm đã được xóa. ', itemId);
+        alert('Sản phẩm đã được xóa.');
+        setIsRefresh(!isRefresh);
+      })
+      .catch(error => {
+        console.log('error: ', error);
+        alert('error: ', error);
+      });
+  };
+
+  // refresh sau khi xóa sản phẩm
+  const [isRefresh, setIsRefresh] = useState(false);
+
+  useEffect(() => {
+    console.log('isRefresh: ', isRefresh);
+    fetchData();
+  }, [isRefresh]);
 
   return (
     <SafeAreaProvider>
