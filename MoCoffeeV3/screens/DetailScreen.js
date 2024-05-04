@@ -580,6 +580,14 @@ export default function DetailScreen({}) {
                   Đặt món ngay2
                 </Text>
               </TouchableOpacity> */}
+
+              {/* ĐỆM DƯỚI  */}
+              <View
+                style={{
+                  // backgroundColor: 'red',
+                  height: 180,
+                  width: '100%',
+                }}></View>
             </View>
           </View>
         </Animated.ScrollView>

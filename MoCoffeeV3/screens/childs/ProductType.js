@@ -282,7 +282,7 @@ export default function ProductType({navigation}) {
         ))}
         {/* END: DANH SACH SAN PHAM */}
         {/* Đệm dưới */}
-        <View style={{height: 40}}></View>
+        <View style={{height: 60}}></View>
       </ScrollView>
 
       {/* Hiện ở dưới bottom */}

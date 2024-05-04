@@ -47,4 +47,11 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Sửa hàm thêm thành hàm update (chỉnh lại update at) => ok
 - `enableEditing` => ok
 - Remove item in `Edit Screen` => ok
-- Size sản phẩm default k hoạt động
+- Size sản phẩm default k hoạt động => ok
+- Thêm dữ liệu cho db => ok
+- BUG: Khi sửa sản phẩm (hình ảnh bìa) luôn lấy hình ảnh cuối cùng hoặc không, vì đang lấy ảnh linh tinh
+- Hoàn thành lại đơn hàng ở ngoài & trong admin
+- Order ngoài (thêm url image, lấy uid đang đăng nhập `đang để mặc định id lMsKBPaYTpORRtBxprjjHppCy0U2 (admin)`)
+- Xem chi tiết đơn hàng Order ở ngoài chưa có
+- Xem lại giỏ hàng chưa có
+- Xử lý thêm giỏ hàng trong Detail

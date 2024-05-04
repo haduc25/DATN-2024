@@ -4,9 +4,11 @@ export const translateCategory = category => {
   const translations = {
     tea: 'Trà',
     coffee: 'Cà phê',
+    'coffee-espresso': 'Cà phê pha máy (Espresso)',
     'milk-tea': 'Trà sữa',
     yogurt: 'Sữa chua',
     soda: 'Soda',
+    smoothie: 'Sinh tố',
   };
   // Nếu có, trả về giá trị tương ứng
   // Nếu không, trả về category ban đầu

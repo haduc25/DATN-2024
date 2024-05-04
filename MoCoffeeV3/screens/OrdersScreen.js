@@ -20,13 +20,14 @@ export default function FavouriteScreen({navigation}) {
     if (isFocused) {
       // Gọi hàm refreshData() khi màn hình được focus
       refreshData();
+      console.log('refreshing data...');
     }
   }, [isFocused]);
 
   const refreshData = () => {
     // Đặt logic làm mới dữ liệu ở đây, ví dụ: gọi API để lấy danh sách sản phẩm yêu thích mới
     console.log('Refreshing favourite data...');
-    const userId = '8zJjJu7AiseNCPzZi7FLxABgE8t1'; // ID của người dùng bạn muốn lấy đơn hàng
+    const userId = 'lMsKBPaYTpORRtBxprjjHppCy0U2'; // ID của người dùng bạn muốn lấy đơn hàng
 
     // Gọi hàm để lấy đơn hàng của người dùng
     getOrdersForUser(userId)
@@ -59,12 +60,13 @@ export default function FavouriteScreen({navigation}) {
   // Hàm render item cho FlatList
   const renderItem = ({item, index}) => (
     <TouchableOpacity
-      onPress={() =>
-        navi.navigate('DetailScreen', {
-          item: item.data,
-          currentScreen: 'Yêu thích',
-        })
-      }
+      // onPress={() =>
+      //   navi.navigate('DetailScreen', {
+      //     item: item.data,
+      //     currentScreen: 'Yêu thích',
+      //   })
+      // }
+      // onPress={() => console.log('item.data: ', item)}
       style={{
         // borderWidth: 1,
         flexDirection: 'row',
@@ -183,7 +185,7 @@ export default function FavouriteScreen({navigation}) {
       <Image
         // source={{uri: item.data.featured_image[0]}}
         source={{
-          uri: 'https://c4.wallpaperflare.com/wallpaper/16/699/700/women-model-blonde-lying-down-wallpaper-preview.jpg',
+          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0qTl31Xof9ahjahcSbZVgLfwPPzKLV8LV8rCd5AhczA&s',
         }}
         style={{
           width: 200,

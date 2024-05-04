@@ -15,17 +15,15 @@ import {AntDesign} from '@expo/vector-icons';
 import {db, getDocs, collection} from '../firebase';
 
 import {useNavigation, useIsFocused} from '@react-navigation/native';
-import {translateStatusOrders} from '../utils/globalHelpers';
 
 export default function AdminOrders({navigation}) {
-  const renderItem = ({item, index}) => (
+  const renderItem = ({item}) => (
     <View
-      key={item.ma_don_hang}
+      key={item._id}
       style={{
         width: 395,
         // minHeight: 200,
-        // minHeight: 250,
-        minHeight: 340,
+        minHeight: 250,
         //   paddingHorizontal: 20,
         //   marginHorizontal: 10,
 
@@ -42,8 +40,7 @@ export default function AdminOrders({navigation}) {
         shadowRadius: 10,
         shadowOffset: {width: 0, height: 0},
         elevation: 5,
-        // maxHeight: 200,
-        maxHeight: 500,
+        maxHeight: 200,
       }}>
       <View style={{flexDirection: 'row'}}>
         {/* TOP */}
@@ -70,7 +67,7 @@ export default function AdminOrders({navigation}) {
               numberOfLines={1}
               style={{fontSize: 16, fontWeight: '600', maxWidth: 245}}>
               {/* Mã đơn: #{item._id.slice(0, 9)} */}
-              Mã đơn: #{item.ma_don_hang}
+              Mã đơn: #{item._id}
             </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
@@ -83,14 +80,11 @@ export default function AdminOrders({navigation}) {
                   padding: 2,
                 }}>
                 <Text
-                  numberOfLines={1}
                   style={{
                     color: '#fff',
                     fontWeight: 'bold',
-                    maxWidth: 110,
                   }}>
-                  {/* Đang giao hàng */}
-                  {translateStatusOrders(item.status)}
+                  Đang giao hàng
                 </Text>
               </View>
             </View>
@@ -106,7 +100,7 @@ export default function AdminOrders({navigation}) {
                   style={{
                     fontWeight: 'bold',
                   }}>
-                  {item.nguoi_nhan}
+                  Minh Đức
                 </Text>
               </View>
             </View>
@@ -119,14 +113,11 @@ export default function AdminOrders({navigation}) {
                   padding: 2,
                 }}>
                 <Text
-                  numberOfLines={1}
                   style={{
                     fontWeight: 'bold',
-                    maxWidth: 180,
                   }}>
                   {/* Tổ 7, thị trấn Chợ Mới, huyện Chợ Mới, tỉnh Bắc Kạn. */}
-                  {/* Tổ 7, thị trấn Chợ Mới... */}
-                  {item.dia_chi}
+                  Tổ 7, thị trấn Chợ Mới...
                 </Text>
               </View>
             </View>
@@ -143,23 +134,42 @@ export default function AdminOrders({navigation}) {
                     fontWeight: 'bold',
                   }}>
                   {/* Tổ 7, thị trấn Chợ Mới, huyện Chợ Mới, tỉnh Bắc Kạn. */}
-                  {item.so_dien_thoai}
+                  0964103861
                 </Text>
               </View>
             </View>
-
-            {item.san_pham_order.map((itemOrdered, index) => (
-              <View key={index}>
-                <Text style={{fontSize: 16}}>
-                  Sản phẩm: {itemOrdered.ten_sp}
-                </Text>
-                <Text style={{fontSize: 16}}>
-                  Số lượng: {itemOrdered.so_luong}
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
+                Sản phẩm:{' '}
+              </Text>
+              <View
+                style={{
+                  padding: 2,
+                }}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                  }}>
+                  {item.name}
                 </Text>
               </View>
-            ))}
-
-            {/* price */}
+            </View>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
+                Số lượng:{' '}
+              </Text>
+              <View
+                style={{
+                  padding: 2,
+                }}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                  }}>
+                  1
+                </Text>
+              </View>
+            </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
                 Thành tiền:{' '}
@@ -172,54 +182,26 @@ export default function AdminOrders({navigation}) {
                   style={{
                     fontWeight: 'bold',
                   }}>
-                  {item.tong_tien}
+                  41.000 ₫
                 </Text>
               </View>
             </View>
 
-            {/* Phuong thuc thanh toan */}
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
-                Thanh toán:{' '}
-              </Text>
-              <View
-                style={{
-                  padding: 2,
-                }}>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                  }}>
-                  {item.phuong_thuc_thanh_toan}
-                </Text>
-              </View>
-            </View>
-
-            {/* Thời gian tạo đơn */}
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
-                Thời gian tạo đơn:{' '}
-              </Text>
-              <View
-                style={{
-                  padding: 2,
-                }}>
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    maxWidth: 110,
-                    fontWeight: 'bold',
-                  }}>
-                  {item.thoi_gian_tao_don_hang}
-                </Text>
-              </View>
-            </View>
+            {/* price */}
+            <Text
+              style={{
+                color: '#ee4d2d',
+                fontWeight: '600',
+                fontSize: 18,
+              }}>
+              {item.price}.000 ₫
+            </Text>
           </View>
           <Image
             style={{width: 100, height: 100, borderRadius: 8}}
             source={{
-              // uri: item.featured_image[0],
-              uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              uri: item.featured_image[0],
+              // uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
             }}
           />
         </View>
@@ -368,8 +350,7 @@ export default function AdminOrders({navigation}) {
           shadowRadius: 10,
           shadowOffset: {width: 0, height: 0},
           elevation: 5,
-          // maxHeight: 200,
-          maxHeight: 500,
+          maxHeight: 200,
         }}
         arrowIconColor={'#000'}
         arrowIconBackgroundColor={'#fff'}
@@ -398,7 +379,7 @@ export default function AdminOrders({navigation}) {
           <FlatList
             style={{width: '100%', paddingBottom: 250}}
             // data={products}
-            data={orders}
+            data={products}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
           />

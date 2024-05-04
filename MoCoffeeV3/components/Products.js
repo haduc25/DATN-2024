@@ -181,7 +181,8 @@ const Products = ({naviagation, item, menu, listItems}) => {
               fontWeight: '500',
               color: '#505050',
             }}>
-            Thời gian chuẩn bị: {item?.preparation_time} phút
+            {/* Thời gian chuẩn bị: {item?.preparation_time} phút */}
+            Thời gian chuẩn bị: {Math.floor(Math.random() * 14) + 2} phút
           </Text>
         </View>
 

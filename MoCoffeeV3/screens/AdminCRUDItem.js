@@ -100,11 +100,13 @@ export default function AdminCRUDItem({navigation}) {
 
   const CategoriesData = [
     {key: '0', value: 'Cà phê', category: 'coffee'},
-    {key: '1', value: 'Trà', category: 'tea'},
-    {key: '2', value: 'Trà sữa', category: 'milk-tea'},
-    {key: '3', value: 'Đồ ăn vặt', disabled: true, category: 'food'},
-    {key: '4', value: 'Sữa chua', category: 'yogurt'},
-    {key: '5', value: 'Soda', category: 'soda'},
+    {key: '1', value: 'Cà phê pha máy (Espresso)', category: 'coffee-espresso'},
+    {key: '2', value: 'Trà', category: 'tea'},
+    {key: '3', value: 'Trà sữa', category: 'milk-tea'},
+    {key: '4', value: 'Đồ ăn vặt', disabled: true, category: 'food'},
+    {key: '5', value: 'Sữa chua', category: 'yogurt'},
+    {key: '6', value: 'Soda', category: 'soda'},
+    {key: '7', value: 'Sinh tố', category: 'smoothie'},
   ];
 
   const handleSelectedItem = index => {
