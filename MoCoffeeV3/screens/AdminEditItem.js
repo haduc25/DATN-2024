@@ -42,6 +42,7 @@ import {
   addDoc,
   collection,
   setDoc,
+  deleteDoc,
 } from '../firebase';
 import {convertISOToFormattedDate} from '../utils/globalHelpers';
 
@@ -51,10 +52,11 @@ export default function AdminEditItem({navigation}) {
 
   console.log('route_ADMIN-EDIT', route.params);
   const {thisItem} = route.params;
-  console.log('thisItem====', thisItem.available_sizes);
+  // console.log('thisItem====', thisItem.available_sizes);
 
   // VALUE OF ITEM
   const [itemInfo, setItemInfo] = useState({
+    _id: thisItem?._id ?? null,
     // featured_image: thisItem?.featured_image ?? [],
     featured_image: thisItem?.featured_image
       ? thisItem.featured_image.map(url => ({uri: url}))
@@ -63,14 +65,16 @@ export default function AdminEditItem({navigation}) {
     description: thisItem?.description ?? '',
     price: thisItem?.price ?? '',
     category: thisItem?.category ?? '',
-    // size: thisItem?.available_sizes ?? [],
-    size: [],
+    size: thisItem?.available_sizes ?? [],
+    // size: [],
     available: thisItem?.available ?? null,
   });
   /** `name: thisItem?.name ?? ''` gán giá trị cho name của itemInfo. Nếu thisItem tồn tại và có thuộc tính name, thì name sẽ được gán bằng giá trị của name. Ngược lại, nếu thisItem không tồn tại hoặc không có thuộc tính name, thì name sẽ được gán bằng một chuỗi rỗng ''. */
 
   const set4EditItemInfo = () => {
     setItemInfo({
+      _id: thisItem?._id ?? null,
+
       //   featured_image: thisItem?.featured_image ?? [],
       featured_image: thisItem?.featured_image
         ? thisItem.featured_image.map(url => ({uri: url}))
@@ -79,8 +83,8 @@ export default function AdminEditItem({navigation}) {
       description: thisItem?.description ?? '',
       price: thisItem?.price ?? '',
       category: thisItem?.category ?? '',
-      //   size: thisItem.available_sizes ?? [],
-      size: [],
+      size: thisItem.available_sizes ?? [],
+      // size: [],
       available: thisItem?.available ?? null,
     });
   };
@@ -137,7 +141,7 @@ export default function AdminEditItem({navigation}) {
   ];
 
   const handleSelectedItem = index => {
-    console.log('index: ', index);
+    // console.log('index: ', index);
     console.log('Category:', CategoriesData[index].category);
     handleValueChange('category', CategoriesData[index].category);
   };
@@ -156,8 +160,11 @@ export default function AdminEditItem({navigation}) {
 
   // SIZE V2
   const [sizeSanPham, setSizeSanPham] = useState([]);
+  const [itsFirstTimes, setItsFirstTimes] = useState(true);
 
-  //   const [sizeSanPham, setSizeSanPham] = useState(true ? ['S'] : []);
+  // const [sizeSanPham, setSizeSanPham] = useState(
+  //   thisItem?.available_sizes ?? [],
+  // );
 
   const SizeProductData = [
     {key: '0', value: 'S-Small (360ml)', size: 'S'},
@@ -166,25 +173,23 @@ export default function AdminEditItem({navigation}) {
     {key: '3', value: 'XL-Extra Large (1000ml)', size: 'XL'},
   ];
 
-  const handleSizeSelection = selectedItems => {
-    const selectedSizes = selectedItems.map(item => item.size);
-    setItemInfo(prevState => ({
-      ...prevState,
-      size: selectedSizes,
-    }));
-  };
-
   // // Khi sizeSanPham thay đổi, cập nhật giá trị của size trong itemInfo
-  // useEffect(() => {
-  //   const selectedSizes = sizeSanPham.map(index => SizeProductData[index].size);
+  useEffect(() => {
+    if (!itsFirstTimes) {
+      console.log('thisItem: ', thisItem?.available_sizes);
+      const selectedSizes = sizeSanPham.map(
+        index => SizeProductData[index].size,
+      );
 
-  //   setItemInfo(prevState => ({
-  //     ...prevState,
-  //     size: selectedSizes, // Lấy dữ liệu từ selectedSizes
-  //   }));
-
-  //   console.log('UPDATE THANH CONG ');
-  // }, [sizeSanPham]);
+      setItemInfo(prevState => ({
+        ...prevState,
+        size: selectedSizes, // Lấy dữ liệu từ selectedSizes
+      }));
+      return;
+    }
+    console.log('UPDATE THANH CONG ', itsFirstTimes);
+    setItsFirstTimes(false);
+  }, [sizeSanPham]);
 
   // AVAILABLE
   const AvailableData = [
@@ -364,7 +369,7 @@ export default function AdminEditItem({navigation}) {
         console.log('Mảng không rỗng.', savePhotoURL);
 
         // hanlde tiếp sau khi upload image thành công
-        createNewItemOnFireStore(dataObject, savePhotoURL);
+        updateItemOnFireStore(dataObject, savePhotoURL);
       }
       return;
     }
@@ -407,8 +412,8 @@ export default function AdminEditItem({navigation}) {
 
   // HANDLE INPUT VALUE CHANGE
   const handleValueChange = (key, value) => {
-    console.log('key & value: ', key, value);
-    console.log('typeof value: ', typeof value);
+    // console.log('key & value: ', key, value);
+    // console.log('typeof value: ', typeof value);
     if (typeof value !== 'undefined' && value !== null) {
       let newValue = value;
       if (key === 'price') {
@@ -516,8 +521,7 @@ export default function AdminEditItem({navigation}) {
         'Bạn có muốn thêm sản phẩm này?',
         [
           {
-            text: 'Hủy',
-            onPress: () => console.log('Hành động đã bị hủy'),
+            text: 'Hủy bỏ',
             style: 'cancel',
           },
           {
@@ -551,28 +555,75 @@ export default function AdminEditItem({navigation}) {
     }, timeout);
   };
 
-  // // CREATE NEW ITEM ON FIRESTORE
-  const createNewItemOnFireStore = (dataObject, imageURL) => {
-    console.log('USERDATA(itemInfo): ', dataObject);
-    const {available, category, description, name, price, size} = dataObject;
+  // // // CREATE NEW ITEM ON FIRESTORE
+  // const createNewItemOnFireStore = (dataObject, imageURL) => {
+  //   console.log('USERDATA(itemInfo): ', dataObject);
+  //   const {available, category, description, name, price, size} = dataObject;
 
-    console.log('imageURL: ', imageURL);
+  //   console.log('imageURL: ', imageURL);
+
+  //   const timeNow = new Date().toISOString();
+  //   const createdAt = convertISOToFormattedDate(timeNow);
+  //   const updatedAt = createdAt;
+
+  //   console.log('createdAt: ', createdAt);
+
+  //   // // Tạo một document reference mới mà không cần truyền vào ID cụ thể
+  //   // const docRef = doc(collection(db, 'MenuMoC&T'));
+
+  //   // // Lấy ID mới tạo và gán cho sản phẩm
+  //   // const productId = docRef.id;
+
+  //   // // Thêm sản phẩm vào Firestore với ID được tạo
+  //   // setDoc(docRef, {
+  //   //   _id: productId,
+  //   //   name,
+  //   //   description,
+  //   //   available,
+  //   //   available_sizes: size,
+  //   //   category,
+  //   //   featured_image: imageURL,
+  //   //   price,
+  //   //   // DEFAULT VALUE
+  //   //   likes: '0',
+  //   //   // preparation_time # bỏ
+  //   //   ratings: {average_rating: '5', total_ratings: '0'},
+  //   //   sold_count: '0',
+  //   //   createdAt,
+  //   //   updatedAt,
+  //   // })
+  //   //   .then(() => {
+  //   //     // Data create successfully!
+  //   //     console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!', productId);
+  //   //     alert('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
+  //   //     resetItemInfo();
+
+  //   //     setTimeout(() => {
+  //   //       navi.navigate('AdminProductsCRUD');
+  //   //     }, 3000);
+  //   //   })
+  //   //   .catch(error => {
+  //   //     console.log('error: ', error);
+  //   //     alert('error: ', error);
+  //   //   });
+  // };
+
+  // UPDATE ITEM ON FIRESTORE
+  const updateItemOnFireStore = (dataObject, imageURL) => {
+    console.log('USERDATA(itemInfo): ', dataObject);
+    const {_id, available, category, description, name, price, size} =
+      dataObject;
+
+    console.log('_id SAN PHAM CAN UPDATE: ', _id);
+    // console.log('imageURL: ', imageURL);
 
     const timeNow = new Date().toISOString();
-    const createdAt = convertISOToFormattedDate(timeNow);
-    const updatedAt = createdAt;
+    const updatedAt = convertISOToFormattedDate(timeNow);
 
-    console.log('createdAt: ', createdAt);
+    console.log('updatedAt: ', updatedAt);
 
-    // Tạo một document reference mới mà không cần truyền vào ID cụ thể
-    const docRef = doc(collection(db, 'MenuMoC&T'));
-
-    // Lấy ID mới tạo và gán cho sản phẩm
-    const productId = docRef.id;
-
-    // Thêm sản phẩm vào Firestore với ID được tạo
-    setDoc(docRef, {
-      _id: productId,
+    // Thực hiện cập nhật dữ liệu cho sản phẩm đã tồn tại
+    updateDoc(doc(db, 'MenuMoC&T', _id), {
       name,
       description,
       available,
@@ -580,18 +631,12 @@ export default function AdminEditItem({navigation}) {
       category,
       featured_image: imageURL,
       price,
-      // DEFAULT VALUE
-      likes: '0',
-      // preparation_time # bỏ
-      ratings: {average_rating: '5', total_ratings: '0'},
-      sold_count: '0',
-      createdAt,
       updatedAt,
     })
       .then(() => {
-        // Data create successfully!
-        console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!', productId);
-        alert('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
+        // Data updated successfully!
+        console.log('ĐÃ CẬP NHẬT SẢN PHẨM THÀNH CÔNG!!!', _id);
+        alert('ĐÃ CẬP NHẬT SẢN PHẨM THÀNH CÔNG!!!');
         resetItemInfo();
 
         setTimeout(() => {
@@ -627,6 +672,55 @@ export default function AdminEditItem({navigation}) {
       size: [],
       available: null,
     });
+    setEnableEditing(false);
+  };
+
+  // button `enableEditing`
+  const [enableEditing, setEnableEditing] = useState(false);
+
+  const handleInputChange = () => {
+    setEnableEditing(!enableEditing);
+  };
+
+  const handleRemoveItem = itemId => {
+    if (itemId) {
+      Alert.alert(
+        'Xác nhận xóa sản phẩm',
+        'Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này không thể hoàn tác.',
+        [
+          {
+            text: 'Hủy bỏ',
+            style: 'cancel',
+          },
+          {
+            text: 'Xóa',
+            style: 'destructive',
+            textStyle: {
+              color: 'red',
+            },
+            onPress: () => removeItemFromFirebase(itemId),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  };
+
+  const removeItemFromFirebase = itemId => {
+    deleteDoc(doc(db, 'MenuMoC&T', itemId))
+      .then(() => {
+        console.log('Sản phẩm đã được xóa. ', itemId);
+        alert('Sản phẩm đã được xóa.');
+        resetItemInfo();
+
+        setTimeout(() => {
+          navi.navigate('AdminProductsCRUD');
+        }, 3000);
+      })
+      .catch(error => {
+        console.log('error: ', error);
+        alert('error: ', error);
+      });
   };
 
   return (
@@ -658,6 +752,43 @@ export default function AdminEditItem({navigation}) {
           flex: 1,
           paddingTop: 100,
         }}>
+        {/* Button accept chỉnh sửa */}
+        <TouchableOpacity onPress={handleInputChange}>
+          <View
+            style={{
+              alignItems: 'center',
+              padding: 12,
+              borderWidth: 1,
+              margin: 24,
+            }}>
+            <View>
+              {enableEditing ? (
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                    Hủy chỉnh sửa
+                  </Text>
+                  <AntDesign
+                    name={'close'}
+                    size={18}
+                    style={{paddingLeft: 6}}
+                  />
+                </View>
+              ) : (
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                    Chỉnh sửa sản phẩm
+                  </Text>
+                  <AntDesign
+                    name={'edit'}
+                    size={18}
+                    // color={''}
+                    style={{paddingLeft: 6}}
+                  />
+                </View>
+              )}
+            </View>
+          </View>
+        </TouchableOpacity>
         {/* IMAGE */}
         <View style={{alignItems: 'left', padding: 10}}>
           <Text style={{fontSize: 16, fontWeight: '600'}}>
@@ -710,6 +841,7 @@ export default function AdminEditItem({navigation}) {
               </View>
             ))}
             <TouchableOpacity
+              disabled={enableEditing ? false : true}
               onPress={handlePickImageFromLibrary}
               style={{
                 width: 110,
@@ -739,6 +871,7 @@ export default function AdminEditItem({navigation}) {
               isFocused.name && styles.inputFocused,
             ]}>
             <TextInput
+              readOnly={enableEditing ? false : true}
               style={[
                 styles.input,
                 isFocused.name && {
@@ -793,6 +926,7 @@ export default function AdminEditItem({navigation}) {
               isFocused.description && styles.inputFocused,
             ]}>
             <TextInput
+              readOnly={enableEditing ? false : true}
               multiline={true}
               numberOfLines={4}
               maxLength={165}
@@ -855,6 +989,7 @@ export default function AdminEditItem({navigation}) {
               isFocused.price && styles.inputFocused,
             ]}>
             <TextInput
+              readOnly={enableEditing ? false : true}
               style={[
                 styles.input,
                 isFocused.price && {
@@ -904,7 +1039,11 @@ export default function AdminEditItem({navigation}) {
         </View>
 
         {/* START: CATEGORY */}
-        <View style={styles.inputGroup}>
+        <View
+          style={[
+            styles.inputGroup,
+            {pointerEvents: enableEditing ? 'unset' : 'none'},
+          ]}>
           <View
             style={[
               styles.inputUserInfo,
@@ -943,7 +1082,11 @@ export default function AdminEditItem({navigation}) {
         {/* END: CATEGORY */}
 
         {/* START: AVAILABLE_SIZES */}
-        <View style={styles.inputGroup}>
+        <View
+          style={[
+            styles.inputGroup,
+            {pointerEvents: enableEditing ? 'unset' : 'none'},
+          ]}>
           <View
             style={[
               styles.inputUserInfo,
@@ -953,6 +1096,7 @@ export default function AdminEditItem({navigation}) {
               setSelected={val => setSizeSanPham(val)}
               data={SizeProductData}
               label='Các size đã chọn'
+              // save='value'
               // boxStyles={{marginTop: 25}}
               searchPlaceholder={'Size sản phẩm của bạn'}
               placeholder={'Chọn size cho sản phẩm'}
@@ -970,6 +1114,73 @@ export default function AdminEditItem({navigation}) {
             {errors.size ? (
               <Text style={styles.inputHelper}>{errors.size}</Text>
             ) : null}
+
+            {/* ITEMS SIZE SELECTED */}
+            {/* {console.log('sizeSanPham: ', sizeSanPham)} */}
+            {/* {sizeSanPham.length > 0 && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 12,
+                  paddingHorizontal: 10,
+                }}>
+                <Text>Size sản phẩm đang được chọn: </Text>
+                {sizeSanPham.map(item => {
+                  return (
+                    <View
+                      key={item}
+                      style={{
+                        borderWidth: 1,
+                        borderColor: '#ccc',
+                        borderRadius: 5,
+                        maxWidth: 40,
+                        minWidth: 40,
+                        alignItems: 'center',
+                        marginLeft: 10,
+                      }}>
+                      <Text style={{color: 'gray', fontWeight: '700'}}>
+                        {item}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            )} */}
+            {itemInfo.size.length > 0 && (
+              <View
+                style={{
+                  marginTop: 12,
+                  paddingHorizontal: 10,
+                }}>
+                <Text>Size sản phẩm đã chọn: </Text>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                  }}>
+                  {itemInfo.size.map(item => {
+                    return (
+                      <View
+                        key={item}
+                        style={{
+                          borderWidth: 1,
+                          borderColor: '#ccc',
+                          borderRadius: 5,
+                          maxWidth: 40,
+                          minWidth: 40,
+                          alignItems: 'center',
+                          marginLeft: 10,
+                          marginTop: 8,
+                        }}>
+                        <Text style={{color: 'gray', fontWeight: '700'}}>
+                          {item}
+                        </Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
           </View>
         </View>
 
@@ -999,7 +1210,11 @@ export default function AdminEditItem({navigation}) {
         {/* END: AVAILABLE_SIZES */}
 
         {/* START: AVAILABLE */}
-        <View style={styles.inputGroup}>
+        <View
+          style={[
+            styles.inputGroup,
+            {pointerEvents: enableEditing ? 'unset' : 'none'},
+          ]}>
           <View
             style={[
               styles.inputUserInfo,
@@ -1036,46 +1251,67 @@ export default function AdminEditItem({navigation}) {
         </View>
         {/* END: AVAILABLE */}
 
+        {/* BUTTON REMOVE ITEM */}
+        {enableEditing && (
+          <TouchableOpacity onPress={() => handleRemoveItem(itemInfo._id)}>
+            <View
+              style={{
+                alignItems: 'center',
+                padding: 12,
+                borderWidth: 1,
+                borderColor: '#ff4c4c',
+                margin: 24,
+              }}>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  style={{fontSize: 16, fontWeight: 'bold', color: '#ff4c4c'}}>
+                  Xóa sản phẩm
+                </Text>
+                <AntDesign
+                  name={'delete'}
+                  size={18}
+                  color={'#ff4c4c'}
+                  style={{paddingLeft: 6}}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+
         <View style={{height: 300}}></View>
       </ScrollView>
 
       {/* BUTTON */}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 40,
-          left: 0,
-          right: 0,
-          // backgroundColor: 'yellow',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          // paddingHorizontal: 20,
-          // paddingVertical: 10,
-          // backgroundColor: '#fff', // Change this to match your background color
-          borderColor: '#ccc', // Change this to match your border color
-          paddingHorizontal: 10,
-          paddingVertical: 10,
-        }}>
-        <Button
-          title={'Cập nhật sản phẩm'}
-          // onPress={() => navi.navigate('AdminCRUDItem')}
-          // onPress={() => console.log('itemInfo: ', itemInfo)}
-          // onPress={handlePress}
-          onPress={() => handlePress(itemInfo)}
-          // onPress={() => resetItemInfo}
-          // onPress={createNewItemOnFireStore}
-          // onPress={() => createNewItemOnFireStore(itemInfo)}
-          // loading={loading.buttonLoading}
-          // disabled={loading.buttonLoading}
-          buttonStyleCustom={{
-            borderRadius: '15%',
-            paddingVertical: 16,
-            backgroundColor: '#ff4c4c',
-            width: '100%',
-          }}
-          textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
-        />
-      </View>
+      {enableEditing && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 40,
+            left: 0,
+            right: 0,
+            // backgroundColor: 'yellow',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            // paddingHorizontal: 20,
+            // paddingVertical: 10,
+            // backgroundColor: '#fff', // Change this to match your background color
+            borderColor: '#ccc', // Change this to match your border color
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+          }}>
+          <Button
+            title={'Cập nhật sản phẩm'}
+            onPress={() => handlePress(itemInfo)}
+            buttonStyleCustom={{
+              borderRadius: '15%',
+              paddingVertical: 16,
+              backgroundColor: '#ff4c4c',
+              width: '100%',
+            }}
+            textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
+          />
+        </View>
+      )}
     </SafeAreaProvider>
   );
 }

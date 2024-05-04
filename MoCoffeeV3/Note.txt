@@ -43,6 +43,8 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 #03/05/2024
 
 - source={{uri: isImageFromLibrary ? image.uri : image}} : Đang lỗi đoạn load ảnh, trước và sau khi chỉnh sửa => ok
-- Chỉnh lại phân loại, size, chế độ cho tự có dữ liệu
-- Sửa hàm thêm thành hàm update (chỉnh lại update at)
+- Chỉnh lại phân loại, size, chế độ cho tự có dữ liệu => ok
+- Sửa hàm thêm thành hàm update (chỉnh lại update at) => ok
+- `enableEditing` => ok
+- Remove item in `Edit Screen` => ok
 - Size sản phẩm default k hoạt động
