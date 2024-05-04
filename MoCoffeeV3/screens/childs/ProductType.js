@@ -26,7 +26,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {cleanCart, cleanCartUI} from '../../redux/CartReducer';
 
 // Navigation router
-import {useRoute, useNavigation} from '@react-navigation/native';
+import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 
 // get data from firestore
 import {collection, query, where, getDocs} from 'firebase/firestore';
@@ -47,6 +47,7 @@ export default function ProductType({navigation}) {
   //   const params = useLocalSearchParams();
   const route = useRoute();
   const navi = useNavigation();
+  const isFocused = useIsFocused();
   console.log('router123: ', route);
   const cart = useSelector(state => state.cart.cart);
   console.log('ProductType-Cart: ', cart);
@@ -102,8 +103,11 @@ export default function ProductType({navigation}) {
       }
     };
 
-    fetchTeaItems();
-  }, [category]);
+    if (isFocused) {
+      fetchTeaItems();
+      console.log('Fetching...');
+    }
+  }, [category, isFocused]);
 
   // return (
   //   <View style={{paddingTop: 40}}>

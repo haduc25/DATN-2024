@@ -26,7 +26,7 @@ import CustomStatusBar from '../components/CustomStatusBar';
 import {collection, getDocs, getDoc, doc} from 'firebase/firestore';
 
 // navigation
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // fetch Image
@@ -42,6 +42,7 @@ export default function HomeScreen({navigation}) {
   );
 
   const navi = useNavigation();
+  const isFocused = useIsFocused();
 
   // user photo
   const [userPhotoURL, setUserPhotoURL] = useState(null);
@@ -66,11 +67,14 @@ export default function HomeScreen({navigation}) {
       }
     };
 
-    fetchData();
+    if (isFocused) {
+      fetchData();
+      console.log('Fetching...');
+    }
 
     // get user photo
     if (auth.currentUser) setUserPhotoURL(auth.currentUser.photoURL);
-  }, []);
+  }, [isFocused]);
 
   // console.log('data1', data);
 
@@ -309,14 +313,16 @@ export default function HomeScreen({navigation}) {
             </TouchableOpacity>
           </Pressable> */}
           {userPhotoURL && (
-            <Image
-              source={{uri: userPhotoURL}}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-              }}
-            />
+            <TouchableOpacity onPress={() => navi.navigate('Tài khoản')}>
+              <Image
+                source={{uri: userPhotoURL}}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }}
+              />
+            </TouchableOpacity>
           )}
         </View>
 

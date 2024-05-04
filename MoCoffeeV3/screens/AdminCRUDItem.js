@@ -91,6 +91,8 @@ export default function AdminCRUDItem({navigation}) {
 
   const navi = useNavigation();
 
+  // const [categoryDefaultOption, setCategoryDefaultOption] = useState(null);
+
   // ####################### LIBRARY ####################### //
   // # DROPDOWN
   // CATEGORY
@@ -107,6 +109,7 @@ export default function AdminCRUDItem({navigation}) {
 
   const handleSelectedItem = index => {
     console.log('index: ', index);
+    console.log('index: ', typeof index);
     console.log('Category:', CategoriesData[index].category);
     handleValueChange('category', CategoriesData[index].category);
   };
@@ -457,6 +460,8 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   const handlePress = dataObject => {
+    setReloadFlag(prevFlag => !prevFlag); // Khi handlePress được gọi, trigger reload bằng cách thay đổi giá trị của reloadFlag
+
     const isValid = validateData();
     if (isValid) {
       // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
@@ -614,6 +619,8 @@ export default function AdminCRUDItem({navigation}) {
   //   return `${hours}:${minutes}:${seconds}, ${day}/${month}/${year}`;
   // };
 
+  const [reloadFlag, setReloadFlag] = useState(false); // State để trigger reload
+
   const resetItemInfo = () => {
     setItemInfo({
       featured_image: [],
@@ -624,10 +631,16 @@ export default function AdminCRUDItem({navigation}) {
       size: [],
       available: null,
     });
+
+    // setCategoryDefaultOption(CategoriesData[0]);
+    // handleSelectedItem('0');
+    setReloadFlag(!reloadFlag);
+    console.log('+_+ ', itemInfo);
+    // console.log('reseted: ', categoryDefaultOption, itemInfo);
   };
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider key={reloadFlag}>
       <CustomStatusBar
         backgroundColor='#fff'
         canGoBack={true}
@@ -903,6 +916,13 @@ export default function AdminCRUDItem({navigation}) {
               // save='value'
               searchPlaceholder={'Phân loại sản phẩm của bạn'}
               placeholder={'Chọn loại sản phẩm'}
+              // defaultOption={categoryDefaultOption}
+              // defaultOption={{
+              //   key: '0',
+              //   value: 'Chọn loại sản phẩm112',
+              //   category: 'none',
+              //   disabled: true,
+              // }}
             />
             <TouchableOpacity
               activeOpacity={1}
@@ -1036,15 +1056,7 @@ export default function AdminCRUDItem({navigation}) {
         }}>
         <Button
           title={'Thêm sản phẩm'}
-          // onPress={() => navi.navigate('AdminCRUDItem')}
-          // onPress={() => console.log('itemInfo: ', itemInfo)}
-          // onPress={handlePress}
           onPress={() => handlePress(itemInfo)}
-          // onPress={() => resetItemInfo}
-          // onPress={createNewItemOnFireStore}
-          // onPress={() => createNewItemOnFireStore(itemInfo)}
-          // loading={loading.buttonLoading}
-          // disabled={loading.buttonLoading}
           buttonStyleCustom={{
             borderRadius: '15%',
             paddingVertical: 16,
