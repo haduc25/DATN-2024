@@ -223,12 +223,25 @@ export default function FavouriteScreen({navigation}) {
         </Text>
       </View>
       {/* Sử dụng FlatList để hiển thị dữ liệu người dùng */}
-      <FlatList
-        style={{width: '100%'}}
-        data={userDataList}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      {userDataList.length > 0 ? (
+        <FlatList
+          style={{width: '100%'}}
+          data={userDataList}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      ) : (
+        <View
+          style={{
+            height: '100%',
+            maxHeight: 713,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text style={{fontWeight: '700', fontSize: 28}}>Opps...!</Text>
+          <Text style={{fontSize: 20}}>Danh sách sản phẩm yêu thích trống</Text>
+        </View>
+      )}
     </View>
   );
 }

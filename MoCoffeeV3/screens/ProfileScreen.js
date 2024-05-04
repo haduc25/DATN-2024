@@ -12,7 +12,7 @@ import {auth, db, storage} from '../firebase';
 import {ref, getDownloadURL} from 'firebase/storage';
 
 // navigation
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Icons
@@ -36,6 +36,7 @@ export default function ProfileScreen({navigation}) {
   const [userInfo, setUserInfo] = useState(null);
 
   const navi = useNavigation();
+  const isFocused = useIsFocused();
 
   // =========== START: Use Effect =========== //
   useEffect(() => {
@@ -91,8 +92,13 @@ export default function ProfileScreen({navigation}) {
       }
     };
 
-    readUserData();
-  }, []);
+    // readUserData();
+
+    if (isFocused) {
+      readUserData();
+      console.log('Fetching readUserData...');
+    }
+  }, [isFocused]);
 
   // =========== END: Use Effect =========== //
 
@@ -199,7 +205,7 @@ export default function ProfileScreen({navigation}) {
       }
     };
 
-    fetchImageURI();
+    // fetchImageURI();
   }, []);
 
   console.log('image URI: ', imageURI);

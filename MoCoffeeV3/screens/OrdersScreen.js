@@ -1,7 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {db, doc, getDocs, collection, getDoc, query, where} from '../firebase';
+import {
+  db,
+  doc,
+  getDocs,
+  collection,
+  getDoc,
+  query,
+  where,
+  auth,
+} from '../firebase';
 
 import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 import {Ionicons, FontAwesome} from '@expo/vector-icons';
@@ -24,21 +33,43 @@ export default function FavouriteScreen({navigation}) {
     }
   }, [isFocused]);
 
-  const refreshData = () => {
-    // Đặt logic làm mới dữ liệu ở đây, ví dụ: gọi API để lấy danh sách sản phẩm yêu thích mới
-    console.log('Refreshing favourite data...');
-    const userId = 'lMsKBPaYTpORRtBxprjjHppCy0U2'; // ID của người dùng bạn muốn lấy đơn hàng
+  const refreshData = async () => {
+    // ########### GET UID ########### //
+    const getUserId = async () => {
+      try {
+        const userProfile = await AsyncStorage.getItem('usersProfile');
+        if (userProfile) {
+          const userProfileObject = JSON.parse(userProfile);
+          return userProfileObject.currentUser._userId;
+        } else {
+          console.error('userProfile or currentUser is undefined or null.');
+          return null;
+        }
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
+    };
+
+    // Lấy userId bằng cách gọi getUserId
+    const userId = await getUserId();
+
+    // Nếu không có userId, không cần gọi getOrdersForUser
+    if (!userId) {
+      console.error('UserId is null or undefined');
+      return;
+    }
 
     // Gọi hàm để lấy đơn hàng của người dùng
-    getOrdersForUser(userId)
-      .then(orders => {
-        console.log('Orders for user:', orders);
-        setUserDataList(orders.filter(data => data !== null));
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setUserDataList([]);
-      });
+    try {
+      console.log('Refreshing favourite data...');
+      const orders = await getOrdersForUser(userId);
+      console.log('Orders for user:', orders);
+      setUserDataList(orders.filter(data => data !== null));
+    } catch (error) {
+      console.error('Error:', error);
+      setUserDataList([]);
+    }
   };
 
   const getOrdersForUser = async userId => {
@@ -91,7 +122,7 @@ export default function FavouriteScreen({navigation}) {
           style={{fontSize: 16, fontWeight: '600', maxWidth: 160}}>
           {item.san_pham_order[index].ten_sp}
         </Text>
-        {console.log('item.san_pham_order: ', item.san_pham_order)}
+        {/* {console.log('item.san_pham_order: ', item.san_pham_order)} */}
         {/* {console.log('item2: ', item.san_pham_order[0].size_sp)}
         {console.log('index: ', index)} */}
         <Text numberOfLines={1} style={{maxWidth: 165}}>
@@ -197,6 +228,24 @@ export default function FavouriteScreen({navigation}) {
     </TouchableOpacity>
   );
 
+  // useEffect(() => {
+  //   const getUserId = async () => {
+  //     try {
+  //       const userProfile = await AsyncStorage.getItem('usersProfile');
+  //       if (userProfile) {
+  //         const userProfileObject = JSON.parse(userProfile);
+  //         const _userId = userProfileObject.currentUser._userId;
+  //       } else {
+  //         console.error('userProfile or currentUser is undefined or null.');
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   getUserId();
+  // }, []);
+
   return (
     <View
       style={{
@@ -223,12 +272,25 @@ export default function FavouriteScreen({navigation}) {
         </Text>
       </View>
       {/* Sử dụng FlatList để hiển thị dữ liệu người dùng */}
-      <FlatList
-        style={{width: '100%'}}
-        data={userDataList}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      {userDataList.length > 0 ? (
+        <FlatList
+          style={{width: '100%'}}
+          data={userDataList}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      ) : (
+        <View
+          style={{
+            height: '100%',
+            maxHeight: 713,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text style={{fontWeight: '700', fontSize: 28}}>Opps...!</Text>
+          <Text style={{fontSize: 20}}>Bạn chưa có đơn hàng nào</Text>
+        </View>
+      )}
     </View>
   );
 }

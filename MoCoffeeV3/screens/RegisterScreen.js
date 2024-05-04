@@ -183,7 +183,8 @@ export default function RegisterScreen({navigation}) {
           // Update tên, image cho người dùng
           await updateProfile(userCredential.user, {
             displayName: object.name,
-            photoURL: `https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Favatars%2Fno-image2.JPG?alt=media&token=66eac0f7-5349-4ae5-b0ac-61c10699e6e6`, // ảnh mặc định
+            // photoURL: `https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Favatars%2Fno-image2.JPG?alt=media&token=66eac0f7-5349-4ae5-b0ac-61c10699e6e6`, // ảnh mặc định
+            photoURL: `https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Favatars%2Fno-user-image-icon.jpg?alt=media&token=403b6633-82a6-4ca9-bc30-ce3e6a09882a`, // ảnh mặc định
           });
 
           // Chờ một khoảng thời gian ngắn (ví dụ: 1 giây) để đảm bảo thông tin hồ sơ được cập nhật
