@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  Image,
   TouchableOpacity,
   FlatList,
   Alert,
@@ -23,6 +22,8 @@ import {
   getOrderStatusBackgroundColor,
   isShippedOrCancelled,
   convertISOToFormattedDate,
+  convertFormattedDateToISO,
+  convertFormattedDateToUnixTime,
 } from '../utils/globalHelpers';
 
 export default function AdminOrders({navigation}) {
@@ -47,7 +48,15 @@ export default function AdminOrders({navigation}) {
         borderRadius: 10,
         margin: 10,
         // marginBottom: 8,
-        marginBottom: index === orders.length - 1 ? 100 : 8, // Kiểm tra nếu là phần tử cuối cùng, thêm 100  vào marginBottom, nếu không thì thêm 8
+        // marginBottom: index === orders.length - 1 ? 100 : 8, // Kiểm tra nếu là phần tử cuối cùng, thêm 100  vào marginBottom, nếu không thì thêm 8
+        marginBottom: sortRefresh
+          ? index === sortedOrders.length - 1
+            ? 100
+            : 8
+          : index === orders.length - 1
+          ? 100
+          : 8,
+        // `marginBottom...`: Dòng code này sử dụng toán tử ba ngôi để kiểm tra giá trị của sortRefresh. Nếu sortRefresh là true, nó kiểm tra xem index có bằng với độ dài của mảng sortedOrders trừ đi 1 không. Nếu đúng, giá trị của marginBottom sẽ là 100, ngược lại sẽ là 8. Nếu sortRefresh là false, nó tương tự kiểm tra index với độ dài của mảng orders.
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 10,
@@ -56,6 +65,7 @@ export default function AdminOrders({navigation}) {
         // maxHeight: 200,
         maxHeight: 500,
       }}>
+      {/* {console.log('item123: ', item)} */}
       {/* {console.log('item.san_pham_order: ', item.san_pham_order.length)} */}
       <View style={{flexDirection: 'row'}}>
         {/* TOP */}
@@ -596,6 +606,64 @@ export default function AdminOrders({navigation}) {
       return;
     }
   };
+
+  // ################### SORT ################### //
+  const [sortRefresh, setSortRefresh] = useState(false);
+  const [sortedOrders, setSortedOrders] = useState(orders);
+
+  const sortOrder = orderBy => {
+    switch (orderBy) {
+      case 'newest':
+        const timestamps = orders.map(order => ({
+          timestamp: convertFormattedDateToUnixTime(
+            order.thoi_gian_tao_don_hang,
+          ),
+          orderData: order,
+        }));
+        timestamps.sort((a, b) => b.timestamp - a.timestamp);
+        const newSortedOrders = timestamps.map(item => item.orderData);
+        setSortedOrders(newSortedOrders);
+        setSortRefresh(true);
+        break;
+      case 'pending':
+        const pendingOrders = orders.filter(
+          order => order.status === 'pending' || order.status === 'wait4pay',
+        );
+        console.log('pendingOrders: ', pendingOrders);
+        setSortedOrders(pendingOrders);
+        setSortRefresh(true);
+        break;
+      case 'processing':
+        const processingOrders = orders.filter(
+          order => order.status === 'processing',
+        );
+        console.log('pendingOrders: ', processingOrders);
+        setSortedOrders(processingOrders);
+        setSortRefresh(true);
+        break;
+      case 'shipping':
+        const shippingOrders = orders.filter(
+          order => order.status === 'shipping' || order.status === 'shipped',
+        );
+        console.log('pendingOrders: ', shippingOrders);
+        setSortedOrders(shippingOrders);
+        setSortRefresh(true);
+        break;
+      case 'cancelled':
+        const cancelledOrders = orders.filter(
+          order => order.status === 'cancelled',
+        );
+        console.log('pendingOrders: ', cancelledOrders);
+        setSortedOrders(cancelledOrders);
+        setSortRefresh(true);
+        break;
+      default:
+        // Đặt sortedOrders bằng orders ban đầu
+        setSortedOrders(orders);
+        setSortRefresh(false);
+    }
+  };
+
   return (
     <SafeAreaProvider>
       <CustomStatusBar
@@ -629,20 +697,133 @@ export default function AdminOrders({navigation}) {
         {/* PARENT OF THIS COMPONENT */}
         <View
           style={{
-            flex: 1,
+            // flex: 1,
             alignItems: 'center',
-            // justifyContent: 'center',
-            // borderTopColor: '#ccc',
-            // borderTopWidth: 0.5,
           }}>
+          {/* Chức năng SORT */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{
+              height: 50,
+              width: '100%',
+              marginTop: 8,
+              borderBottomWidth: 0.5,
+              borderBottomColor: '#ccc',
+            }}>
+            <TouchableOpacity
+              // onPress={sortOrdersByNewest}
+              onPress={() => sortOrder('allin')}
+              style={{
+                backgroundColor: '#7EC7E7',
+                marginLeft: 14,
+                height: 40,
+                minWidth: 80,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                padding: 4,
+              }}>
+              <Text style={{color: '#fff', fontWeight: '600'}}>Tất cả</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              // onPress={sortOrdersByNewest}
+              onPress={() => sortOrder('newest')}
+              style={{
+                backgroundColor: '#8aacb8',
+                marginLeft: 14,
+                height: 40,
+                minWidth: 80,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                padding: 4,
+              }}>
+              <Text style={{color: '#fff', fontWeight: '600'}}>Mới nhất</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => sortOrder('pending')}
+              style={{
+                backgroundColor: '#737373',
+                marginLeft: 14,
+                height: 40,
+                minWidth: 80,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                padding: 4,
+                paddingHorizontal: 8,
+              }}>
+              <Text style={{color: '#fff', fontWeight: '600'}}>Chưa duyệt</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => sortOrder('shipping')}
+              style={{
+                backgroundColor: '#4ca64c',
+                marginLeft: 14,
+                height: 40,
+                minWidth: 80,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                padding: 4,
+                paddingHorizontal: 8,
+              }}>
+              <Text style={{color: '#fff', fontWeight: '600'}}>
+                Đang giao hàng
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => sortOrder('processing')}
+              style={{
+                backgroundColor: '#4c4cff',
+                marginLeft: 14,
+                height: 40,
+                minWidth: 80,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                padding: 4,
+                paddingHorizontal: 8,
+              }}>
+              <Text style={{color: '#fff', fontWeight: '600'}}>Đang xử lý</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => sortOrder('cancelled')}
+              style={{
+                backgroundColor: '#ff4c4c',
+                marginLeft: 14,
+                height: 40,
+                minWidth: 80,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                padding: 4,
+                paddingHorizontal: 8,
+              }}>
+              <Text style={{color: '#fff', fontWeight: '600'}}>Đã hủy</Text>
+            </TouchableOpacity>
+          </ScrollView>
           {/* ITEMS */}
           <FlatList
             style={{width: '100%', paddingBottom: 250}}
-            // data={products}
-            data={orders}
+            // // data={products}
+            // // data={orders}
+            // data={sortedOrders}
+            // renderItem={renderItem}
+            // keyExtractor={(item, index) => index.toString()}
+
+            data={sortRefresh ? sortedOrders : orders}
+            // data={sortedOrders}
             renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={item => item._id}
           />
+          {console.log('1orders__: ', orders)}
 
           {/* {products.map(product => (
             <View key={product._id}>

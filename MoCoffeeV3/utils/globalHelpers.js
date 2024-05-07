@@ -90,6 +90,35 @@ export const convertISOToFormattedDate = isoDateString => {
   return `${hours}:${minutes}:${seconds}, ${day}/${month}/${year}`;
 };
 
+export const convertFormattedDateToISO = formattedDateString => {
+  const [timePart, datePart] = formattedDateString.split(', ');
+  const [hours, minutes, seconds] = timePart.split(':');
+  const [day, month, year] = datePart.split('/');
+
+  const unixTime =
+    new Date(
+      `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`,
+    ).getTime() / 1000;
+
+  return unixTime;
+};
+
+export const convertFormattedDateToUnixTime = formattedDateString => {
+  const [timePart, datePart] = formattedDateString.split(', ');
+  const [hours, minutes, seconds] = timePart.split(':');
+  const [day, month, year] = datePart.split('/');
+
+  // Tạo một đối tượng Date từ các phần của chuỗi đã cung cấp
+  const dateObject = new Date(
+    `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`,
+  );
+
+  // Chuyển đổi sang thời gian Unix (đơn vị là milliseconds)
+  const unixTime = dateObject.getTime() / 1000; // Chia cho 1000 để chuyển đổi sang giây
+
+  return unixTime;
+};
+
 export const translateStatusOrders = status => {
   const translations = {
     wait4pay: 'Đang chờ thanh toán', // áp dụng khi thanh toán online //warning => yellow
@@ -136,14 +165,14 @@ export const getOrderStatusBackgroundColor = status => {
     case 'wait4pay':
       return '#e5b700';
     case 'pending':
-      return '#737373';
+      return '#737373'; //gray
     case 'processing':
-      return '#4c4cff';
+      return '#4c4cff'; //blue
     case 'shipped':
     case 'shipping':
-      return '#4ca64c';
+      return '#4ca64c'; //xanh lá cây
     case 'cancelled':
-      return 'red';
+      return '#ff4c4c'; //red
     default:
       return '#000';
   }
