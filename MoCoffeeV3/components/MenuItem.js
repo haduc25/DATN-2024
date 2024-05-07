@@ -20,6 +20,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
 
 const MenuItem = ({item}) => {
+  console.log('MenuItem_item: ', item);
   const [additems, setAddItems] = useState(0);
   const [selected, setSelected] = useState(false);
   const dispatch = useDispatch();

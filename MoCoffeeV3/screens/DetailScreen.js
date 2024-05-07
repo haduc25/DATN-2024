@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 
@@ -25,8 +26,9 @@ import DummyText from './DynamicHeaderAnimation/DummyText';
 import {Pressable} from 'react-native';
 
 // Redux
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {SliderBox} from 'react-native-image-slider-box';
+import {addToCart} from '../redux/CartReducer';
 
 // import for user
 import {db, auth} from '../firebase';
@@ -246,6 +248,8 @@ export default function DetailScreen({}) {
 
   // redux
   const productInfo = useSelector(state => state.productInfo);
+  const dispatch = useDispatch();
+
   // console.log('DATA FROM REDUX: ', productInfo); // Hiển thị thông tin sản phẩm từ Redux trong console
 
   // const route = useRoute();
@@ -632,7 +636,7 @@ export default function DetailScreen({}) {
         <Pressable
           // onPress={() => navi.canGoBack() && navi.goBack()}
           // onPress={() => console.log('Detail Navi: ', navi.getState())}
-          onPress={() =>
+          onPress={() => {
             // console.log('detail_Navi: ', navi.getState().history[1])
             // console.log('detail_Navi: ', navi.getState().history[0])
             // navi.navigate('ProductTypeScreen', {
@@ -640,8 +644,31 @@ export default function DetailScreen({}) {
             //   category: productInfo.category,
             // })
 
-            alert(123)
-          }
+            // alert(123)
+            // console.log('item___: ', item)
+            // dispatch(addToCart(item))
+            Alert.alert(
+              'Xác nhận',
+              'Sản phẩm này sẽ được thêm vào giỏ hàng. Bạn có chắc chắn muốn tiếp tục?',
+              [
+                {
+                  text: 'Hủy',
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    dispatch(addToCart(item));
+                    alert('ĐÃ THÊM SẢN PHẨM VÀO GIỎ HÀNG');
+                    // navi.navigate('Cart', {
+                    //   currentScreen: 'DetailScreen',
+                    //   category: 'smoothie',
+                    // });
+                  },
+                },
+              ],
+            );
+          }}
           style={{
             // backgroundColor: '#fd5c63',
             // backgroundColor: 'lightblue',

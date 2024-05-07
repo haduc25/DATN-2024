@@ -92,7 +92,8 @@ export const convertISOToFormattedDate = isoDateString => {
 
 export const translateStatusOrders = status => {
   const translations = {
-    pendding: 'Đơn hàng của bạn đang được xử lý',
+    // pendding: 'Đơn hàng của bạn đang được xử lý',
+    pendding: 'Đang chờ duyệt',
     delivering: 'Đang giao hàng',
     wait4pay: 'Đang chờ thanh toán',
     processing: 'Đang được xử lý',
@@ -102,4 +103,14 @@ export const translateStatusOrders = status => {
   // Nếu có, trả về giá trị tương ứng
   // Nếu không, trả về status ban đầu
   return translations[status] || status;
+};
+
+export const translatePaymentMethod = method => {
+  const translations = {
+    cash: 'Tiền mặt',
+    credit: 'Thẻ tín dụng',
+    momowallet: 'Ví Momo',
+    zalopaywallet: 'Ví ZaloPay',
+  };
+  return translations[method] || method;
 };

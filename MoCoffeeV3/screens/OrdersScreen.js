@@ -120,20 +120,21 @@ export default function FavouriteScreen({navigation}) {
         <Text
           numberOfLines={1}
           style={{fontSize: 16, fontWeight: '600', maxWidth: 160}}>
-          {item.san_pham_order[index].ten_sp}
+          {/* {item.san_pham_order[index].ten_sp} */}
+          {item.san_pham_order[0].ten_sp}
         </Text>
         {/* {console.log('item.san_pham_order: ', item.san_pham_order)} */}
         {/* {console.log('item2: ', item.san_pham_order[0].size_sp)}
         {console.log('index: ', index)} */}
         <Text numberOfLines={1} style={{maxWidth: 165}}>
-          {item.ma_don_hang}
+          #{item.ma_don_hang}
         </Text>
-        <Text numberOfLines={1} style={{maxWidth: 165}}>
+        {/* <Text numberOfLines={1} style={{maxWidth: 165}}>
           {item.san_pham_order[0].size_sp}
-        </Text>
-        <Text numberOfLines={1} style={{maxWidth: 165}}>
+        </Text> */}
+        {/* <Text numberOfLines={1} style={{maxWidth: 165}}>
           {item.ma_don_hang}
-        </Text>
+        </Text> */}
 
         <View
           style={{
@@ -148,7 +149,8 @@ export default function FavouriteScreen({navigation}) {
               borderRadius: 4,
               fontSize: 16,
             }}>
-            SL: {item.san_pham_order[index].so_luong}
+            {/* SL: {item.san_pham_order[index].so_luong} */}
+            SL: {item.san_pham_order[0].so_luong}
           </Text>
           <Text
             style={{

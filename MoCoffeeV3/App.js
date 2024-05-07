@@ -61,9 +61,9 @@ export default function App() {
           // initialRouteName={'ImageAnimation'}
           // initialRouteName={'DynamicHeaderScrollView'}
 
-          // initialRouteName={loginName} //current
+          initialRouteName={loginName} //current
           // initialRouteName={'AdminCRUDItem'} //test
-          initialRouteName={'AdminProductsCRUD'} //test
+          // initialRouteName={'AdminProductsCRUD'} //test
           // initialRouteName={'OrderConfirmationSuccessfully'} //test
           // initialRouteName={'AdminOrders'} //test
           screenOptions={({route}) => ({

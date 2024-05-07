@@ -12,10 +12,13 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Button from '../components/Button';
 
 import {AntDesign} from '@expo/vector-icons';
-import {db, getDocs, collection} from '../firebase';
+import {db, getDocs, collection, updateDoc, doc} from '../firebase';
 
 import {useNavigation, useIsFocused} from '@react-navigation/native';
-import {translateStatusOrders} from '../utils/globalHelpers';
+import {
+  translatePaymentMethod,
+  translateStatusOrders,
+} from '../utils/globalHelpers';
 
 export default function AdminOrders({navigation}) {
   const renderItem = ({item, index}) => (
@@ -190,7 +193,7 @@ export default function AdminOrders({navigation}) {
                   style={{
                     fontWeight: 'bold',
                   }}>
-                  {item.phuong_thuc_thanh_toan}
+                  {translatePaymentMethod(item.phuong_thuc_thanh_toan)}
                 </Text>
               </View>
             </View>
@@ -219,7 +222,8 @@ export default function AdminOrders({navigation}) {
             style={{width: 100, height: 100, borderRadius: 8}}
             source={{
               // uri: item.featured_image[0],
-              uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              // uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              uri: 'https://static.vecteezy.com/system/resources/thumbnails/015/280/371/small_2x/cup-of-tea-icon-illustration-drink-flat-cartoon-style-suitable-for-web-landing-page-banner-flyer-sticker-wallpaper-background-free-vector.jpg',
             }}
           />
         </View>
@@ -256,6 +260,10 @@ export default function AdminOrders({navigation}) {
           <Text style={{fontWeight: '600'}}>Xem chi tiết</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          // onPress={() => console.log('MA DON HANG: ', item.ma_don_hang)}
+          onPress={() =>
+            handleApproveOrders(item._id, item.ma_don_hang, item.status)
+          }
           style={{
             borderWidth: 1,
             height: 45,
@@ -264,7 +272,8 @@ export default function AdminOrders({navigation}) {
             justifyContent: 'center',
             borderRadius: 8,
           }}>
-          <Text style={{fontWeight: '600'}}>Chỉnh sửa</Text>
+          {/* <Text style={{fontWeight: '600'}}>Chỉnh sửa</Text> */}
+          <Text style={{fontWeight: '600'}}>Duyệt đơn</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
@@ -354,6 +363,28 @@ export default function AdminOrders({navigation}) {
 
   // navigation
   const navi = useNavigation();
+
+  // handle duyet don hang
+  const handleApproveOrders = (orderId, ma_don_hang, orderStatus) => {
+    console.log('orderId, orderStatus: ', orderId, orderStatus);
+
+    if (orderId && orderStatus && orderStatus === 'pendding') {
+      //   Update
+      updateDoc(doc(db, 'OrdersConfirmation', orderId), {
+        status: 'processing',
+      })
+        .then(() => {
+          // Data create successfully!
+          console.log(`Duyệt đơn #${orderId} thành công!!!`);
+          alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+          fetchData();
+        })
+        .catch(error => {
+          console.log('error: ', error);
+          alert('error: ', error);
+        });
+    }
+  };
 
   return (
     <SafeAreaProvider>

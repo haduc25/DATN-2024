@@ -42,6 +42,8 @@ import {
   query,
   collectionGroup,
   auth,
+  setDoc,
+  doc,
 } from '../firebase';
 
 export default function CartScreen({navigation}) {
@@ -260,8 +262,16 @@ export default function CartScreen({navigation}) {
     const createdAt = convertISOToFormattedDate(timeNow);
     const updatedAt = createdAt;
 
+    // Tạo một document reference mới mà không cần truyền vào ID cụ thể
+    const docRef = doc(collection(db, 'OrdersConfirmation'));
+
+    // Lấy ID mới tạo và gán cho sản phẩm
+    const orderId = docRef.id;
+
     // summit data
-    addDoc(collection(db, 'OrdersConfirmation'), {
+    setDoc(docRef, {
+      _id: orderId,
+
       // ma_don,
       // nguoi_nhan: '',
       // dia_chi: '',
