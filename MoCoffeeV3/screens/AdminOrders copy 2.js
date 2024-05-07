@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  Alert,
 } from 'react-native';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -19,10 +18,6 @@ import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {
   translatePaymentMethod,
   translateStatusOrders,
-  convertStatusToMessage,
-  getOrderStatusBackgroundColor,
-  isShippedOrCancelled,
-  convertISOToFormattedDate,
 } from '../utils/globalHelpers';
 
 export default function AdminOrders({navigation}) {
@@ -33,9 +28,7 @@ export default function AdminOrders({navigation}) {
         width: 395,
         // minHeight: 200,
         // minHeight: 250,
-        // minHeight: 340,
-        // minHeight: 320,
-        minHeight: item.san_pham_order.length > 3 ? 380 : 340,
+        minHeight: 340,
         //   paddingHorizontal: 20,
         //   marginHorizontal: 10,
 
@@ -46,8 +39,7 @@ export default function AdminOrders({navigation}) {
         backgroundColor: '#fff',
         borderRadius: 10,
         margin: 10,
-        // marginBottom: 8,
-        marginBottom: index === orders.length - 1 ? 100 : 8, // Kiểm tra nếu là phần tử cuối cùng, thêm 100  vào marginBottom, nếu không thì thêm 8
+        marginBottom: 8,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 10,
@@ -56,7 +48,6 @@ export default function AdminOrders({navigation}) {
         // maxHeight: 200,
         maxHeight: 500,
       }}>
-      {/* {console.log('item.san_pham_order: ', item.san_pham_order.length)} */}
       <View style={{flexDirection: 'row'}}>
         {/* TOP */}
         <View
@@ -90,18 +81,16 @@ export default function AdminOrders({navigation}) {
               </Text>
               <View
                 style={{
-                  backgroundColor: getOrderStatusBackgroundColor(item.status),
+                  backgroundColor: 'green',
                   borderRadius: 5,
-                  padding: 4,
-                  paddingLeft: 6,
-                  paddingRight: 6,
+                  padding: 2,
                 }}>
                 <Text
                   numberOfLines={1}
                   style={{
                     color: '#fff',
                     fontWeight: 'bold',
-                    maxWidth: 200,
+                    maxWidth: 160,
                   }}>
                   {/* Đang giao hàng */}
                   {translateStatusOrders(item.status)}
@@ -136,7 +125,7 @@ export default function AdminOrders({navigation}) {
                   numberOfLines={1}
                   style={{
                     fontWeight: 'bold',
-                    maxWidth: 310,
+                    maxWidth: 180,
                   }}>
                   {/* Tổ 7, thị trấn Chợ Mới, huyện Chợ Mới, tỉnh Bắc Kạn. */}
                   {/* Tổ 7, thị trấn Chợ Mới... */}
@@ -144,14 +133,9 @@ export default function AdminOrders({navigation}) {
                 </Text>
               </View>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingBottom: 10,
-              }}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
-                Số điện thoại:{' '}
+                Số ĐT:{' '}
               </Text>
               <View
                 style={{
@@ -166,36 +150,22 @@ export default function AdminOrders({navigation}) {
                 </Text>
               </View>
             </View>
-            <View
-              style={{
-                width: 365,
-                borderTopWidth: 0.5,
-                borderTopColor: '#ccc',
-                paddingBottom: 10,
-              }}
-            />
-            <Text style={{fontSize: 16, fontWeight: '600'}}>
-              Sản phẩm đã đặt
-            </Text>
-            {item.san_pham_order.slice(0, 3).map((itemOrdered, index) => (
+            <Text>Sản phẩm đã đặt</Text>
+            {item.san_pham_order.map((itemOrdered, index) => (
               <View key={index}>
-                <Text
-                  style={{fontSize: 16, maxWidth: 310, paddingLeft: 6}}
-                  numberOfLines={1}>
-                  - {itemOrdered.ten_sp}
+                <Text style={{fontSize: 16, maxWidth: 150}} numberOfLines={1}>
+                  {itemOrdered.ten_sp}
                 </Text>
-                {/* <Text style={{fontSize: 16}}>Số lượng: {itemOrdered.so_luong}</Text> */}
+                {/* <Text style={{fontSize: 16}}>
+                  Số lượng: {itemOrdered.so_luong}
+                </Text> */}
               </View>
             ))}
-            {item.san_pham_order.length > 5 && (
-              <Text style={{fontSize: 16, paddingLeft: 18, paddingBottom: 6}}>
-                ...
-              </Text>
-            )}
+
             {/* price */}
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
-                Tổng tiền:{' '}
+                Thành tiền:{' '}
               </Text>
               <View
                 style={{
@@ -209,6 +179,7 @@ export default function AdminOrders({navigation}) {
                 </Text>
               </View>
             </View>
+
             {/* Phuong thuc thanh toan */}
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
@@ -226,6 +197,7 @@ export default function AdminOrders({navigation}) {
                 </Text>
               </View>
             </View>
+
             {/* Thời gian tạo đơn */}
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
@@ -238,7 +210,7 @@ export default function AdminOrders({navigation}) {
                 <Text
                   numberOfLines={1}
                   style={{
-                    maxWidth: 310,
+                    maxWidth: 120,
                     fontWeight: 'bold',
                   }}>
                   {item.thoi_gian_tao_don_hang}
@@ -246,6 +218,14 @@ export default function AdminOrders({navigation}) {
               </View>
             </View>
           </View>
+          <Image
+            style={{width: 100, height: 100, borderRadius: 8}}
+            source={{
+              // uri: item.featured_image[0],
+              // uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              uri: 'https://static.vecteezy.com/system/resources/thumbnails/015/280/371/small_2x/cup-of-tea-icon-illustration-drink-flat-cartoon-style-suitable-for-web-landing-page-banner-flyer-sticker-wallpaper-background-free-vector.jpg',
+            }}
+          />
         </View>
         {/* BOTTOM */}
       </View>
@@ -275,51 +255,39 @@ export default function AdminOrders({navigation}) {
             alignItems: 'center',
             justifyContent: 'center',
             marginLeft: 8,
-            // marginRight: item.status === 'shipped' ? 8 : 0,
-            marginRight: isShippedOrCancelled(item.status) ? 0 : 8,
             borderRadius: 8,
-            // flex: item.status === 'shipped' ? 1 : 0,
-            flex: isShippedOrCancelled(item.status) ? 0 : 1,
           }}>
           <Text style={{fontWeight: '600'}}>Xem chi tiết</Text>
         </TouchableOpacity>
-        {isShippedOrCancelled(item.status) && (
-          <TouchableOpacity
-            // onPress={() => console.log('MA DON HANG: ', item.ma_don_hang)}
-            onPress={() =>
-              handleApproveOrders(item._id, item.ma_don_hang, item.status)
-            }
-            style={{
-              borderWidth: 1,
-              height: 45,
-              width: 120,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 8,
-            }}>
-            <Text style={{fontWeight: '600'}}>
-              {convertStatusToMessage(item.status)}
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        {isShippedOrCancelled(item.status) && (
-          <TouchableOpacity
-            onPress={() =>
-              handleCancelOrders(item._id, item.ma_don_hang, item.status)
-            }
-            style={{
-              borderWidth: 1,
-              height: 45,
-              width: 120,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: 8,
-              borderRadius: 8,
-            }}>
-            <Text style={{fontWeight: '600'}}>Hủy đơn</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          // onPress={() => console.log('MA DON HANG: ', item.ma_don_hang)}
+          onPress={() =>
+            handleApproveOrders(item._id, item.ma_don_hang, item.status)
+          }
+          style={{
+            borderWidth: 1,
+            height: 45,
+            width: 120,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 8,
+          }}>
+          {/* <Text style={{fontWeight: '600'}}>Duyệt đơn</Text> */}
+          {/* <Text style={{fontWeight: '600'}}>Giao hàng</Text> */}
+          <Text style={{fontWeight: '600'}}>Đã giao</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            height: 45,
+            width: 120,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: 8,
+            borderRadius: 8,
+          }}>
+          <Text style={{fontWeight: '600'}}>Hủy đơn</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -401,201 +369,24 @@ export default function AdminOrders({navigation}) {
   const handleApproveOrders = (orderId, ma_don_hang, orderStatus) => {
     console.log('orderId, orderStatus: ', orderId, orderStatus);
 
-    if (orderId && orderStatus && orderStatus === 'pending') {
-      Alert.alert(
-        'Xác nhận duyệt đơn hàng',
-        `Bạn có chắc muốn duyệt đơn #${ma_don_hang}?`,
-        [
-          {
-            text: 'Hủy',
-            style: 'cancel',
-          },
-          {
-            text: 'Xác nhận',
-            onPress: () => {
-              const timeNow = new Date().toISOString();
-              const updateAt = convertISOToFormattedDate(timeNow);
-              // Thực hiện cập nhật
-              updateDoc(doc(db, 'OrdersConfirmation', orderId), {
-                status: 'processing',
-                thoi_gian_cap_nhat_don_hang_moi_nhat: updateAt,
-              })
-                .then(() => {
-                  // Dữ liệu cập nhật thành công
-                  console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
-                  fetchData(); // Lấy dữ liệu mới
-                })
-                .catch(error => {
-                  // Xử lý lỗi
-                  console.log('error: ', error);
-                  alert('error: ', error);
-                });
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-      return;
-    }
-
-    if (orderId && orderStatus && orderStatus === 'processing') {
-      // Hiển thị cảnh báo xác nhận
-      Alert.alert(
-        'Xác nhận đã xử lý xong',
-        `Chuyển đơn hàng #${ma_don_hang} qua trạng thái giao hàng?`,
-        [
-          {
-            text: 'Hủy',
-            style: 'cancel',
-          },
-          {
-            text: 'Xác nhận',
-            onPress: () => {
-              // Thực hiện cập nhật
-              const timeNow = new Date().toISOString();
-              const updateAt = convertISOToFormattedDate(timeNow);
-              updateDoc(doc(db, 'OrdersConfirmation', orderId), {
-                status: 'shipping',
-                thoi_gian_cap_nhat_don_hang_moi_nhat: updateAt,
-              })
-                .then(() => {
-                  // Dữ liệu cập nhật thành công
-                  console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
-                  fetchData(); // Lấy dữ liệu mới
-                })
-                .catch(error => {
-                  // Xử lý lỗi
-                  console.log('error: ', error);
-                  alert('error: ', error);
-                });
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-      return;
-    }
-
-    if (orderId && orderStatus && orderStatus === 'shipping') {
-      // Hiển thị cảnh báo xác nhận
-      Alert.alert(
-        'Xác nhận đã giao hàng',
-        `Xác nhận đã giao đơn hàng #${ma_don_hang} thành công!`,
-        [
-          {
-            text: 'Hủy',
-            style: 'cancel',
-          },
-          {
-            text: 'Xác nhận',
-            onPress: () => {
-              // Thực hiện cập nhật
-              const timeNow = new Date().toISOString();
-              const updateAt = convertISOToFormattedDate(timeNow);
-              updateDoc(doc(db, 'OrdersConfirmation', orderId), {
-                status: 'shipped',
-                thoi_gian_cap_nhat_don_hang_moi_nhat: updateAt,
-              })
-                .then(() => {
-                  // Dữ liệu cập nhật thành công
-                  console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
-                  fetchData(); // Lấy dữ liệu mới
-                })
-                .catch(error => {
-                  // Xử lý lỗi
-                  console.log('error: ', error);
-                  alert('error: ', error);
-                });
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-      return;
-    }
-
-    if (orderId && orderStatus && orderStatus === 'wait4pay') {
-      Alert.alert(
-        'Xác nhận thanh toán & duyệt đơn hàng',
-        `Người dùng đã thanh toán đơn này? Bạn có chắc muốn duyệt đơn #${ma_don_hang}?`,
-        [
-          {
-            text: 'Hủy',
-            style: 'cancel',
-          },
-          {
-            text: 'Xác nhận',
-            onPress: () => {
-              // Thực hiện cập nhật
-              const timeNow = new Date().toISOString();
-              const updateAt = convertISOToFormattedDate(timeNow);
-              updateDoc(doc(db, 'OrdersConfirmation', orderId), {
-                status: 'processing',
-                thoi_gian_cap_nhat_don_hang_moi_nhat: updateAt,
-              })
-                .then(() => {
-                  // Dữ liệu cập nhật thành công
-                  console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
-                  fetchData(); // Lấy dữ liệu mới
-                })
-                .catch(error => {
-                  // Xử lý lỗi
-                  console.log('error: ', error);
-                  alert('error: ', error);
-                });
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-      return;
+    if (orderId && orderStatus && orderStatus === 'pendding') {
+      //   Update
+      updateDoc(doc(db, 'OrdersConfirmation', orderId), {
+        status: 'processing',
+      })
+        .then(() => {
+          // Data create successfully!
+          console.log(`Duyệt đơn #${orderId} thành công!!!`);
+          alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+          fetchData();
+        })
+        .catch(error => {
+          console.log('error: ', error);
+          alert('error: ', error);
+        });
     }
   };
 
-  const handleCancelOrders = (orderId, ma_don_hang, orderStatus) => {
-    if (orderId && orderStatus && orderStatus !== 'cancelled') {
-      Alert.alert(
-        'Xác nhận hủy đơn hàng',
-        `Bạn có chắc muốn hủy đơn #${ma_don_hang} này không?`,
-        [
-          {
-            text: 'Hủy',
-            style: 'cancel',
-          },
-          {
-            text: 'Hủy đơn hàng',
-            onPress: () => {
-              // Thực hiện cập nhật
-              const timeNow = new Date().toISOString();
-              const updateAt = convertISOToFormattedDate(timeNow);
-              updateDoc(doc(db, 'OrdersConfirmation', orderId), {
-                status: 'cancelled',
-                thoi_gian_cap_nhat_don_hang_moi_nhat: updateAt,
-              })
-                .then(() => {
-                  // Dữ liệu cập nhật thành công
-                  console.log(`Đã hủy đơn #${orderId}!!!`);
-                  alert(`Đã hủy đơn #${ma_don_hang}!!!`);
-                  fetchData(); // Lấy dữ liệu mới
-                })
-                .catch(error => {
-                  // Xử lý lỗi
-                  console.log('error: ', error);
-                  alert('error: ', error);
-                });
-            },
-            style: 'destructive', // Thêm style 'destructive' để làm màu nút đỏ
-          },
-        ],
-        {cancelable: false},
-      );
-      return;
-    }
-  };
   return (
     <SafeAreaProvider>
       <CustomStatusBar

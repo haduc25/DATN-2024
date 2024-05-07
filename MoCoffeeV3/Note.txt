@@ -55,3 +55,19 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Xem chi tiết đơn hàng Order ở ngoài chưa có
 - Xem lại giỏ hàng chưa có
 - Xử lý thêm giỏ hàng trong Detail
+- Loại bỏ chọn size
+- Duyệt đơn => ok
+- SORT: Mới nhất, chưa duyệt, đang giao hàng, đã hủy
+
+- User order => nếu là thanh toán tiền mặt (1) | nếu là thanh toán online (2)
+=> (1) =>  Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang xử lý (processing) => Đang giao hàng => Đã giao hàng (shipped)
+=> (2) =>  Đang chờ thanh toán (waitingPayment)  => Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang giao hàng => Đang xử lý (processing) => Đã giao hàng (shipped)
+
+
+
+#WORD
+- Chuyển phần 1.4 sang chương 2
+- Vẽ lại USECASE để loại bỏ người xem + nhân viên
+- Thêm quy trình đặt hàng
+- Thêm các ứng dụng đã có trên thị trường + các tính năng gì mà chỉ ứng dụng của tôi có???
+- Thêm bieu do lop, bieu do co so du lieu

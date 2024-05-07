@@ -92,13 +92,12 @@ export const convertISOToFormattedDate = isoDateString => {
 
 export const translateStatusOrders = status => {
   const translations = {
-    // pendding: 'Đơn hàng của bạn đang được xử lý',
-    pendding: 'Đang chờ duyệt',
-    delivering: 'Đang giao hàng',
-    wait4pay: 'Đang chờ thanh toán',
-    processing: 'Đang được xử lý',
-    success: 'Đã giao hàng thành công',
-    cancel_order: 'Đã hủy đơn hàng',
+    wait4pay: 'Đang chờ thanh toán', // áp dụng khi thanh toán online //warning => yellow
+    pending: 'Đang chờ duyệt', // info => blue
+    processing: 'Đang được xử lý', // approved: đơn được duyệt sẽ chuyển qua trạng thái này info => blue
+    shipping: 'Đang giao hàng', // đang được chuyển đến khách hàng => green
+    shipped: 'Đã giao hàng thành công', // khi đơn đã được giao đến khách hàng thành công => blue
+    cancelled: 'Đã hủy đơn hàng', // khi đơn hàng bị hủy => red
   };
   // Nếu có, trả về giá trị tương ứng
   // Nếu không, trả về status ban đầu
@@ -113,4 +112,43 @@ export const translatePaymentMethod = method => {
     zalopaywallet: 'Ví ZaloPay',
   };
   return translations[method] || method;
+};
+
+export const processPayment = payment =>
+  payment === 'cash' ? 'pending' : 'wait4pay';
+
+export const convertStatusToMessage = status => {
+  switch (status) {
+    case 'wait4pay':
+    case 'pending':
+      return 'Duyệt đơn';
+    case 'processing':
+      return 'Giao hàng';
+    case 'shipping':
+      return 'Đã giao hàng';
+    default:
+      return 'Không hợp lệ';
+  }
+};
+
+export const getOrderStatusBackgroundColor = status => {
+  switch (status) {
+    case 'wait4pay':
+      return '#e5b700';
+    case 'pending':
+      return '#737373';
+    case 'processing':
+      return '#4c4cff';
+    case 'shipped':
+    case 'shipping':
+      return '#4ca64c';
+    case 'cancelled':
+      return 'red';
+    default:
+      return '#000';
+  }
+};
+
+export const isShippedOrCancelled = status => {
+  return !(status === 'shipped' || status === 'cancelled');
 };

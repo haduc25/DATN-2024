@@ -33,6 +33,7 @@ import {
   convertIntegerToPriceString,
   generateKeyID,
   convertISOToFormattedDate,
+  processPayment,
 } from '../utils/globalHelpers';
 import {
   db,
@@ -257,44 +258,28 @@ export default function CartScreen({navigation}) {
 
   //   Create2
   const createOrders = validData => {
-    console.log('validData: ', validData);
     const timeNow = new Date().toISOString();
     const createdAt = convertISOToFormattedDate(timeNow);
     const updatedAt = createdAt;
 
-    // Tạo một document reference mới mà không cần truyền vào ID cụ thể
     const docRef = doc(collection(db, 'OrdersConfirmation'));
-
-    // Lấy ID mới tạo và gán cho sản phẩm
     const orderId = docRef.id;
 
-    // summit data
+    // Thay đổi status thành kết quả từ processPayment(validData.phuong_thuc_thanh_toan)
+    const status = processPayment(validData.phuong_thuc_thanh_toan);
+
     setDoc(docRef, {
       _id: orderId,
-
-      // ma_don,
-      // nguoi_nhan: '',
-      // dia_chi: '',
-      // sdt: '',
-      // san_pham_order: [{ten_sp: 'Tra Chanh 2', gia_sp: '1200', so_luong: '5'}],
-      // tong_tien: '1000',
-
-      // DEFAULT
-      status: 'pendding',
+      status: status, // Cập nhật status ở đây
       thoi_gian_tao_don_hang: createdAt,
       thoi_gian_cap_nhat_don_hang_moi_nhat: updatedAt,
-
-      // Thêm tất cả các giá trị của validData vào đây
       ...validData,
     })
       .then(() => {
-        // Data create successfully!
         console.log('Data created');
         alert('ĐÃ TẠO ĐƠN HÀNG THÀNH CÔNG!!!');
-
         dispatch(cleanCart());
         setToDefault();
-        // Chuyển sang Trang khác
         setTimeout(() => {
           navi.navigate('OrderConfirmationSuccessfully', {
             payment_method: validData.phuong_thuc_thanh_toan,

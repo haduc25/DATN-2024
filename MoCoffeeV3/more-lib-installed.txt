@@ -70,3 +70,6 @@ npx expo install expo-image-picker
 
 #SELECT FOR CATEGORY VERSION 2 (TRÔNG UI ĐẸP HƠN VÀ ĐƠN GIẢN HƠN)
 `npm i react-native-dropdown-select-list`
+
+#TABLE
+`npm i react-native-table-component`
