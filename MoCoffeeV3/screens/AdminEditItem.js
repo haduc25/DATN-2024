@@ -44,7 +44,7 @@ import {
   setDoc,
   deleteDoc,
 } from '../firebase';
-import {convertISOToFormattedDate} from '../utils/globalHelpers';
+import {convertISOToFormattedDate, sortSizes} from '../utils/globalHelpers';
 
 export default function AdminEditItem({navigation}) {
   const navi = useNavigation();
@@ -66,12 +66,15 @@ export default function AdminEditItem({navigation}) {
     price: thisItem?.price ?? '',
     category: thisItem?.category ?? '',
     size: thisItem?.available_sizes ?? [],
+    priceBySize: thisItem?.priceBySize ?? {},
     // size: [],
     available: thisItem?.available ?? null,
   });
   /** `name: thisItem?.name ?? ''` gán giá trị cho name của itemInfo. Nếu thisItem tồn tại và có thuộc tính name, thì name sẽ được gán bằng giá trị của name. Ngược lại, nếu thisItem không tồn tại hoặc không có thuộc tính name, thì name sẽ được gán bằng một chuỗi rỗng ''. */
 
   const set4EditItemInfo = () => {
+    const valueOfPriceBySize = thisItem?.priceBySize ?? {};
+
     setItemInfo({
       _id: thisItem?._id ?? null,
 
@@ -84,9 +87,13 @@ export default function AdminEditItem({navigation}) {
       price: thisItem?.price ?? '',
       category: thisItem?.category ?? '',
       size: thisItem.available_sizes ?? [],
+      // priceBySize: thisItem?.priceBySize ?? {},
+      priceBySize: valueOfPriceBySize,
       // size: [],
       available: thisItem?.available ?? null,
     });
+
+    setPriceBySize(valueOfPriceBySize);
   };
 
   useEffect(() => {
@@ -109,7 +116,7 @@ export default function AdminEditItem({navigation}) {
     featured_image: 'Hình ảnh sản phẩm *',
     name: 'Tên sản phẩm *',
     description: 'Mô tả sản phẩm *',
-    price: 'Giá sản phẩm *',
+    price: 'Giá sản phẩm cho size ',
     category: 'Phân loại sản phẩm *',
     size: 'Size sản phẩm *',
     available: 'Chế độ hiển thị *',
@@ -379,36 +386,51 @@ export default function AdminEditItem({navigation}) {
 
   // ####################### FUNCTIONS ####################### //
   // HANDLE INPUT BLUR
-  const handleInputBlur = fieldName => {
+  const handleInputBlur = (fieldName, size = null) => {
     setIsFocused(prevState => ({
       ...prevState,
       [fieldName]: false,
     }));
 
-    if (fieldName === 'price') {
-      setItemInfo(prevState => ({
+    // Kiểm tra nếu fieldname là 'price', thêm ký hiệu tiền tệ vào cuối
+    setIsFocusedPriceBySize(prevState => ({
+      ...prevState,
+      [size]: false,
+    }));
+
+    if (fieldName === 'price' && size && priceBySize[size]) {
+      setPriceBySize(prevState => ({
         ...prevState,
-        [fieldName]: prevState[fieldName] + '₫', // Thêm ký hiệu tiền tệ vào cuối
+        [size]: prevState[size] + '₫',
       }));
+      // console.log('BLUR_priceBySize: ', priceBySize, size);
     }
   };
 
   // HANDLE INPUT FOCUS
-  const handleInputFocus = fieldName => {
-    console.log(
-      'formatCurrency(itemInfo.price): ',
-      formatCurrency(itemInfo.price),
-    );
+  const handleInputFocus = (fieldName, size = null) => {
     setIsFocused(prevState => ({
       ...prevState,
       [fieldName]: true,
     }));
 
-    if (fieldName === 'price' && itemInfo.price.endsWith('₫')) {
-      setItemInfo(prevState => ({
+    setIsFocusedPriceBySize(prevState => ({
+      ...prevState,
+      [size]: true,
+    }));
+    console.log('priceBySize[size]: ', priceBySize[size], priceBySize);
+    if (
+      size &&
+      priceBySize[size] &&
+      fieldName === 'price' &&
+      priceBySize[size].endsWith('₫')
+    ) {
+      setPriceBySize(prevState => ({
         ...prevState,
-        [fieldName]: prevState[fieldName].slice(0, -1), // Xóa ký hiệu tiền tệ khỏi cuối chuỗi
+        [size]: prevState[size].slice(0, -1), // Xóa ký hiệu tiền tệ khỏi cuối chuỗi
       }));
+
+      console.log('priceBySize', priceBySize);
     }
   };
 
@@ -451,17 +473,10 @@ export default function AdminEditItem({navigation}) {
     }
   };
 
-  function formatCurrency(value) {
-    // Chuyển đổi chuỗi số thành số nguyên
-    const intValue = parseInt(value, 10);
-
-    // Sử dụng phương thức toLocaleString để thêm dấu chấm phân tách hàng nghìn
-    return intValue.toLocaleString('en-US');
-  }
-
   // HANDLE VALIDATE WHEN SUBMIT
   const validateData = () => {
     const newErrors = {};
+    const newErrorsForPriceAndSize = {};
 
     if (itemInfo.featured_image.length === 0) {
       newErrors.featured_image = 'Vui lòng chọn ít nhất một hình ảnh nổi bật';
@@ -475,15 +490,44 @@ export default function AdminEditItem({navigation}) {
       newErrors.description = 'Vui lòng nhập mô tả sản phẩm';
     }
 
-    if (!itemInfo.price.trim()) {
-      newErrors.price = 'Vui lòng nhập giá sản phẩm';
-    } else {
-      // Loại bỏ ký tự ₫ và ,
-      const cleanedPrice = itemInfo.price.replace(/[₫,]/g, '');
-      if (isNaN(cleanedPrice)) {
-        newErrors.price = 'Giá sản phẩm phải là số';
+    // if (!itemInfo.price.trim()) {
+    //   newErrors.price = 'Vui lòng nhập giá sản phẩm';
+    // } else {
+    //   // Loại bỏ ký tự ₫ và ,
+    //   const cleanedPrice = itemInfo.price.replace(/[₫,]/g, '');
+    //   if (isNaN(cleanedPrice)) {
+    //     newErrors.price = 'Giá sản phẩm phải là số';
+    //   }
+    // }
+
+    // Kiểm tra từng kích thước giá sản phẩm
+    // Object.keys(priceBySize).forEach(size => {
+    //   if (!priceBySize[size].trim()) {
+    //     newErrorsForPriceAndSize[size] =
+    //       'Vui lòng nhập giá sản phẩm cho size ' + size;
+    //   } else {
+    //     // Loại bỏ ký tự ₫ và ,
+    //     const cleanedPrice = priceBySize[size].replace(/[₫,]/g, '');
+    //     if (isNaN(cleanedPrice)) {
+    //       newErrorsForPriceAndSize[size] =
+    //         'Giá sản phẩm cho size ' + size + ' phải là số';
+    //     }
+    //   }
+    // });
+
+    itemInfo.size.forEach(size => {
+      if (!priceBySize[size].trim()) {
+        newErrorsForPriceAndSize[size] =
+          'Vui lòng nhập giá sản phẩm cho size ' + size;
+      } else {
+        // Loại bỏ ký tự ₫ và ,
+        const cleanedPrice = priceBySize[size].replace(/[₫,]/g, '');
+        if (isNaN(cleanedPrice)) {
+          newErrorsForPriceAndSize[size] =
+            'Giá sản phẩm cho size ' + size + ' phải là số';
+        }
       }
-    }
+    });
 
     if (!itemInfo.category.trim()) {
       newErrors.category = 'Vui lòng chọn danh mục sản phẩm';
@@ -498,37 +542,77 @@ export default function AdminEditItem({navigation}) {
     }
 
     setErrors(newErrors);
+    setErrorsPriceAndSize(newErrorsForPriceAndSize);
+    console.log('newErrorsForPriceAndSize: ', newErrorsForPriceAndSize);
+    // console.log('itemInfo.size: ', itemInfo.size);
 
-    // Return true if there are no errors, false otherwise
-    return Object.keys(newErrors).length === 0;
+    // Kết hợp cả `newErrors` và `newErrorsForPriceAndSize` thành một mảng
+    const allErrors = {...newErrors, ...newErrorsForPriceAndSize};
+
+    // Kiểm tra nếu không có lỗi
+    return Object.keys(allErrors).length === 0;
   };
 
   const handlePress = dataObject => {
-    // console.log('featured_image: ', itemInfo);
-    // console.log('featured_image: ', itemInfo.featured_image);
-    {
-      console.log(
-        'itemInfo.featured_image__OUTSIDE: ',
-        itemInfo.featured_image,
-      );
-    }
     const isValid = validateData();
     if (isValid) {
-      // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
-      console.log('Dữ liệu hợp lệ:', itemInfo);
+      // CHỈ LẤY KEY NÀO CÓ DỮ LIỆU
+      // Khởi tạo một đối tượng mới để lưu trữ các cặp key-value có dữ liệu
+      const nonEmptyPriceBySize = {};
+
+      // Lặp qua các cặp key-value của priceBySize
+      for (const [key, value] of Object.entries(priceBySize)) {
+        // Nếu value không rỗng, thêm cặp key-value này vào nonEmptyPriceBySize
+        if (value !== '') {
+          nonEmptyPriceBySize[key] = value;
+        }
+      }
+
+      // console.log('nonEmptyPriceBySize: ', nonEmptyPriceBySize);
+
+      // GỘP DỮ LIỆU VÀO CHUNG 1 OBJECT
+      // Tạo một đối tượng mới để gộp các dữ liệu vào
+      const mergedData = {
+        ...dataObject, // Copy toàn bộ dữ liệu từ itemInfo vào mergedData
+        priceBySize: nonEmptyPriceBySize, // Thêm key priceBySize với giá trị là priceBySize
+      };
+
+      // Lọc các kích thước không nằm trong sortedSizes
+      const filteredPriceBySize = Object.fromEntries(
+        Object.entries(mergedData.priceBySize).filter(([size]) =>
+          sortedSizes.includes(size),
+        ),
+      );
+
+      // Cập nhật mergedData với priceBySize đã lọc
+      const updatedMergedData = {
+        ...mergedData,
+        priceBySize: filteredPriceBySize,
+      };
+
+      // In ra mergedData sau khi cập nhật
+      // console.log('mergedData sau khi cập nhật:', updatedMergedData);
+
+      // // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
+      // console.log('Dữ liệu hợp lệ:', mergedData, sortedSizes);
+      console.log('Dữ liệu hợp lệ:', updatedMergedData);
 
       // Upload Image
       Alert.alert(
         'Xác nhận',
-        'Bạn có muốn thêm sản phẩm này?',
+        'Bạn có muốn lưu thay đổi cho sản phẩm này?',
         [
           {
-            text: 'Hủy bỏ',
+            text: 'Hủy',
+            onPress: () => console.log('Hành động đã bị hủy'),
             style: 'cancel',
           },
           {
             text: 'Xác nhận',
-            onPress: () => waitUpload(dataObject),
+            onPress: () => {
+              // setReloadFlag(prevFlag => !prevFlag); // Khi handlePress được gọi, trigger reload bằng cách thay đổi giá trị của reloadFlag
+              waitUpload(updatedMergedData);
+            },
           },
         ],
         {cancelable: false},
@@ -613,10 +697,18 @@ export default function AdminEditItem({navigation}) {
   // UPDATE ITEM ON FIRESTORE
   const updateItemOnFireStore = (dataObject, imageURL) => {
     console.log('USERDATA(itemInfo): ', dataObject);
-    const {_id, available, category, description, name, price, size} =
-      dataObject;
+    const {
+      _id,
+      available,
+      category,
+      description,
+      name,
+      price,
+      size,
+      priceBySize,
+    } = dataObject;
 
-    console.log('_id SAN PHAM CAN UPDATE: ', _id);
+    console.log('_id SAN PHAM CAN UPDATE: ', _id, priceBySize);
     // console.log('imageURL: ', imageURL);
 
     const timeNow = new Date().toISOString();
@@ -634,6 +726,7 @@ export default function AdminEditItem({navigation}) {
       featured_image: imageURL,
       price,
       updatedAt,
+      priceBySize,
     })
       .then(() => {
         // Data updated successfully!
@@ -725,6 +818,55 @@ export default function AdminEditItem({navigation}) {
       });
   };
 
+  // const [priceBySize, setPriceBySize] = useState(itemInfo.priceBySize);
+  const valueOfPriceBySize = thisItem?.priceBySize ?? {};
+  const [priceBySize, setPriceBySize] = useState(valueOfPriceBySize);
+
+  // HANDLE FOR PRICE BY SIZE
+  const [isFocusedPriceBySize, setIsFocusedPriceBySize] = useState({
+    S: false,
+    M: false,
+    L: false,
+    XL: false,
+  });
+
+  //   ERRORS
+  const [errorsPriceAndSize, setErrorsPriceAndSize] = useState({
+    S: '',
+    M: '',
+    XL: '',
+    L: '',
+  });
+
+  // PRICE & SIZE
+  const handleInputPriceAndSize = (size, value) => {
+    if (typeof value !== 'undefined' && value !== null) {
+      let newValue = value;
+      // Xóa các ký tự không phải số và không phải dấu chấm
+      newValue = newValue.replace(/[^\d.]/g, '');
+      // Kiểm tra nếu giá trị mới không phải là số hoặc là một chuỗi rỗng
+      // thì gán giá trị mới là '0'
+      if (isNaN(newValue) || newValue === '') {
+        newValue = '0';
+      }
+      // Kiểm tra nếu giá trị mới nhỏ hơn 0 thì gán giá trị mới là '0'
+      else if (parseFloat(newValue) < 0) {
+        newValue = '0';
+      }
+      // Chuyển đổi giá trị sang định dạng tiền tệ
+      else {
+        newValue = parseFloat(newValue).toLocaleString('en-US');
+      }
+
+      setPriceBySize({...priceBySize, [size]: newValue});
+      console.log('ĐÃ UPDATE PriceBySize');
+    }
+  };
+
+  // SORT
+  const sortedSizes = sortSizes(itemInfo.size);
+
+  // return <View>{console.log('sortedSizes: ', sortedSizes)}</View>;
   return (
     <SafeAreaProvider>
       <CustomStatusBar
@@ -881,7 +1023,6 @@ export default function AdminEditItem({navigation}) {
                 },
               ]}
               onFocus={() => handleInputFocus('name')}
-              onBlur={() => handleInputBlur('name')}
               onChangeText={text => handleValueChange('name', text)}
               value={itemInfo.name}
             />
@@ -984,7 +1125,7 @@ export default function AdminEditItem({navigation}) {
         </View>
 
         {/* PRICE */}
-        <View style={styles.inputGroup}>
+        {/* <View style={styles.inputGroup}>
           <View
             style={[
               styles.inputUserInfo,
@@ -1038,7 +1179,88 @@ export default function AdminEditItem({navigation}) {
               <Text style={styles.inputHelper}>{errors.price}</Text>
             ) : null}
           </View>
-        </View>
+        </View> */}
+
+        {itemInfo.size.length > 0 &&
+          sortedSizes.map((size, index) => (
+            <View style={styles.inputGroup} key={index}>
+              <View
+                style={[
+                  styles.inputUserInfo,
+                  isFocusedPriceBySize[size] && styles.inputFocused,
+                ]}>
+                <TextInput
+                  readOnly={enableEditing ? false : true}
+                  style={[
+                    styles.input,
+                    isFocusedPriceBySize[size] && {
+                      borderBottomColor: 'rgba(19, 19, 21, 1)',
+                    },
+                  ]}
+                  keyboardType='numeric'
+                  maxLength={20}
+                  onFocus={() => handleInputFocus('price', size)}
+                  onBlur={() => handleInputBlur('price', size)}
+                  // onChangeText={text => handleValueChange(size, text)} // Pass size here
+                  onChangeText={text => handleInputPriceAndSize(size, text)}
+                  // value={itemInfo.price[size] || ''} // Get price for this size
+                  value={priceBySize[size]} // Get price for this size
+                />
+                {/* {console.log('itemInfo.price[size]: ', itemInfo.price[size])} */}
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={styles.inputLabelTouchable}>
+                  <Text
+                    style={[
+                      styles.inputLabel,
+                      isFocusedPriceBySize[size] ||
+                      (priceBySize[size] !== null &&
+                        priceBySize[size] !== undefined &&
+                        priceBySize[size] !== '')
+                        ? styles.inputLabelFocused
+                        : null,
+                    ]}>
+                    {formName.price + size}
+                  </Text>
+                  {/* {console.log(
+                    '111isFocusedPriceBySize[size]: ',
+                    isFocusedPriceBySize[size],
+                    priceBySize[size],
+                    size,
+                  )}
+                  {console.log(
+                    'priceBySize',
+                    priceBySize,
+                    size,
+                    priceBySize[''],
+                  )} */}
+                </TouchableOpacity>
+                <AntDesign
+                  name={
+                    isFocusedPriceBySize[size] ? 'checkcircle' : 'checkcircleo'
+                  }
+                  size={18}
+                  color={'rgba(50, 205, 50, 0.6)'}
+                  style={[
+                    {
+                      position: 'absolute',
+                      right: 0,
+                      bottom: 0,
+                      top: 10,
+                    },
+                    isFocusedPriceBySize[size] && {
+                      color: 'rgba(50, 205, 50, 1)',
+                    },
+                  ]}
+                />
+                {errorsPriceAndSize[size] ? (
+                  <Text style={styles.inputHelper}>
+                    {errorsPriceAndSize[size]}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+          ))}
 
         {/* START: CATEGORY */}
         <View
@@ -1160,7 +1382,7 @@ export default function AdminEditItem({navigation}) {
                   style={{
                     flexDirection: 'row',
                   }}>
-                  {itemInfo.size.map(item => {
+                  {sortedSizes.map(item => {
                     return (
                       <View
                         key={item}

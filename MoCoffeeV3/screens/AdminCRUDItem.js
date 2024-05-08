@@ -53,7 +53,7 @@ export default function AdminCRUDItem({navigation}) {
     description: '',
     // price: '',
     // price: {S: '10', M: '2', XL: '20', L: '15'},
-    price: {},
+    // price: {},
     category: '',
     size: [],
     available: null,
@@ -63,7 +63,7 @@ export default function AdminCRUDItem({navigation}) {
   const [isFocused, setIsFocused] = useState({
     name: false,
     description: false,
-    price: false,
+    // price: false,
     category: false,
     size: false,
     available: false,
@@ -91,7 +91,7 @@ export default function AdminCRUDItem({navigation}) {
     featured_image: '',
     name: '',
     description: '',
-    price: '',
+    // price: '',
     category: '',
     size: '',
     available: '',
@@ -673,7 +673,7 @@ export default function AdminCRUDItem({navigation}) {
 
   const createNewItemOnFireStore = (dataObject, imageURL) => {
     console.log('USERDATA(itemInfo): ', dataObject);
-    const {available, category, description, name, price, size, priceBySize} =
+    const {available, category, description, name, size, priceBySize} =
       dataObject;
 
     console.log('imageURL: ', imageURL);
@@ -745,7 +745,7 @@ export default function AdminCRUDItem({navigation}) {
       featured_image: [],
       name: '',
       description: '',
-      price: '',
+      // price: '',
       category: '',
       size: [],
       available: null,
@@ -1215,7 +1215,7 @@ export default function AdminCRUDItem({navigation}) {
         </View> */}
 
         {/* ITEMS SELECTED2 */}
-        <View style={{marginTop: 50}}>
+        {/* <View style={{marginTop: 50}}>
           <Text>Selected Categories222 : </Text>
           {itemInfo.size.map((item, index) => {
             return (
@@ -1224,7 +1224,7 @@ export default function AdminCRUDItem({navigation}) {
               </Text>
             );
           })}
-        </View>
+        </View> */}
         {/* END: AVAILABLE_SIZES */}
 
         {/* START: AVAILABLE */}

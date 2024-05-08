@@ -437,7 +437,7 @@ export default function DetailScreen({}) {
               {/* Giá bán:{' '} */}
               <Text style={{color: '#ee4d2d', fontWeight: '600'}}>
                 {/* {item?.price ?? console.log('DETAIL_ITEM ', item)} */}
-                {item?.price ?? item?.priceBySize[activeSize]}
+                {item?.priceBySize?.[activeSize] ?? 'Đang cập nhật'}
               </Text>
             </Text>
             {/* <Text style={{fontSize: 16, marginBottom: 8}}>
