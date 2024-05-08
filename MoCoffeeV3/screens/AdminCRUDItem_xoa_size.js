@@ -51,11 +51,8 @@ export default function AdminCRUDItem({navigation}) {
     featured_image: [],
     name: '',
     description: '',
-    // price: '',
-    // price: {S: '10', M: '2', XL: '20', L: '15'},
-    price: {},
+    price: '',
     category: '',
-    size: [],
     available: null,
   });
 
@@ -65,14 +62,7 @@ export default function AdminCRUDItem({navigation}) {
     description: false,
     price: false,
     category: false,
-    size: false,
     available: false,
-  });
-  const [isFocusedPriceBySize, setIsFocusedPriceBySize] = useState({
-    S: false,
-    M: false,
-    L: false,
-    XL: false,
   });
 
   // FORM NAME
@@ -80,9 +70,8 @@ export default function AdminCRUDItem({navigation}) {
     featured_image: 'Hình ảnh sản phẩm *',
     name: 'Tên sản phẩm *',
     description: 'Mô tả sản phẩm *',
-    price: 'Giá sản phẩm cho size ',
+    price: 'Giá sản phẩm *',
     category: 'Phân loại sản phẩm *',
-    size: 'Size sản phẩm *',
     available: 'Chế độ hiển thị *',
   });
 
@@ -93,23 +82,7 @@ export default function AdminCRUDItem({navigation}) {
     description: '',
     price: '',
     category: '',
-    size: '',
     available: '',
-  });
-
-  //   ERRORS
-  const [errorsPriceAndSize, setErrorsPriceAndSize] = useState({
-    S: '',
-    M: '',
-    XL: '',
-    L: '',
-  });
-
-  const [priceBySize, setPriceBySize] = useState({
-    S: '',
-    M: '',
-    XL: '',
-    L: '',
   });
 
   const navi = useNavigation();
@@ -138,48 +111,6 @@ export default function AdminCRUDItem({navigation}) {
     console.log('Category:', CategoriesData[index].category);
     handleValueChange('category', CategoriesData[index].category);
   };
-
-  // AVAILABLE_SIZES
-  const handleSizeItem = value => {
-    console.log('Size: ', value);
-    handleValueChange('size', value);
-  };
-
-  // SIZE V2
-  const [sizeSanPham, setSizeSanPham] = useState([]);
-
-  const SizeProductData = [
-    {key: '0', value: 'S-Small (360ml)', size: 'S'},
-    {key: '1', value: 'M-Medium (500ml)', size: 'M'},
-    {key: '2', value: 'L-Large (700ml)', size: 'L'},
-    {key: '3', value: 'XL-Extra Large (1000ml)', size: 'XL'},
-  ];
-
-  const handleSizeSelection = selectedItems => {
-    const selectedSizes = selectedItems.map(item => item.size);
-    setItemInfo(prevState => ({
-      ...prevState,
-      size: selectedSizes,
-    }));
-  };
-
-  // Khi sizeSanPham thay đổi, cập nhật giá trị của size trong itemInfo
-  useEffect(() => {
-    // console.log('SizeProductData: ', SizeProductData);
-    // console.log('sizeSanPham: ', sizeSanPham);
-    // console.log('typeof sizeSanPham: ', typeof sizeSanPham);
-    // console.log('SizeProductData__: ', SizeProductData[0].size);
-
-    const selectedSizes = sizeSanPham.map(index => SizeProductData[index].size);
-    console.log('Selected Sizes:', selectedSizes);
-
-    setItemInfo(prevState => ({
-      ...prevState,
-      size: selectedSizes, // Lấy dữ liệu từ selectedSizes
-    }));
-
-    console.log('UPDATE THANH CONG ');
-  }, [sizeSanPham]);
 
   // AVAILABLE
   const AvailableData = [
@@ -360,70 +291,36 @@ export default function AdminCRUDItem({navigation}) {
 
   // ####################### FUNCTIONS ####################### //
   // HANDLE INPUT BLUR
-  const handleInputBlur = (fieldName, size = null) => {
+  const handleInputBlur = fieldName => {
     setIsFocused(prevState => ({
       ...prevState,
       [fieldName]: false,
     }));
 
-    // if (fieldName === 'price') {
-    //   setItemInfo(prevState => ({
-    //     ...prevState,
-    //     [fieldName]: prevState[fieldName] + '₫', // Thêm ký hiệu tiền tệ vào cuối
-    //   }));
-    // }
-
-    // Kiểm tra nếu fieldname là 'price', thêm ký hiệu tiền tệ vào cuối
-    setIsFocusedPriceBySize(prevState => ({
-      ...prevState,
-      [size]: false,
-    }));
-
-    if (fieldName === 'price' && size && priceBySize[size]) {
-      setPriceBySize(prevState => ({
+    if (fieldName === 'price') {
+      setItemInfo(prevState => ({
         ...prevState,
-        [size]: prevState[size] + '₫',
+        [fieldName]: prevState[fieldName] + '₫', // Thêm ký hiệu tiền tệ vào cuối
       }));
-      // console.log('BLUR_priceBySize: ', priceBySize, size);
     }
   };
 
   // HANDLE INPUT FOCUS
-  const handleInputFocus = (fieldName, size = null) => {
-    // console.log(
-    //   'formatCurrency(itemInfo.price): ',
-    //   formatCurrency(priceBySize[size]),
-    //   size,
-    // );
+  const handleInputFocus = fieldName => {
+    console.log(
+      'formatCurrency(itemInfo.price): ',
+      formatCurrency(itemInfo.price),
+    );
     setIsFocused(prevState => ({
       ...prevState,
       [fieldName]: true,
     }));
 
-    // if (fieldName === 'price' && itemInfo.price.endsWith('₫')) {
-    //   setItemInfo(prevState => ({
-    //     ...prevState,
-    //     [fieldName]: prevState[fieldName].slice(0, -1), // Xóa ký hiệu tiền tệ khỏi cuối chuỗi
-    //   }));
-    // }
-
-    setIsFocusedPriceBySize(prevState => ({
-      ...prevState,
-      [size]: true,
-    }));
-
-    if (
-      fieldName === 'price' &&
-      priceBySize[size].endsWith('₫') &&
-      size &&
-      priceBySize[size]
-    ) {
-      setPriceBySize(prevState => ({
+    if (fieldName === 'price' && itemInfo.price.endsWith('₫')) {
+      setItemInfo(prevState => ({
         ...prevState,
-        [size]: prevState[size].slice(0, -1), // Xóa ký hiệu tiền tệ khỏi cuối chuỗi
+        [fieldName]: prevState[fieldName].slice(0, -1), // Xóa ký hiệu tiền tệ khỏi cuối chuỗi
       }));
-
-      console.log('priceBySize', priceBySize);
     }
   };
 
@@ -477,7 +374,6 @@ export default function AdminCRUDItem({navigation}) {
   // HANDLE VALIDATE WHEN SUBMIT
   const validateData = () => {
     const newErrors = {};
-    const newErrorsForPriceAndSize = {};
 
     if (itemInfo.featured_image.length === 0) {
       newErrors.featured_image = 'Vui lòng chọn ít nhất một hình ảnh nổi bật';
@@ -491,51 +387,18 @@ export default function AdminCRUDItem({navigation}) {
       newErrors.description = 'Vui lòng nhập mô tả sản phẩm';
     }
 
-    // if (!itemInfo.price.trim()) {
-    //   newErrors.price = 'Vui lòng nhập giá sản phẩm';
-    // } else {
-    //   // Loại bỏ ký tự ₫ và ,
-    //   const cleanedPrice = itemInfo.price.replace(/[₫,]/g, '');
-    //   if (isNaN(cleanedPrice)) {
-    //     newErrors.price = 'Giá sản phẩm phải là số';
-    //   }
-    // }
-
-    // Kiểm tra từng kích thước giá sản phẩm
-    // Object.keys(priceBySize).forEach(size => {
-    //   if (!priceBySize[size].trim()) {
-    //     newErrorsForPriceAndSize[size] =
-    //       'Vui lòng nhập giá sản phẩm cho size ' + size;
-    //   } else {
-    //     // Loại bỏ ký tự ₫ và ,
-    //     const cleanedPrice = priceBySize[size].replace(/[₫,]/g, '');
-    //     if (isNaN(cleanedPrice)) {
-    //       newErrorsForPriceAndSize[size] =
-    //         'Giá sản phẩm cho size ' + size + ' phải là số';
-    //     }
-    //   }
-    // });
-
-    itemInfo.size.forEach(size => {
-      if (!priceBySize[size].trim()) {
-        newErrorsForPriceAndSize[size] =
-          'Vui lòng nhập giá sản phẩm cho size ' + size;
-      } else {
-        // Loại bỏ ký tự ₫ và ,
-        const cleanedPrice = priceBySize[size].replace(/[₫,]/g, '');
-        if (isNaN(cleanedPrice)) {
-          newErrorsForPriceAndSize[size] =
-            'Giá sản phẩm cho size ' + size + ' phải là số';
-        }
+    if (!itemInfo.price.trim()) {
+      newErrors.price = 'Vui lòng nhập giá sản phẩm';
+    } else {
+      // Loại bỏ ký tự ₫ và ,
+      const cleanedPrice = itemInfo.price.replace(/[₫,]/g, '');
+      if (isNaN(cleanedPrice)) {
+        newErrors.price = 'Giá sản phẩm phải là số';
       }
-    });
+    }
 
     if (!itemInfo.category.trim()) {
       newErrors.category = 'Vui lòng chọn danh mục sản phẩm';
-    }
-
-    if (itemInfo.size.length === 0) {
-      newErrors.size = 'Vui lòng chọn kích thước sản phẩm';
     }
 
     if (itemInfo.available === null) {
@@ -543,63 +406,36 @@ export default function AdminCRUDItem({navigation}) {
     }
 
     setErrors(newErrors);
-    setErrorsPriceAndSize(newErrorsForPriceAndSize);
-    console.log('newErrorsForPriceAndSize: ', newErrorsForPriceAndSize);
-    // console.log('itemInfo.size: ', itemInfo.size);
 
-    // Kết hợp cả `newErrors` và `newErrorsForPriceAndSize` thành một mảng
-    const allErrors = {...newErrors, ...newErrorsForPriceAndSize};
-
-    // Kiểm tra nếu không có lỗi
-    return Object.keys(allErrors).length === 0;
+    // Return true if there are no errors, false otherwise
+    return Object.keys(newErrors).length === 0;
   };
 
   const handlePress = dataObject => {
-    // setReloadFlag(prevFlag => !prevFlag); // Khi handlePress được gọi, trigger reload bằng cách thay đổi giá trị của reloadFlag
+    setReloadFlag(prevFlag => !prevFlag); // Khi handlePress được gọi, trigger reload bằng cách thay đổi giá trị của reloadFlag
 
     const isValid = validateData();
     if (isValid) {
-      // CHỈ LẤY KEY NÀO CÓ DỮ LIỆU
-      // Khởi tạo một đối tượng mới để lưu trữ các cặp key-value có dữ liệu
-      const nonEmptyPriceBySize = {};
+      // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
+      console.log('Dữ liệu hợp lệ:', itemInfo);
 
-      // Lặp qua các cặp key-value của priceBySize
-      for (const [key, value] of Object.entries(priceBySize)) {
-        // Nếu value không rỗng, thêm cặp key-value này vào nonEmptyPriceBySize
-        if (value !== '') {
-          nonEmptyPriceBySize[key] = value;
-        }
-      }
-
-      // console.log('nonEmptyPriceBySize: ', nonEmptyPriceBySize);
-
-      // GỘP DỮ LIỆU VÀO CHUNG 1 OBJECT
-      // Tạo một đối tượng mới để gộp các dữ liệu vào
-      const mergedData = {
-        ...itemInfo, // Copy toàn bộ dữ liệu từ itemInfo vào mergedData
-        priceBySize: nonEmptyPriceBySize, // Thêm key priceBySize với giá trị là priceBySize
-      };
-
-      // // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
-      console.log('Dữ liệu hợp lệ:', mergedData);
-
-      // // Upload Image
-      // Alert.alert(
-      //   'Xác nhận',
-      //   'Bạn có muốn thêm sản phẩm này?',
-      //   [
-      //     {
-      //       text: 'Hủy',
-      //       onPress: () => console.log('Hành động đã bị hủy'),
-      //       style: 'cancel',
-      //     },
-      //     {
-      //       text: 'Xác nhận',
-      //       onPress: () => waitUpload(dataObject),
-      //     },
-      //   ],
-      //   {cancelable: false},
-      // );
+      // Upload Image
+      Alert.alert(
+        'Xác nhận',
+        'Bạn có muốn thêm sản phẩm này?',
+        [
+          {
+            text: 'Hủy',
+            onPress: () => console.log('Hành động đã bị hủy'),
+            style: 'cancel',
+          },
+          {
+            text: 'Xác nhận',
+            onPress: () => waitUpload(dataObject),
+          },
+        ],
+        {cancelable: false},
+      );
     } else {
       console.log('ERROR: ', itemInfo);
       console.log('Dữ liệu không hợp lệ:', errors);
@@ -627,7 +463,6 @@ export default function AdminCRUDItem({navigation}) {
   // // CREATE NEW ITEM ON FIRESTORE
   // const createNewItemOnFireStore = (dataObject, imageURL) => {
   //   console.log('USERDATA(itemInfo): ', dataObject);
-  //   const {available, category, description, name, price, size} = dataObject;
 
   //   console.log('imageURL: ', imageURL);
 
@@ -642,7 +477,6 @@ export default function AdminCRUDItem({navigation}) {
   //     name,
   //     description,
   //     available,
-  //     available_sizes: [size],
   //     category,
   //     featured_image: imageURL,
   //     price,
@@ -672,7 +506,7 @@ export default function AdminCRUDItem({navigation}) {
 
   const createNewItemOnFireStore = (dataObject, imageURL) => {
     console.log('USERDATA(itemInfo): ', dataObject);
-    const {available, category, description, name, price, size} = dataObject;
+    const {available, category, description, name, price} = dataObject;
 
     console.log('imageURL: ', imageURL);
 
@@ -694,7 +528,6 @@ export default function AdminCRUDItem({navigation}) {
       name,
       description,
       available,
-      available_sizes: size,
       category,
       featured_image: imageURL,
       price,
@@ -744,7 +577,6 @@ export default function AdminCRUDItem({navigation}) {
       description: '',
       price: '',
       category: '',
-      size: [],
       available: null,
     });
 
@@ -753,31 +585,6 @@ export default function AdminCRUDItem({navigation}) {
     setReloadFlag(!reloadFlag);
     console.log('+_+ ', itemInfo);
     // console.log('reseted: ', categoryDefaultOption, itemInfo);
-  };
-
-  // PRICE & SIZE
-  const handleInputPriceAndSize = (size, value) => {
-    if (typeof value !== 'undefined' && value !== null) {
-      let newValue = value;
-      // Xóa các ký tự không phải số và không phải dấu chấm
-      newValue = newValue.replace(/[^\d.]/g, '');
-      // Kiểm tra nếu giá trị mới không phải là số hoặc là một chuỗi rỗng
-      // thì gán giá trị mới là '0'
-      if (isNaN(newValue) || newValue === '') {
-        newValue = '0';
-      }
-      // Kiểm tra nếu giá trị mới nhỏ hơn 0 thì gán giá trị mới là '0'
-      else if (parseFloat(newValue) < 0) {
-        newValue = '0';
-      }
-      // Chuyển đổi giá trị sang định dạng tiền tệ
-      else {
-        newValue = parseFloat(newValue).toLocaleString('en-US');
-      }
-
-      setPriceBySize({...priceBySize, [size]: newValue});
-      console.log('ĐÃ UPDATE PriceBySize');
-    }
   };
 
   return (
@@ -989,143 +796,60 @@ export default function AdminCRUDItem({navigation}) {
         </View>
 
         {/* PRICE */}
-        {/* {itemInfo.size.length > 0 &&
-          itemInfo.size.map((size, index) => (
-            <View style={styles.inputGroup} key={index}>
-              <View
+        <View style={styles.inputGroup}>
+          <View
+            style={[
+              styles.inputUserInfo,
+              isFocused.price && styles.inputFocused,
+            ]}>
+            <TextInput
+              style={[
+                styles.input,
+                isFocused.price && {
+                  borderBottomColor: 'rgba(19, 19, 21, 1)',
+                },
+              ]}
+              keyboardType='numeric'
+              maxLength={20}
+              onFocus={() => handleInputFocus('price')}
+              onBlur={() => handleInputBlur('price')}
+              onChangeText={text => handleValueChange('price', text)}
+              value={itemInfo.price}
+            />
+            <TouchableOpacity
+              activeOpacity={1}
+              style={styles.inputLabelTouchable}>
+              <Text
                 style={[
-                  styles.inputUserInfo,
-                  isFocused.price && styles.inputFocused,
+                  styles.inputLabel,
+                  isFocused.price || itemInfo.price !== ''
+                    ? styles.inputLabelFocused
+                    : null,
                 ]}>
-                <TextInput
-                  style={[
-                    styles.input,
-                    isFocused.price && {
-                      borderBottomColor: 'rgba(19, 19, 21, 1)',
-                    },
-                  ]}
-                  keyboardType='numeric'
-                  maxLength={20}
-                  onFocus={() => handleInputFocus('price')}
-                  onBlur={() => handleInputBlur('price')}
-                  onChangeText={text => handleValueChange('price', text)}
-                  value={itemInfo.price}
-                />
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.inputLabelTouchable}>
-                  <Text
-                    style={[
-                      styles.inputLabel,
-                      isFocused.price || itemInfo.price !== ''
-                        ? styles.inputLabelFocused
-                        : null,
-                    ]}>
-                    {formName.price + size}
-                  </Text>
-                </TouchableOpacity>
-                <AntDesign
-                  name={isFocused.price ? 'checkcircle' : 'checkcircleo'}
-                  size={18}
-                  color={'rgba(50, 205, 50, 0.6)'}
-                  style={[
-                    {
-                      position: 'absolute',
-                      right: 0,
-                      bottom: 0,
-                      top: 10,
-                    },
-                    isFocused.price && {
-                      color: 'rgba(50, 205, 50, 1)',
-                    },
-                  ]}
-                />
-                {errors.price ? (
-                  <Text style={styles.inputHelper}>{errors.price}</Text>
-                ) : null}
-              </View>
-            </View>
-          ))} */}
-
-        {itemInfo.size.length > 0 &&
-          itemInfo.size.map((size, index) => (
-            <View style={styles.inputGroup} key={index}>
-              <View
-                style={[
-                  styles.inputUserInfo,
-                  isFocusedPriceBySize[size] && styles.inputFocused,
-                ]}>
-                <TextInput
-                  style={[
-                    styles.input,
-                    isFocusedPriceBySize[size] && {
-                      borderBottomColor: 'rgba(19, 19, 21, 1)',
-                    },
-                  ]}
-                  keyboardType='numeric'
-                  maxLength={20}
-                  onFocus={() => handleInputFocus('price', size)}
-                  onBlur={() => handleInputBlur('price', size)}
-                  // onChangeText={text => handleValueChange(size, text)} // Pass size here
-                  onChangeText={text => handleInputPriceAndSize(size, text)}
-                  // value={itemInfo.price[size] || ''} // Get price for this size
-                  value={priceBySize[size]} // Get price for this size
-                />
-                {/* {console.log('itemInfo.price[size]: ', itemInfo.price[size])} */}
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.inputLabelTouchable}>
-                  <Text
-                    style={[
-                      styles.inputLabel,
-                      isFocusedPriceBySize[size] ||
-                      (priceBySize[size] !== null &&
-                        priceBySize[size] !== undefined &&
-                        priceBySize[size] !== '')
-                        ? styles.inputLabelFocused
-                        : null,
-                    ]}>
-                    {formName.price + size}
-                  </Text>
-                  {/* {console.log(
-                    '111isFocusedPriceBySize[size]: ',
-                    isFocusedPriceBySize[size],
-                    priceBySize[size],
-                    size,
-                  )}
-                  {console.log(
-                    'priceBySize',
-                    priceBySize,
-                    size,
-                    priceBySize[''],
-                  )} */}
-                </TouchableOpacity>
-                <AntDesign
-                  name={
-                    isFocusedPriceBySize[size] ? 'checkcircle' : 'checkcircleo'
-                  }
-                  size={18}
-                  color={'rgba(50, 205, 50, 0.6)'}
-                  style={[
-                    {
-                      position: 'absolute',
-                      right: 0,
-                      bottom: 0,
-                      top: 10,
-                    },
-                    isFocusedPriceBySize[size] && {
-                      color: 'rgba(50, 205, 50, 1)',
-                    },
-                  ]}
-                />
-                {errorsPriceAndSize[size] ? (
-                  <Text style={styles.inputHelper}>
-                    {errorsPriceAndSize[size]}
-                  </Text>
-                ) : null}
-              </View>
-            </View>
-          ))}
+                {formName.price}
+              </Text>
+            </TouchableOpacity>
+            <AntDesign
+              name={isFocused.price ? 'checkcircle' : 'checkcircleo'}
+              size={18}
+              color={'rgba(50, 205, 50, 0.6)'}
+              style={[
+                {
+                  position: 'absolute',
+                  right: 0,
+                  bottom: 0,
+                  top: 10,
+                },
+                isFocused.price && {
+                  color: 'rgba(50, 205, 50, 1)',
+                },
+              ]}
+            />
+            {errors.price ? (
+              <Text style={styles.inputHelper}>{errors.price}</Text>
+            ) : null}
+          </View>
+        </View>
 
         {/* START: CATEGORY */}
         <View style={styles.inputGroup}>
@@ -1161,68 +885,6 @@ export default function AdminCRUDItem({navigation}) {
             ) : null}
           </View>
         </View>
-        {/* END: CATEGORY */}
-
-        {/* START: AVAILABLE_SIZES */}
-        <View style={styles.inputGroup}>
-          <View
-            style={[
-              styles.inputUserInfo,
-              isFocused.size && styles.inputFocused,
-            ]}>
-            {/* <SelectList
-              setSelected={val => handleSizeItem(val)}
-              data={SizeData}
-              save='value'
-              searchPlaceholder={'Size sản phẩm của bạn'}
-              placeholder={'Chọn size cho sản phẩm'}
-            /> */}
-            <MultipleSelectList
-              setSelected={val => setSizeSanPham(val)}
-              data={SizeProductData}
-              label='Các size đã chọn'
-              // boxStyles={{marginTop: 25}}
-              searchPlaceholder={'Size sản phẩm của bạn'}
-              placeholder={'Chọn size cho sản phẩm'}
-            />
-            <TouchableOpacity
-              activeOpacity={1}
-              style={[styles.inputLabelTouchable, {top: 0}]}>
-              <Text style={[styles.inputLabel, styles.inputLabelFocused]}>
-                {formName.size}
-              </Text>
-            </TouchableOpacity>
-
-            {errors.size ? (
-              <Text style={styles.inputHelper}>{errors.size}</Text>
-            ) : null}
-          </View>
-        </View>
-
-        {/* ITEMS SELECTED */}
-        {/* <View style={{marginTop: 50}}>
-          <Text>Selected Categories : </Text>
-          {sizeSanPham.map(item => {
-            return (
-              <Text key={item} style={{marginTop: 10, color: 'gray'}}>
-                {item}
-              </Text>
-            );
-          })}
-        </View> */}
-
-        {/* ITEMS SELECTED2 */}
-        <View style={{marginTop: 50}}>
-          <Text>Selected Categories222 : </Text>
-          {itemInfo.size.map((item, index) => {
-            return (
-              <Text key={index} style={{marginTop: 10, color: 'gray'}}>
-                {item}
-              </Text>
-            );
-          })}
-        </View>
-        {/* END: AVAILABLE_SIZES */}
 
         {/* START: AVAILABLE */}
         <View style={styles.inputGroup}>

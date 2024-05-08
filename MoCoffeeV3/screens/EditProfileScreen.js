@@ -522,8 +522,10 @@ export default function EditProfileScreen({navigation}) {
           elevation: 5,
           maxHeight: 200,
         }}
-        arrowIconColor={'#fff'}
-        arrowIconBackgroundColor={'#6E5532'}
+        // arrowIconColor={'#fff'}
+        arrowIconColor={'#000'}
+        // arrowIconBackgroundColor={'#6E5532'}
+        arrowIconBackgroundColor={'#fff'}
         titleOfScreen={'Chỉnh sửa hồ sơ'}
         onPressBack={data => console.log(data)}
         dataNavigation={{

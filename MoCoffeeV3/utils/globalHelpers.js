@@ -167,7 +167,8 @@ export const getOrderStatusBackgroundColor = status => {
     case 'pending':
       return '#737373'; //gray
     case 'processing':
-      return '#4c4cff'; //blue
+      // return '#4c4cff'; //blue
+      return '#5d5dff'; //blue (nhạt hơn)
     case 'shipped':
     case 'shipping':
       return '#4ca64c'; //xanh lá cây

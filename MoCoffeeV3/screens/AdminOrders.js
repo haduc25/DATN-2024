@@ -780,7 +780,7 @@ export default function AdminOrders({navigation}) {
             <TouchableOpacity
               onPress={() => sortOrder('processing')}
               style={{
-                backgroundColor: '#4c4cff',
+                backgroundColor: '#5d5dff',
                 marginLeft: 14,
                 height: 40,
                 minWidth: 80,

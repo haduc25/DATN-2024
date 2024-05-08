@@ -55,7 +55,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Xem chi tiết đơn hàng Order ở ngoài chưa có
 - Xem lại giỏ hàng chưa có
 - Xử lý thêm giỏ hàng trong Detail
-- Loại bỏ chọn size
+- Loại bỏ chọn size (available_sizes) => k bỏ mà sẽ làm tiếp
 - Duyệt đơn => ok
 - SORT: Mới nhất, chưa duyệt, đang giao hàng, đã hủy => ok
 
