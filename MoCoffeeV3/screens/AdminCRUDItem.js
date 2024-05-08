@@ -555,8 +555,6 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   const handlePress = dataObject => {
-    // setReloadFlag(prevFlag => !prevFlag); // Khi handlePress được gọi, trigger reload bằng cách thay đổi giá trị của reloadFlag
-
     const isValid = validateData();
     if (isValid) {
       // CHỈ LẤY KEY NÀO CÓ DỮ LIỆU
@@ -576,30 +574,33 @@ export default function AdminCRUDItem({navigation}) {
       // GỘP DỮ LIỆU VÀO CHUNG 1 OBJECT
       // Tạo một đối tượng mới để gộp các dữ liệu vào
       const mergedData = {
-        ...itemInfo, // Copy toàn bộ dữ liệu từ itemInfo vào mergedData
+        ...dataObject, // Copy toàn bộ dữ liệu từ itemInfo vào mergedData
         priceBySize: nonEmptyPriceBySize, // Thêm key priceBySize với giá trị là priceBySize
       };
 
       // // Nếu dữ liệu hợp lệ, thực hiện hành động tại đây
       console.log('Dữ liệu hợp lệ:', mergedData);
 
-      // // Upload Image
-      // Alert.alert(
-      //   'Xác nhận',
-      //   'Bạn có muốn thêm sản phẩm này?',
-      //   [
-      //     {
-      //       text: 'Hủy',
-      //       onPress: () => console.log('Hành động đã bị hủy'),
-      //       style: 'cancel',
-      //     },
-      //     {
-      //       text: 'Xác nhận',
-      //       onPress: () => waitUpload(dataObject),
-      //     },
-      //   ],
-      //   {cancelable: false},
-      // );
+      // Upload Image
+      Alert.alert(
+        'Xác nhận',
+        'Bạn có muốn thêm sản phẩm này?',
+        [
+          {
+            text: 'Hủy',
+            onPress: () => console.log('Hành động đã bị hủy'),
+            style: 'cancel',
+          },
+          {
+            text: 'Xác nhận',
+            onPress: () => {
+              setReloadFlag(prevFlag => !prevFlag); // Khi handlePress được gọi, trigger reload bằng cách thay đổi giá trị của reloadFlag
+              waitUpload(mergedData);
+            },
+          },
+        ],
+        {cancelable: false},
+      );
     } else {
       console.log('ERROR: ', itemInfo);
       console.log('Dữ liệu không hợp lệ:', errors);
@@ -672,7 +673,8 @@ export default function AdminCRUDItem({navigation}) {
 
   const createNewItemOnFireStore = (dataObject, imageURL) => {
     console.log('USERDATA(itemInfo): ', dataObject);
-    const {available, category, description, name, price, size} = dataObject;
+    const {available, category, description, name, price, size, priceBySize} =
+      dataObject;
 
     console.log('imageURL: ', imageURL);
 
@@ -697,7 +699,7 @@ export default function AdminCRUDItem({navigation}) {
       available_sizes: size,
       category,
       featured_image: imageURL,
-      price,
+      // price,
       // DEFAULT VALUE
       likes: '0',
       // preparation_time # bỏ
@@ -705,6 +707,7 @@ export default function AdminCRUDItem({navigation}) {
       sold_count: '0',
       createdAt,
       updatedAt,
+      priceBySize,
     })
       .then(() => {
         // Data create successfully!

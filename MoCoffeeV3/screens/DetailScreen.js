@@ -34,6 +34,7 @@ import {addToCart} from '../redux/CartReducer';
 import {db, auth} from '../firebase';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {sortSizes} from '../utils/globalHelpers';
 
 // START: DynamicHeader
 
@@ -319,6 +320,8 @@ export default function DetailScreen({}) {
   console.log('productInfo.name: ', productInfo.name);
   console.log('productInfo.category: ', productInfo.category);
 
+  const sortedSizes = sortSizes(item.available_sizes);
+
   return (
     <View style={{flex: 1}}>
       <View style={{position: 'relative'}}>
@@ -433,7 +436,8 @@ export default function DetailScreen({}) {
             <Text style={{fontSize: 20, marginBottom: 8}}>
               {/* Giá bán:{' '} */}
               <Text style={{color: '#ee4d2d', fontWeight: '600'}}>
-                {item.price}
+                {/* {item?.price ?? console.log('DETAIL_ITEM ', item)} */}
+                {item?.price ?? item?.priceBySize[activeSize]}
               </Text>
             </Text>
             {/* <Text style={{fontSize: 16, marginBottom: 8}}>
@@ -463,7 +467,7 @@ export default function DetailScreen({}) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                {item.available_sizes.map((size, index) => (
+                {sortedSizes.map((size, index) => (
                   <TouchableOpacity
                     key={index}
                     style={{

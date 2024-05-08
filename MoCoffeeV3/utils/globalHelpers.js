@@ -182,3 +182,20 @@ export const getOrderStatusBackgroundColor = status => {
 export const isShippedOrCancelled = status => {
   return !(status === 'shipped' || status === 'cancelled');
 };
+// Định nghĩa hàm sortSizes
+export const sortSizes = sizes => {
+  // Định nghĩa hàm so sánh để sắp xếp các kích thước từ nhỏ đến lớn
+  const compareSizes = (size1, size2) => {
+    // Sắp xếp theo thứ tự: S < M < L < XL
+    const sizeOrder = {S: 0, M: 1, L: 2, XL: 3};
+
+    // So sánh thứ tự của hai kích thước
+    return sizeOrder[size1] - sizeOrder[size2];
+  };
+
+  // Sắp xếp mảng sizes từ nhỏ đến lớn
+  sizes.sort(compareSizes);
+
+  // Trả về mảng sizes đã sắp xếp
+  return sizes;
+};
