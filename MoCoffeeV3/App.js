@@ -23,6 +23,7 @@ import AdminProductsCRUD from './screens/AdminProductsCRUD';
 import AdminCRUDItem from './screens/AdminCRUDItem';
 import AdminEditItem from './screens/AdminEditItem';
 import AdminOrders from './screens/AdminOrders';
+import AdminStatisticsAndAnalysisChart from './screens/AdminStatisticsAndAnalysisChart';
 import OrderConfirmationSuccessfully from './screens/OrderConfirmationSuccessfully';
 
 // Redux
@@ -61,7 +62,8 @@ export default function App() {
           // initialRouteName={'ImageAnimation'}
           // initialRouteName={'DynamicHeaderScrollView'}
 
-          initialRouteName={loginName} //current
+          // initialRouteName={loginName} //current
+          initialRouteName={'AdminDashboardScreen'} //test
           // initialRouteName={'AdminCRUDItem'} //test
           // initialRouteName={'AdminProductsCRUD'} //test
           // initialRouteName={'OrderConfirmationSuccessfully'} //test
@@ -270,6 +272,17 @@ export default function App() {
           <BottomTab.Screen
             name={'AdminOrders'}
             component={AdminOrders}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới
+              tabBarButton: () => null,
+            }}
+          />
+
+          {/* AdminStatisticsAndAnalysisChart */}
+          <BottomTab.Screen
+            name={'AdminStatisticsAndAnalysisChart'}
+            component={AdminStatisticsAndAnalysisChart}
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'}, // TabBar hiển thị dưới

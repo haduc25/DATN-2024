@@ -73,7 +73,11 @@ export default function AdminDashboardScreen({navigation}) {
           </View>
           <View style={{width: '100%'}}>
             <View style={{alignItems: 'center'}}>
-              <TouchableOpacity style={styles.itemsContainer}>
+              <TouchableOpacity
+                style={styles.itemsContainer}
+                onPress={() =>
+                  navi.navigate('AdminStatisticsAndAnalysisChart')
+                }>
                 <Image
                   style={{width: 125, height: 125}}
                   source={{

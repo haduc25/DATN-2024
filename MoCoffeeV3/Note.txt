@@ -55,10 +55,17 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Xem chi tiết đơn hàng Order ở ngoài chưa có
 - Xem lại giỏ hàng chưa có
 - Xử lý thêm giỏ hàng trong Detail
-- Loại bỏ chọn size (available_sizes) => k bỏ mà sẽ làm tiếp
+- Loại bỏ chọn size (available_sizes) => k bỏ mà sẽ làm tiếp => ok
 - Duyệt đơn => ok
 - SORT: Mới nhất, chưa duyệt, đang giao hàng, đã hủy => ok
 - Sửa sản phẩm: chỉ update ảnh nếu đó là ảnh mới còn nếu là ảnh cũ thì k update ảnh => ok
+- Chức năng tìm kiếm
+- Lấy vị trị
+- Chức năng đặt hàng khi nhều size + giá
+- Giỏ hàng làm lại vì size
+- Lọc sản phẩm ở Ngoài, Trong Admin
+- Phiếu giảm giá
+- Thống kê, phân tích đơn hàng (Số người đăng ký mới - 7 ngày, số đơn hàng trong 7 ngày, doanh thu trong tháng, số đơn đã được giao trong tháng, số đơn đã hủy)
 
 - User order => nếu là thanh toán tiền mặt (1) | nếu là thanh toán online (2)
 => (1) =>  Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang xử lý (processing) => Đang giao hàng => Đã giao hàng (shipped) => ok
@@ -67,11 +74,16 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 
 
 #WORD
-- Chuyển phần 1.4 sang chương 2
-- Vẽ lại USECASE để loại bỏ người xem + nhân viên
-- Thêm quy trình đặt hàng
-- Thêm các ứng dụng đã có trên thị trường + các tính năng gì mà chỉ ứng dụng của tôi có???
-- Thêm bieu do lop, bieu do co so du lieu
+- Chuyển phần 1.4 sang chương 2 => ok
+- Vẽ lại USECASE để loại bỏ quyền nhân viên => ok
+- Thêm quy trình đặt hàng => ok
+- Thêm các ứng dụng đã có trên thị trường + các tính năng gì mà chỉ ứng dụng của tôi có??? => ok
+- Thêm bieu do lop => ok, bieu do co so du lieu => ok
+
+
 
 #Command
 npx expo start --clear #reset cache
+
+
+width={Dimensions.get('window').width} // from react-native (Dimensions): lấy ra kích thước màn hình đt

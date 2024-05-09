@@ -407,6 +407,11 @@ export default function DetailScreen({}) {
               {/* END: HEART ICON */}
             </View>
 
+            <Text style={{fontSize: 20, marginBottom: 8}}>
+              <Text style={{color: '#ee4d2d', fontWeight: '600'}}>
+                {item?.priceBySize?.[activeSize] ?? 'Đang cập nhật'}
+              </Text>
+            </Text>
             <Text style={{fontSize: 16, marginBottom: 8}}>
               {item.description}
             </Text>
@@ -438,13 +443,11 @@ export default function DetailScreen({}) {
             </Text>
             {/* END: RATING */}
 
-            <Text style={{fontSize: 20, marginBottom: 8}}>
-              {/* Giá bán:{' '} */}
+            {/* <Text style={{fontSize: 20, marginBottom: 8}}>
               <Text style={{color: '#ee4d2d', fontWeight: '600'}}>
-                {/* {item?.price ?? console.log('DETAIL_ITEM ', item)} */}
                 {item?.priceBySize?.[activeSize] ?? 'Đang cập nhật'}
               </Text>
-            </Text>
+            </Text> */}
             {/* <Text style={{fontSize: 16, marginBottom: 8}}>
               Thời gian chuẩn bị: ~{item.preparation_time} phút
             </Text> */}
@@ -701,7 +704,8 @@ export default function DetailScreen({}) {
                 fontWeight: 'bold',
                 paddingRight: 20,
               }}>
-              {item.price} | Giao hàng ngay
+              {item?.priceBySize?.[activeSize] ?? 'Đang cập nhật'} | Giao hàng
+              ngay
             </Text>
             <Image
               style={{width: 40, height: 40}}

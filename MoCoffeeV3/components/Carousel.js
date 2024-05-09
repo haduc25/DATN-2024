@@ -37,8 +37,10 @@ const Carousel = () => {
     // require('../assets/banner/smoothie-banner-3.jpg'),
     // require('../assets/banner/smoothie-banner-4.jpg'),
     // require('../assets/banner/tea-banner-2.jpg'),
-    require('../assets/banner/tra-sua-banner-1.jpg'),
-    require('../assets/banner/tra-sua-banner-2.jpg'),
+    // require('../assets/banner/tra-sua-banner-1.jpg'),
+    // require('../assets/banner/tra-sua-banner-2.jpg'),
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Fcafe-photo-banner-1.jpg?alt=media&token=7de07bd0-9e9d-492b-976b-f2361e6ad1a2',
+    'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fbanner-images%2Ftra-sua-banner-2.jpg?alt=media&token=7362daad-e384-440e-ae39-535955b77a91',
   ];
 
   return (

@@ -73,3 +73,6 @@ npx expo install expo-image-picker
 
 #TABLE
 `npm i react-native-table-component`
+
+#CHARTS
+`npm i react-native-chart-kit`

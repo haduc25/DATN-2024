@@ -385,10 +385,10 @@ export default function AdminEditItem({navigation}) {
         await uploadAndSaveURL();
         console.log('done');
         if (!savePhotoURL.length) {
-          console.log('NEW_Mảng rỗng.', savePhotoURL);
+          // console.log('NEW_Mảng rỗng.', savePhotoURL);
           return;
         } else {
-          console.log('NEW_Mảng không rỗng.', savePhotoURL);
+          // console.log('NEW_Mảng không rỗng.', savePhotoURL);
 
           // hanlde tiếp sau khi upload image thành công
           updateItemOnFireStore(dataObject, savePhotoURL);
@@ -400,12 +400,12 @@ export default function AdminEditItem({navigation}) {
         itemInfo.featured_image.forEach(image => {
           savePhotoURL.push(image.uri);
         });
-        console.log('Ảnh cũ2: ', savePhotoURL);
+        // console.log('Ảnh cũ2: ', savePhotoURL);
         if (!savePhotoURL.length) {
           console.log('OLD_Mảng rỗng.', savePhotoURL);
           return;
         } else {
-          console.log('OLD_Mảng không rỗng.', savePhotoURL);
+          // console.log('OLD_Mảng không rỗng.', savePhotoURL);
 
           // hanlde tiếp sau khi upload image thành công
           updateItemOnFireStore(dataObject, savePhotoURL);
