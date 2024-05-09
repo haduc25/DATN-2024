@@ -225,7 +225,12 @@ export default function ProductType({navigation}) {
                 {/* {aggregate_rating} */}
                 4.8
               </Text>
-              <Ionicons name='ios-star' size={15} color='white' />
+              {/* <Ionicons name='ios-star' size={15} color='white' /> */}
+              <Ionicons
+                name={Ionicons['ios-star'] ? 'ios-star' : 'star'}
+                size={15}
+                color='#fff'
+              />
             </View>
             <Text style={{fontSize: 15, fontWeight: '500', marginLeft: 5}}>
               3.2K Đánh giá

@@ -418,7 +418,12 @@ export default function DetailScreen({}) {
               }}>
               <View style={{paddingRight: 8}}>
                 {/* <Ionicons name='ios-star' size={15} color='#FFD700' /> */}
-                <Ionicons name='ios-star' size={15} color='#e5c100' />
+                {/* <Ionicons name='ios-star' size={15} color='#e5c100' /> */}
+                <Ionicons
+                  name={Ionicons['ios-star'] ? 'ios-star' : 'star'}
+                  size={15}
+                  color='#e5c100'
+                />
               </View>
               <Text style={{fontWeight: '600'}}>
                 {item.ratings['average_rating']}

@@ -1,3 +1,4 @@
+// NOI NÀY LƯU DỮ LIỆU CỦA DANH SÁCH SẢN PHẨM TỪ HOME => SẢN PHẨM
 import {
   Image,
   Pressable,
@@ -18,6 +19,7 @@ import {
 // import {useRouter} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
+import {getMinSizeAndPrice} from '../utils/globalHelpers';
 
 const MenuItem = ({item}) => {
   console.log('MenuItem_item: ', item);
@@ -39,8 +41,19 @@ const MenuItem = ({item}) => {
 
   console.log('\n\n ================== \n\n');
   console.log('item_MenuItem: ', item);
+  // console.log('item_priceBySize_MenuItem: ', item?.priceBySize);
+  // if (item?.priceBySize !== undefined) {
+  //   let minSizeAndMoney = getMinSizeAndPrice(item?.priceBySize);
+  //   console.log('item_priceBySize_MenuItem__PRICE: ', minSizeAndMoney.price);
+  // }
+  // console.log('additems: ', additems);
 
-  console.log('additems: ', additems);
+  // minSizeAndMoney được xác định trước khi render JSX || LẤY RA SIZE TIỀN NHỎ NHẤT
+  const minSizeAndMoney =
+    item?.priceBySize !== undefined
+      ? getMinSizeAndPrice(item.priceBySize)
+      : null;
+
   return (
     <View
       style={{
@@ -78,8 +91,9 @@ const MenuItem = ({item}) => {
             {item?.name}
           </Text>
           <Text style={{marginTop: 4, fontSize: 15, fontWeight: '500'}}>
-            {item?.price}
+            {minSizeAndMoney ? minSizeAndMoney.price : 'Đang cập nhật giá'}
           </Text>
+
           <Text
             style={{
               marginTop: 5,

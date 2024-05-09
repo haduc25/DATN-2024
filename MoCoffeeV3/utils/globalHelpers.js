@@ -182,6 +182,7 @@ export const getOrderStatusBackgroundColor = status => {
 export const isShippedOrCancelled = status => {
   return !(status === 'shipped' || status === 'cancelled');
 };
+
 // Định nghĩa hàm sortSizes
 export const sortSizes = sizes => {
   // Định nghĩa hàm so sánh để sắp xếp các kích thước từ nhỏ đến lớn
@@ -198,4 +199,21 @@ export const sortSizes = sizes => {
 
   // Trả về mảng sizes đã sắp xếp
   return sizes;
+};
+
+export const getMinSizeAndPrice = priceBySize => {
+  // Lấy danh sách các kích thước từ object keys
+  const sizes = Object.keys(priceBySize);
+
+  // Sắp xếp các kích thước từ nhỏ đến lớn
+  const sortedSizes = sortSizes(sizes);
+
+  // Lấy ra size nhỏ nhất từ mảng đã sắp xếp
+  const minSize = sortedSizes[0];
+
+  // Lấy giá trị tương ứng với size nhỏ nhất từ object priceBySize
+  const minPrice = priceBySize[minSize];
+
+  // Trả về một object chứa size nhỏ nhất và giá trị kèm theo
+  return {size: minSize, price: minPrice};
 };

@@ -16,6 +16,7 @@ import {AntDesign} from '@expo/vector-icons';
 import {db, getDocs, collection, deleteDoc, doc} from '../firebase';
 
 import {useNavigation, useIsFocused} from '@react-navigation/native';
+import {getMinSizeAndPrice} from '../utils/globalHelpers';
 
 export default function AdminProductsCRUD({navigation}) {
   const renderItem = ({item, index}) => (
@@ -93,7 +94,12 @@ export default function AdminProductsCRUD({navigation}) {
                 fontWeight: '600',
                 fontSize: 18,
               }}>
-              {item.price}
+              {/* {item.price} */}
+              {/* {minSizeAndMoney ? minSizeAndMoney.price : 'Đang cập nhật giá'} */}
+              {(item?.priceBySize !== undefined &&
+                item?.priceBySize !== null &&
+                getMinSizeAndPrice(item.priceBySize).price) ||
+                'Đang cập nhật giá'}
             </Text>
             <View
               style={{
@@ -204,7 +210,7 @@ export default function AdminProductsCRUD({navigation}) {
       querySnapshot.forEach(doc => {
         if (doc.exists()) {
           products.push({id: doc.id, ...doc.data()});
-          console.log('Document data:', doc.id, doc.data());
+          // console.log('Document data:', doc.id, doc.data());
         } else {
           console.log('Document does not exist1:', doc.id);
         }
@@ -234,7 +240,7 @@ export default function AdminProductsCRUD({navigation}) {
   useEffect(() => {
     if (isFocused) {
       fetchData();
-      console.log('Fetching...');
+      console.log('AdminProductsCRUD(DS sản phẩm)_Fetching...');
     }
   }, [isFocused]);
 

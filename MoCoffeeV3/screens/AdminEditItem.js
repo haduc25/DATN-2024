@@ -50,7 +50,7 @@ export default function AdminEditItem({navigation}) {
   const navi = useNavigation();
   const route = useRoute();
 
-  console.log('route_ADMIN-EDIT', route.params);
+  // console.log('route_ADMIN-EDIT', route.params);
   const {thisItem} = route.params;
   // console.log('thisItem====', thisItem.available_sizes);
 
@@ -98,7 +98,7 @@ export default function AdminEditItem({navigation}) {
 
   useEffect(() => {
     set4EditItemInfo();
-    console.log('refreshing...');
+    console.log('AdminEditItem(Chỉnh sản phẩm)_refreshing...');
   }, [thisItem]);
 
   // FOCUS
@@ -185,7 +185,7 @@ export default function AdminEditItem({navigation}) {
   // // Khi sizeSanPham thay đổi, cập nhật giá trị của size trong itemInfo
   useEffect(() => {
     if (!itsFirstTimes) {
-      console.log('thisItem: ', thisItem?.available_sizes);
+      // console.log('thisItem: ', thisItem?.available_sizes);
       const selectedSizes = sizeSanPham.map(
         index => SizeProductData[index].size,
       );
@@ -236,6 +236,7 @@ export default function AdminEditItem({navigation}) {
     });
 
     if (result.assets.length >= 6) {
+      setIsImageChanged(false);
       console.log('result.assets.length: ', result.assets.length);
       setErrorWithTimeout(
         'featured_image',
@@ -246,6 +247,9 @@ export default function AdminEditItem({navigation}) {
     }
 
     if (!result.canceled) {
+      // NẾU NHƯ LẠI CHỌN IMAGE MỚI
+      setIsImageChanged(true);
+
       // case khi mà đã chọn vào image (selected)
       // setImageURI(result.assets[0].uri);
       // handleValueChange('photoURL', result.assets[0].uri);
@@ -369,20 +373,51 @@ export default function AdminEditItem({navigation}) {
       Array.isArray(itemInfo.featured_image) &&
       itemInfo.featured_image.length > 0
     ) {
-      await uploadAndSaveURL();
-      console.log('done');
-      if (!savePhotoURL.length) {
-        console.log('Mảng rỗng.', savePhotoURL);
+      console.log(
+        'itemInfo.featured_image: ',
+        itemInfo.featured_image,
+        isImageChanged,
+      );
+
+      if (isImageChanged) {
+        console.log('Ảnh mới: ', savePhotoURL);
+        // Nếu có update ảnh => lấy ảnh mới
+        await uploadAndSaveURL();
+        console.log('done');
+        if (!savePhotoURL.length) {
+          console.log('NEW_Mảng rỗng.', savePhotoURL);
+          return;
+        } else {
+          console.log('NEW_Mảng không rỗng.', savePhotoURL);
+
+          // hanlde tiếp sau khi upload image thành công
+          updateItemOnFireStore(dataObject, savePhotoURL);
+        }
         return;
       } else {
-        console.log('Mảng không rỗng.', savePhotoURL);
+        console.log('Ảnh cũ: ', savePhotoURL);
+        // Đẩy dữ liệu từ mảng itemInfo.featured_image vào mảng savePhotoURL
+        itemInfo.featured_image.forEach(image => {
+          savePhotoURL.push(image.uri);
+        });
+        console.log('Ảnh cũ2: ', savePhotoURL);
+        if (!savePhotoURL.length) {
+          console.log('OLD_Mảng rỗng.', savePhotoURL);
+          return;
+        } else {
+          console.log('OLD_Mảng không rỗng.', savePhotoURL);
 
-        // hanlde tiếp sau khi upload image thành công
-        updateItemOnFireStore(dataObject, savePhotoURL);
+          // hanlde tiếp sau khi upload image thành công
+          updateItemOnFireStore(dataObject, savePhotoURL);
+        }
+
+        return;
       }
-      return;
     }
   };
+
+  // CHI UPDATE IMAGE NEU THAY DOI
+  const [isImageChanged, setIsImageChanged] = useState(false);
 
   // ####################### FUNCTIONS ####################### //
   // HANDLE INPUT BLUR
@@ -543,7 +578,7 @@ export default function AdminEditItem({navigation}) {
 
     setErrors(newErrors);
     setErrorsPriceAndSize(newErrorsForPriceAndSize);
-    console.log('newErrorsForPriceAndSize: ', newErrorsForPriceAndSize);
+    // console.log('newErrorsForPriceAndSize: ', newErrorsForPriceAndSize);
     // console.log('itemInfo.size: ', itemInfo.size);
 
     // Kết hợp cả `newErrors` và `newErrorsForPriceAndSize` thành một mảng
@@ -768,6 +803,7 @@ export default function AdminEditItem({navigation}) {
       available: null,
     });
     setEnableEditing(false);
+    setIsImageChanged(false);
   };
 
   // button `enableEditing`
@@ -859,7 +895,7 @@ export default function AdminEditItem({navigation}) {
       }
 
       setPriceBySize({...priceBySize, [size]: newValue});
-      console.log('ĐÃ UPDATE PriceBySize');
+      // console.log('ĐÃ UPDATE PriceBySize');
     }
   };
 
@@ -948,10 +984,6 @@ export default function AdminEditItem({navigation}) {
               <View key={index} style={{position: 'relative'}}>
                 <Image
                   style={{width: 110, height: 110, borderRadius: 8, margin: 8}}
-                  //   source={{uri: image.uri}}
-                  //   source={{uri: thisItem?.featured_image ? image : image.uri}}
-                  //   source={{uri: image || image.uri}}
-                  //   source={{uri: image.uri}}
                   source={{uri: image.uri}}
                 />
                 {/* {console.log('image: ', image)}

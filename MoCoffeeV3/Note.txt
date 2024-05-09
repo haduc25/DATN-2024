@@ -58,10 +58,11 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Loại bỏ chọn size (available_sizes) => k bỏ mà sẽ làm tiếp
 - Duyệt đơn => ok
 - SORT: Mới nhất, chưa duyệt, đang giao hàng, đã hủy => ok
+- Sửa sản phẩm: chỉ update ảnh nếu đó là ảnh mới còn nếu là ảnh cũ thì k update ảnh => ok
 
 - User order => nếu là thanh toán tiền mặt (1) | nếu là thanh toán online (2)
-=> (1) =>  Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang xử lý (processing) => Đang giao hàng => Đã giao hàng (shipped)
-=> (2) =>  Đang chờ thanh toán (waitingPayment)  => Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang giao hàng => Đang xử lý (processing) => Đã giao hàng (shipped)
+=> (1) =>  Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang xử lý (processing) => Đang giao hàng => Đã giao hàng (shipped) => ok
+=> (2) =>  Đang chờ thanh toán (waitingPayment)  => Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang giao hàng => Đang xử lý (processing) => Đã giao hàng (shipped) => ok
 
 
 
