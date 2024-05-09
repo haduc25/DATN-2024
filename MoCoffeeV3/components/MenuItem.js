@@ -15,7 +15,7 @@ import {
   incrementQuantity,
   removeFromCart,
 } from '../redux/CartReducer';
-import {useRouter} from 'expo-router';
+// import {useRouter} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
 

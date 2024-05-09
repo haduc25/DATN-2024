@@ -71,3 +71,6 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Thêm quy trình đặt hàng
 - Thêm các ứng dụng đã có trên thị trường + các tính năng gì mà chỉ ứng dụng của tôi có???
 - Thêm bieu do lop, bieu do co so du lieu
+
+#Command
+npx expo start --clear #reset cache

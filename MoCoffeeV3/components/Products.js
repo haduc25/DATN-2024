@@ -2,7 +2,7 @@ import {StyleSheet, Text, View, Pressable, Image} from 'react-native';
 import React from 'react';
 import {Ionicons} from '@expo/vector-icons';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-import {useRouter} from 'expo-router';
+// import {useRouter} from 'expo-router';
 
 // Navigation
 import {useNavigation} from '@react-navigation/native';
@@ -15,7 +15,7 @@ import {setProductInfo} from '../redux/ProductReducer';
 import {translateCategory} from '../utils/globalHelpers';
 
 const Products = ({naviagation, item, menu, listItems}) => {
-  const router = useRouter();
+  // const router = useRouter();
   const router2 = useNavigation();
 
   // const menuItems = JSON.stringify(menu);
@@ -201,7 +201,12 @@ const Products = ({naviagation, item, menu, listItems}) => {
             {/* {item?.ratings['average_rating']} */}
             {item?.ratings?.average_rating ?? null}
           </Text>
-          <Ionicons name='ios-star' size={15} color='white' />
+          {/* <Ionicons name='ios-star' size={15} color='white' /> */}
+          <Ionicons
+            name={Ionicons['ios-star'] ? 'ios-star' : 'star'}
+            size={15}
+            color='#fff'
+          />
         </View>
       </View>
       <View

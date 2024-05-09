@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 
 // Icons
-import {Octicons, Ionicons} from '@expo/vector-icons';
-import {AntDesign} from '@expo/vector-icons';
+import {Octicons, Ionicons, AntDesign} from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Components
 import Categories from '../components/Categories';
@@ -385,7 +385,13 @@ export default function HomeScreen({navigation}) {
 
                 <View
                   style={{flexDirection: 'row', alignItems: 'center', gap: 3}}>
-                  <Ionicons name='ios-time' size={24} color='green' />
+                  {/* <Ionicons name='ios-time' size={24} color='green' /> */}
+                  <Ionicons
+                    name={Ionicons['ios-time'] ? 'ios-time' : 'time'}
+                    size={24}
+                    color='green'
+                  />
+
                   {/* Có thể thay chỗ này là giá tiền or đánh giá */}
                   <Text>{item?.time} phút</Text>
                 </View>
@@ -467,3 +473,28 @@ export default function HomeScreen({navigation}) {
     </SafeAreaProvider>
   );
 }
+
+// import * as React from 'react';
+// import {View, StyleSheet, Text} from 'react-native';
+// import Ionicons from '@expo/vector-icons/Ionicons';
+// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+// export default function App() {
+//   return (
+//     <View style={styles.container}>
+//       <Ionicons name='md-checkmark-circle' size={32} color='green' />
+//       <Ionicons name='checkmark-circle' size={32} color='green' />
+//       <MaterialIcons name='check-circle' size={32} color='green' />
+
+//       <Text>123</Text>
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+// });
