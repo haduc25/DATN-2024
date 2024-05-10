@@ -9,6 +9,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 
 // Icons
@@ -295,6 +296,13 @@ export default function HomeScreen({navigation}) {
     })();
   }, []);
   // ######################## END: LOCATION ########################
+
+  // HEIGHT & WIDTH DEVICE
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
+
+  console.log('screenWidth, screenHeight', screenWidth, screenHeight);
+
   return (
     <SafeAreaProvider>
       <CustomStatusBar backgroundColor='#fff' />
