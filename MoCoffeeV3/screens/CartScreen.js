@@ -47,6 +47,7 @@ import {
   setDoc,
   doc,
 } from '../firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CartScreen({navigation}) {
   // console.log('navigation: ', navigation);
@@ -182,6 +183,7 @@ export default function CartScreen({navigation}) {
 
   // Địa chỉ
   const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [userCurrentLocation, setUserCurrentLocation] = useState('');
   const [errorDeliveryAddress, setErrorDeliveryAddress] = useState(null);
 
   // sdt
@@ -314,6 +316,21 @@ export default function CartScreen({navigation}) {
     };
 
     getOrdersConfirmationLength();
+
+    // Lấy ra địa chỉ hiện tại user
+    const getUserLocation = async () => {
+      try {
+        const userLocation = await AsyncStorage.getItem('userLocation');
+
+        if (userLocation) {
+          console.log('userLocation: ', userLocation);
+          setUserCurrentLocation(userLocation);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUserLocation();
   }, []);
 
   // // GET CURRENT USER
@@ -327,6 +344,8 @@ export default function CartScreen({navigation}) {
     setDeliveryAddress('');
     setPhoneNumber('');
   };
+
+  console.log('deliveryAddress: ', deliveryAddress);
 
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -641,7 +660,9 @@ export default function CartScreen({navigation}) {
           <View style={{marginVertical: 10}}>
             <Text style={{fontSize: 16, fontWeight: '600'}}>Địa chỉ</Text>
             <TextInput
-              value={deliveryAddress}
+              value={
+                deliveryAddress === '' ? userCurrentLocation : deliveryAddress
+              }
               onChangeText={text => setDeliveryAddress(text)}
               style={{
                 color: 'gray',

@@ -22,7 +22,7 @@ import CustomStatusBar from '../components/CustomStatusBar';
 
 // Database
 // import {supabase} from '../supabase';
-import {collection, getDocs, getDoc, doc, updateDoc} from 'firebase/firestore';
+import {collection, getDocs, getDoc, doc} from 'firebase/firestore';
 
 // navigation
 import {useNavigation, useIsFocused} from '@react-navigation/native';
@@ -38,47 +38,6 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 
 import {GOOGLE_API_KEY} from '@env';
-
-const reverseGeocode = async (location, setViTriHienTai) => {
-  try {
-    const reverseGeocodedAddress = await Location.reverseGeocodeAsync({
-      longitude: location.coords.longitude,
-      latitude: location.coords.latitude,
-    });
-
-    const [{district, name, subregion, city, region, country, isoCountryCode}] =
-      reverseGeocodedAddress;
-
-    const xa = district || name;
-    const huyen = subregion || city;
-    const tinh = region;
-    const quocGia = country || isoCountryCode;
-
-    const viTri = `${xa}, ${huyen}, ${tinh}, ${quocGia}`;
-    setViTriHienTai(viTri);
-
-    // update location to firebase
-    console.log(auth.currentUser.uid, viTri);
-    updateLocationForUser(auth.currentUser.uid, viTri);
-  } catch (error) {
-    console.error('Error fetching reverse geocode:', error);
-  }
-};
-
-const updateLocationForUser = (_userId, location) => {
-  updateDoc(doc(db, 'Users', _userId), {
-    location,
-  })
-    .then(() => {
-      console.log('UPDATED LOCATION FOR USER: ', _userId);
-      // save to AsyncStorage
-      AsyncStorage.setItem('userLocation', location);
-    })
-    .catch(error => {
-      console.log('error: ', error);
-      alert('error: ', error);
-    });
-};
 
 export default function HomeScreen({navigation}) {
   const navi = useNavigation();
@@ -273,27 +232,75 @@ export default function HomeScreen({navigation}) {
   // );
 
   // ######################## START: LOCATION ########################
+  const [location, setLocation] = useState();
   const [viTriHienTai, setViTriHienTai] = useState(
     'Đang tìm vị trí của bạn...',
   );
+  const [permissionsGranted, setPermissionsGranted] = useState(false); // Thêm biến flag để check quyền đc cấp thì mới chạy
+
+  Location.setGoogleApiKey(GOOGLE_API_KEY);
 
   useEffect(() => {
-    (async () => {
-      try {
-        await Location.requestForegroundPermissionsAsync();
-        const currentLocation = await Location.getCurrentPositionAsync({});
-        reverseGeocode(currentLocation, setViTriHienTai);
-      } catch (error) {
+    const getPermissions = async () => {
+      let {status} = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
         Alert.alert(
           'Quyền truy cập không được cấp',
           'Cho phép ứng dụng sử dụng dịch vụ định vị',
           [{text: 'OK'}],
           {cancelable: false},
         );
-        console.error('Error fetching location:', error);
+        return;
       }
-    })();
+
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+      // console.log('Location (vị trí): ', currentLocation);
+      setPermissionsGranted(true); // Đặt cờ thành true sau khi quyền đã được cấp
+    };
+    getPermissions();
+
+    // tu chay
+    // reverseGeocode();
   }, []);
+
+  useEffect(() => {
+    if (permissionsGranted) {
+      reverseGeocode(); // Gọi reverseGeocode chỉ khi quyền đã được cấp
+      console.log('222', permissionsGranted);
+      return;
+    }
+    console.log('111', permissionsGranted);
+  }, [permissionsGranted]); // Sử dụng permissionsGranted làm dependency
+
+  const reverseGeocode = async () => {
+    console.log('\n\n=======================================\n\n');
+    // console.log('location: ', location);
+    const reverseGeocodedAddress = await Location.reverseGeocodeAsync({
+      longitude: location.coords.longitude,
+      latitude: location.coords.latitude,
+    });
+
+    const [{district, name, subregion, city, region, country, isoCountryCode}] =
+      reverseGeocodedAddress;
+
+    const xa = district || name;
+    const huyen = subregion || city;
+    const tinh = region;
+    const quocGia = country || isoCountryCode;
+
+    const viTri = xa + ', ' + huyen + ', ' + tinh + ', ' + quocGia;
+    setViTriHienTai(viTri);
+
+    // console.log(
+    //   'Reverse Geocoded (Mã hóa địa lý đảo ngược): ',
+    //   reverseGeocodedAddress,
+    // );
+  };
+  // console.log('Địa chỉ của tôi: ' + viTriHienTai);
+
+  // // Location
+
   // ######################## END: LOCATION ########################
   return (
     <SafeAreaProvider>

@@ -965,7 +965,7 @@ export default function EditProfileScreen({navigation}) {
                     onFocus={() => handleInputFocus('location')}
                     onBlur={() => handleInputBlur('location')}
                     onChangeText={text => handleValueChange('location', text)}
-                    // value={userInfo2.location}  (vì là array cần xử lý sang dạng string)
+                    value={userInfo2.location}
                   />
                   <TouchableOpacity
                     activeOpacity={1}
