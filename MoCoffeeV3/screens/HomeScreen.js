@@ -13,7 +13,6 @@ import {
 
 // Icons
 import {Octicons, Ionicons, AntDesign} from '@expo/vector-icons';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Components
 import Categories from '../components/Categories';
@@ -35,12 +34,12 @@ import {db, auth, storage} from '../firebase';
 // for custom status bar
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-export default function HomeScreen({navigation}) {
-  // Location
-  const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
-    'Đang tìm vị trí của bạn...',
-  );
+// LOCATION
+import * as Location from 'expo-location';
 
+import {GOOGLE_API_KEY} from '@env';
+
+export default function HomeScreen({navigation}) {
   const navi = useNavigation();
   const isFocused = useIsFocused();
 
@@ -69,7 +68,7 @@ export default function HomeScreen({navigation}) {
 
     if (isFocused) {
       fetchData();
-      console.log('Fetching...');
+      console.log('HomeScreen__Fetching...');
     }
 
     // get user photo
@@ -93,7 +92,7 @@ export default function HomeScreen({navigation}) {
       if (data !== null) {
         // Chuyển đổi chuỗi JSON thành object
         const userProfile = JSON.parse(data);
-        console.log('User profiles:', userProfile);
+        // console.log('User profiles:', userProfile);
         console.log('User profiles-id:', userProfile.currentUser._userId);
 
         // READ
@@ -101,11 +100,11 @@ export default function HomeScreen({navigation}) {
           doc(db, 'Users', userProfile.currentUser._userId),
         );
         if (docSnap.exists()) {
-          console.log('Document data:', docSnap.data());
+          // console.log('Document data:', docSnap.data());
           // setUserData(docSnap.data());
-          console.log('data: ', docSnap.data());
+          // console.log('data: ', docSnap.data());
 
-          console.log('itemFavorited: ', docSnap.data().itemFavorited);
+          // console.log('itemFavorited: ', docSnap.data().itemFavorited);
           // Lưu danh sách sản phẩm đã yêu thích mới vào AsyncStorage
           await AsyncStorage.setItem(
             'favoritedItems',
@@ -125,42 +124,7 @@ export default function HomeScreen({navigation}) {
       // setUserData(null);
     }
   };
-  read();
-
-  // Đăng xuất
-  const handleDangXuat = async () => {
-    try {
-      // Hiển thị hộp thoại xác nhận trước khi đăng xuất
-      Alert.alert(
-        'Xác nhận đăng xuất',
-        'Bạn có muốn đăng xuất không?',
-        [
-          {
-            text: 'Hủy',
-            style: 'cancel',
-          },
-          {
-            text: 'Đăng xuất',
-            onPress: async () => {
-              // Xóa token xác thực khỏi AsyncStorage
-              await AsyncStorage.removeItem('authToken');
-              await AsyncStorage.removeItem('usersProfile');
-
-              // Chuyển người dùng đến màn hình đăng nhập
-
-              navi.reset({
-                index: 0,
-                routes: [{name: 'LoginScreen'}],
-              });
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-    } catch (error) {
-      console.error('Đã xảy ra lỗi khi đăng xuất:', error);
-    }
-  };
+  // read();
 
   // START: RECOMMENDED, ITEMS DATA
   const recommended = [
@@ -267,6 +231,77 @@ export default function HomeScreen({navigation}) {
   //   </SafeAreaProvider>
   // );
 
+  // ######################## START: LOCATION ########################
+  const [location, setLocation] = useState();
+  const [viTriHienTai, setViTriHienTai] = useState(
+    'Đang tìm vị trí của bạn...',
+  );
+  const [permissionsGranted, setPermissionsGranted] = useState(false); // Thêm biến flag để check quyền đc cấp thì mới chạy
+
+  Location.setGoogleApiKey(GOOGLE_API_KEY);
+
+  useEffect(() => {
+    const getPermissions = async () => {
+      let {status} = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Quyền truy cập không được cấp',
+          'Cho phép ứng dụng sử dụng dịch vụ định vị',
+          [{text: 'OK'}],
+          {cancelable: false},
+        );
+        return;
+      }
+
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+      // console.log('Location (vị trí): ', currentLocation);
+      setPermissionsGranted(true); // Đặt cờ thành true sau khi quyền đã được cấp
+    };
+    getPermissions();
+
+    // tu chay
+    // reverseGeocode();
+  }, []);
+
+  useEffect(() => {
+    if (permissionsGranted) {
+      reverseGeocode(); // Gọi reverseGeocode chỉ khi quyền đã được cấp
+      console.log('222', permissionsGranted);
+      return;
+    }
+    console.log('111', permissionsGranted);
+  }, [permissionsGranted]); // Sử dụng permissionsGranted làm dependency
+
+  const reverseGeocode = async () => {
+    console.log('\n\n=======================================\n\n');
+    // console.log('location: ', location);
+    const reverseGeocodedAddress = await Location.reverseGeocodeAsync({
+      longitude: location.coords.longitude,
+      latitude: location.coords.latitude,
+    });
+
+    const [{district, name, subregion, city, region, country, isoCountryCode}] =
+      reverseGeocodedAddress;
+
+    const xa = district || name;
+    const huyen = subregion || city;
+    const tinh = region;
+    const quocGia = country || isoCountryCode;
+
+    const viTri = xa + ', ' + huyen + ', ' + tinh + ', ' + quocGia;
+    setViTriHienTai(viTri);
+
+    // console.log(
+    //   'Reverse Geocoded (Mã hóa địa lý đảo ngược): ',
+    //   reverseGeocodedAddress,
+    // );
+  };
+  // console.log('Địa chỉ của tôi: ' + viTriHienTai);
+
+  // // Location
+
+  // ######################## END: LOCATION ########################
   return (
     <SafeAreaProvider>
       <CustomStatusBar backgroundColor='#fff' />
@@ -295,8 +330,10 @@ export default function HomeScreen({navigation}) {
           <Octicons name='location' size={24} color='#E52850' />
           <View style={{flex: 1}}>
             <Text style={{fontSize: 15, fontWeight: '500'}}>Giao hàng tới</Text>
-            <Text style={{color: 'gray', fontSize: 16, marginTop: 3}}>
-              {displayCurrentAddress}
+            <Text
+              style={{color: 'gray', fontSize: 16, marginTop: 3}}
+              numberOfLines={2}>
+              {viTriHienTai}
             </Text>
           </View>
           {/* <Pressable

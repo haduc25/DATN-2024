@@ -34,6 +34,7 @@ import {
   generateKeyID,
   convertISOToFormattedDate,
   processPayment,
+  getMinSizeAndPrice,
 } from '../utils/globalHelpers';
 import {
   db,
@@ -471,9 +472,17 @@ export default function CartScreen({navigation}) {
                 <Text style={{fontSize: 16, fontWeight: 'bold'}}>
                   {/* {item.price * item.quantity}.000 ₫ */}
                   {/* {item.price * item.quantity} */}
-                  {convertIntegerToPriceString(
+                  {/* {convertIntegerToPriceString(
                     convertPriceStringToInteger(item.price) * item.quantity,
-                  )}
+                  )} */}
+                  {(item?.priceBySize !== undefined &&
+                    item?.priceBySize !== null &&
+                    convertIntegerToPriceString(
+                      convertPriceStringToInteger(
+                        getMinSizeAndPrice(item.priceBySize).price,
+                      ) * item.quantity,
+                    )) ||
+                    'Đang cập nhật giá'}
                 </Text>
                 <Text style={{fontSize: 15, fontWeight: '500'}}>
                   Số lượng: {item?.quantity}

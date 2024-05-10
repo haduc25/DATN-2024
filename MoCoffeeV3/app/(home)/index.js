@@ -55,44 +55,44 @@ const index = () => {
     }
   };
 
-  // const GetCurrentLocation = async () => {
-  //   let {status} = await Location.requestBackgroundPermissionsAsync();
+  const GetCurrentLocation = async () => {
+    let {status} = await Location.requestBackgroundPermissionsAsync();
 
-  //   if (status !== 'granted') {
-  //     Alert.alert(
-  //       'Permission not granted',
-  //       'Allow the app to use the location service',
-  //       [{text: 'OK'}],
-  //       {cancelable: false},
-  //     );
-  //   }
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permission not granted',
+        'Allow the app to use the location service',
+        [{text: 'OK'}],
+        {cancelable: false},
+      );
+    }
 
-  //   const location = await Location.getCurrentPositionAsync({
-  //     accuracy: Location.Accuracy.High,
-  //   });
-  //   console.log(location);
-  //   let {coords} = await Location.getCurrentPositionAsync();
-  //   if (coords) {
-  //     const {latitude, longitude} = coords;
+    const location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+    });
+    console.log(location);
+    let {coords} = await Location.getCurrentPositionAsync();
+    if (coords) {
+      const {latitude, longitude} = coords;
 
-  //     let response = await Location.reverseGeocodeAsync({
-  //       latitude,
-  //       longitude,
-  //     });
+      let response = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
 
-  //     const address = await LocationGeocoding.reverseGeocodeAsync({
-  //       latitude,
-  //       longitude,
-  //     });
+      const address = await LocationGeocoding.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
 
-  //     const streetAddress = address[0].name;
-  //     for (let item of response) {
-  //       let address = `${item.name}, ${item?.postalCode}, ${item?.city}`;
+      const streetAddress = address[0].name;
+      for (let item of response) {
+        let address = `${item.name}, ${item?.postalCode}, ${item?.city}`;
 
-  //       setDisplayCurrentAddress(address);
-  //     }
-  //   }
-  // };
+        setDisplayCurrentAddress(address);
+      }
+    }
+  };
   console.log('my address', displayCurrentAddress);
 
   const recommended = [
@@ -584,7 +584,7 @@ const index = () => {
           gap: 12,
           padding: 10,
         }}>
-        <Octicons name="location" size={24} color="#E52850" />
+        <Octicons name='location' size={24} color='#E52850' />
         <View style={{flex: 1}}>
           <Text style={{fontSize: 15, fontWeight: '500'}}>Giao hàng tới</Text>
           <Text style={{color: 'gray', fontSize: 16, marginTop: 3}}>
@@ -619,8 +619,8 @@ const index = () => {
           marginTop: 10,
           marginHorizontal: 10,
         }}>
-        <TextInput placeholder="Tìm kiếm cà phê, trà sữa..." />
-        <AntDesign name="search1" size={24} color="#E52B50" />
+        <TextInput placeholder='Tìm kiếm cà phê, trà sữa...' />
+        <AntDesign name='search1' size={24} color='#E52B50' />
       </View>
 
       {/* <Carousel /> */}
@@ -665,7 +665,7 @@ const index = () => {
 
               <View
                 style={{flexDirection: 'row', alignItems: 'center', gap: 3}}>
-                <Ionicons name="ios-time" size={24} color="green" />
+                <Ionicons name='ios-time' size={24} color='green' />
                 {/* Có thể thay chỗ này là giá tiền or đánh giá */}
                 <Text>{item?.time} phút</Text>
               </View>
