@@ -3,12 +3,13 @@ import {StatusBar} from 'expo-status-bar';
 import {Button, StyleSheet, TextInput, View} from 'react-native';
 import {useState, useEffect} from 'react';
 import * as Location from 'expo-location';
+import {GOOGLE_API_KEY} from '@env';
 
 export default function GetLocationTemplate() {
   const [location, setLocation] = useState();
   const [address, setAddress] = useState();
 
-  Location.setGoogleApiKey('AIzaSyD5GUOMMrDY5Ml8JOQ5j7z7p9f8GaGCDBg');
+  Location.setGoogleApiKey(GOOGLE_API_KEY);
 
   useEffect(() => {
     const getPermissions = async () => {
