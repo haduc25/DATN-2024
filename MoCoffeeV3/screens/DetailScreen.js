@@ -49,7 +49,7 @@ export default function DetailScreen({}) {
   const route = useRoute();
   const {item, currentScreen} = route?.params;
   console.log('DETAIL_item: ', item);
-  console.log('currentScreen: ', currentScreen);
+  console.log('currentScreen111: ', currentScreen);
 
   const isFocused = useIsFocused();
 
@@ -626,7 +626,8 @@ export default function DetailScreen({}) {
         heightOfTop={28}
         // onPressBack={data => console.log(data)}
         dataNavigation={{
-          screen: currentScreen,
+          screen:
+            currentScreen === undefined ? 'ProductTypeScreen' : currentScreen,
           name: productInfo.name,
           category: productInfo.category,
         }}
@@ -671,11 +672,15 @@ export default function DetailScreen({}) {
                   text: 'OK',
                   onPress: () => {
                     dispatch(addToCart(item));
+                    console.log('DETAIL: ', item);
                     alert('ĐÃ THÊM SẢN PHẨM VÀO GIỎ HÀNG');
-                    // navi.navigate('Cart', {
-                    //   currentScreen: 'DetailScreen',
-                    //   category: 'smoothie',
-                    // });
+
+                    setTimeout(() => {
+                      navi.navigate('Cart', {
+                        currentScreen: 'DetailScreen',
+                        item: item,
+                      });
+                    }, 3000);
                   },
                 },
               ],

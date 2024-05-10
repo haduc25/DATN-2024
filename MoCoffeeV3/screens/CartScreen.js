@@ -114,9 +114,11 @@ export default function CartScreen({navigation}) {
   //
   const route = useRoute();
   const navi = useNavigation();
-  const {currentScreen, category} = route?.params;
+  const {currentScreen, category, item} = route?.params;
 
   // console.log('currentScreen_CART:  ', currentScreen);
+  // console.log('route?.params_CART:  ', route?.params);
+  // console.log('item_CART:  ', item);
   //  PHÍ GIAO HÀNG
   const phiship = 15000;
   const phiapdung = 6000;
@@ -376,6 +378,9 @@ export default function CartScreen({navigation}) {
         dataNavigation={{
           screen: currentScreen,
           category: category,
+          // for Detail Item
+          item: item,
+          // currentScreen: 'ProductTypeScreen',
         }}
       />
       <ScrollView
