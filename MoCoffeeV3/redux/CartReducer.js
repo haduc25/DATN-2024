@@ -49,6 +49,18 @@ export const CartSlice = createSlice({
         }
       }
     },
+    cleanQuantity: (state, action) => {
+      state.isClean = false;
+      const itemPresent = state.cart.find(
+        item => item.id === action.payload.id,
+      );
+      if (itemPresent) {
+        if (itemPresent.quantity) {
+          state.cart = state.cart.filter(item => item.id !== action.payload.id);
+          state.isClean = true;
+        }
+      }
+    },
     cleanCart: state => {
       state.cart = [];
       state.isClean = true;
@@ -64,6 +76,7 @@ export const {
   removeFromCart,
   incrementQuantity,
   decrementQuantity,
+  cleanQuantity,
   cleanCart,
   cleanCartUI,
 } = CartSlice.actions;

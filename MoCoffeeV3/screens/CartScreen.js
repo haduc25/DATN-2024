@@ -8,6 +8,7 @@ import {
   Image,
   TextInput,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import {
   Ionicons,
@@ -21,6 +22,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   addToCart,
   removeFromCart,
+  cleanQuantity,
   incrementQuantity,
   decrementQuantity,
   cleanCart,
@@ -35,6 +37,7 @@ import {
   convertISOToFormattedDate,
   processPayment,
   getMinSizeAndPrice,
+  sortSizes,
 } from '../utils/globalHelpers';
 import {
   db,
@@ -348,6 +351,17 @@ export default function CartScreen({navigation}) {
   };
 
   console.log('deliveryAddress: ', deliveryAddress);
+  // console.log('cart_CARTSCREEN: ', cart);
+  // console.log('cart-available_sizes_CARTSCREEN: ', cart.available_sizes);
+  // const sortedSizes = sortSizes(cart.available_sizes);
+  // console.log('sortedSizes_CARTSCREEN: ', sortedSizes);
+
+  const minSizeAndMoney =
+    cart?.priceBySize !== undefined
+      ? getMinSizeAndPrice(cart.priceBySize)
+      : null;
+
+  console.log('minSizeAndMoney:', minSizeAndMoney);
 
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -416,104 +430,162 @@ export default function CartScreen({navigation}) {
         </View>
 
         <View>
-          {cart?.map((item, index) => (
-            <Pressable
-              style={{backgroundColor: 'white', padding: 10}}
-              key={index}>
-              <View
+          {cart?.map((item, index) => {
+            // Sắp xếp available_sizes của mỗi sản phẩm
+            item.available_sizes = sortSizes(item.available_sizes);
+
+            // Trả về phần tử Pressable cho mỗi sản phẩm
+            return (
+              <Pressable
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginVertical: 6,
-                }}>
-                {console.log('cart?.map: ', item)}
-                <Text style={{width: 200, fontSize: 16, fontWeight: '600'}}>
-                  {item?.name}
-                </Text>
-                <Pressable
+                  backgroundColor: 'white',
+                  padding: 10,
+                  borderBottomWidth: 1,
+                }}
+                key={index}>
+                <View
                   style={{
                     flexDirection: 'row',
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
                     alignItems: 'center',
-                    borderColor: '#BEBEBE',
-                    borderWidth: 0.5,
-                    borderRadius: 10,
-                    minWidth: 100,
-                    maxWidth: 100,
+                    justifyContent: 'space-between',
+                    marginVertical: 6,
                   }}>
+                  {console.log('cart?.map: ', item)}
+                  <Text style={{width: 200, fontSize: 16, fontWeight: '600'}}>
+                    {item?.name}
+                  </Text>
                   <Pressable
-                    onPress={() => {
-                      dispatch(decrementQuantity(item));
+                    style={{
+                      flexDirection: 'row',
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                      alignItems: 'center',
+                      borderColor: '#BEBEBE',
+                      borderWidth: 0.5,
+                      borderRadius: 10,
+                      minWidth: 100,
+                      maxWidth: 100,
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: 'green',
-                        paddingHorizontal: 6,
-                        fontWeight: '600',
+                    <Pressable
+                      onPress={() => {
+                        dispatch(decrementQuantity(item));
                       }}>
-                      -
-                    </Text>
-                  </Pressable>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: 'green',
+                          paddingHorizontal: 6,
+                          fontWeight: '600',
+                        }}>
+                        -
+                      </Text>
+                    </Pressable>
 
-                  <Pressable>
-                    <Text
-                      style={{
-                        fontSize: 19,
-                        color: 'green',
-                        paddingHorizontal: 8,
-                        fontWeight: '600',
+                    <Pressable>
+                      <Text
+                        style={{
+                          fontSize: 19,
+                          color: 'green',
+                          paddingHorizontal: 8,
+                          fontWeight: '600',
+                        }}>
+                        {item.quantity}
+                      </Text>
+                    </Pressable>
+
+                    <Pressable
+                      onPress={() => {
+                        dispatch(incrementQuantity(item));
                       }}>
-                      {item.quantity}
-                    </Text>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: 'green',
+                          paddingHorizontal: 6,
+                          fontWeight: '600',
+                        }}>
+                        +
+                      </Text>
+                    </Pressable>
                   </Pressable>
+                </View>
 
-                  <Pressable
-                    onPress={() => {
-                      dispatch(incrementQuantity(item));
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: 'green',
-                        paddingHorizontal: 6,
-                        fontWeight: '600',
-                      }}>
-                      +
-                    </Text>
-                  </Pressable>
-                </Pressable>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-                  {/* {item.price * item.quantity}.000 ₫ */}
-                  {/* {item.price * item.quantity} */}
-                  {/* {convertIntegerToPriceString(
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                    {/* {item.price * item.quantity}.000 ₫ */}
+                    {/* {item.price * item.quantity} */}
+                    {/* {convertIntegerToPriceString(
                     convertPriceStringToInteger(item.price) * item.quantity,
                   )} */}
-                  {(item?.priceBySize !== undefined &&
-                    item?.priceBySize !== null &&
-                    convertIntegerToPriceString(
-                      convertPriceStringToInteger(
-                        getMinSizeAndPrice(item.priceBySize).price,
-                      ) * item.quantity,
-                    )) ||
-                    'Đang cập nhật giá'}
-                </Text>
-                <Text style={{fontSize: 15, fontWeight: '500'}}>
-                  Số lượng: {item?.quantity}
-                </Text>
-              </View>
-            </Pressable>
-          ))}
+                    {(item?.priceBySize !== undefined &&
+                      item?.priceBySize !== null &&
+                      convertIntegerToPriceString(
+                        convertPriceStringToInteger(
+                          getMinSizeAndPrice(item.priceBySize).price,
+                        ) * item.quantity,
+                      )) ||
+                      'Đang cập nhật giá'}
+                  </Text>
+                  <Text style={{fontSize: 15, fontWeight: '500'}}>
+                    Số lượng: {item?.quantity}
+                  </Text>
+                </View>
+
+                {/* SIZE */}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingTop: 10,
+                  }}>
+                  <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                    Size:{' '}
+                    {(item?.priceBySize !== undefined &&
+                      item?.priceBySize !== null &&
+                      getMinSizeAndPrice(item.priceBySize).size) ||
+                      'Đang cập nhật size'}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      Alert.alert(
+                        'Xác nhận xóa sản phẩm',
+                        'Bạn có muốn xóa sản phẩm nảy khỏi giỏ hàng?',
+                        [
+                          {
+                            text: 'Hủy',
+                            style: 'cancel',
+                          },
+                          {
+                            text: 'Xóa',
+                            onPress: () => {
+                              dispatch(cleanQuantity(item));
+                            },
+                          },
+                        ],
+                        {cancelable: false},
+                      );
+                    }}
+                    style={{
+                      width: 100,
+                      paddingVertical: 4,
+                      borderColor: '#990000',
+                      borderWidth: 0.5,
+                      borderRadius: 10,
+                      alignItems: 'center',
+                      backgroundColor: '#fff',
+                    }}>
+                    <Ionicons name={'trash-bin'} size={22} color={'#ff3232'} />
+                  </TouchableOpacity>
+                </View>
+              </Pressable>
+            );
+          })}
 
           <View style={{marginVertical: 10}}>
             <Text style={{fontSize: 16, fontWeight: '600'}}>

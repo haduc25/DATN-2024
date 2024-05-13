@@ -76,3 +76,10 @@ npx expo install expo-image-picker
 
 #CHARTS
 `npm i react-native-chart-kit`
+
+#HAVE OVERLAY
+`npm install react-native-elements` //chưa cần dùng tới  (chưa xóa)
+
+# THANH SELECTION OR ĐỂ SHARE TỪ DƯỚI TRƯỢT LÊN
+`npm i react-native-raw-bottom-sheet --save` //kb dùng => lỗi height  (đã xóa)
+`npm i --save react-native-simple-bottom-sheet` //chưa cần dùng tới  (đã xóa)

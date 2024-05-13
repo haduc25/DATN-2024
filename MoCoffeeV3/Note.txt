@@ -54,7 +54,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Order ngoài (thêm url image, lấy uid đang đăng nhập `đang để mặc định id lMsKBPaYTpORRtBxprjjHppCy0U2 (admin)`)
 - Xem chi tiết đơn hàng Order ở ngoài chưa có
 - Xem lại giỏ hàng chưa có
-- Xử lý thêm giỏ hàng trong Detail
+- Xử lý thêm giỏ hàng trong Detail => ok
 - Loại bỏ chọn size (available_sizes) => k bỏ mà sẽ làm tiếp => ok
 - Duyệt đơn => ok
 - SORT: Mới nhất, chưa duyệt, đang giao hàng, đã hủy => ok

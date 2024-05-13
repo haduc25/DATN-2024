@@ -22,7 +22,7 @@ import {useEffect} from 'react';
 import {getMinSizeAndPrice} from '../utils/globalHelpers';
 
 const MenuItem = ({item}) => {
-  console.log('MenuItem_item: ', item);
+  // console.log('MenuItem_item: ', item);
   const [additems, setAddItems] = useState(0);
   const [selected, setSelected] = useState(false);
   const dispatch = useDispatch();
@@ -39,8 +39,8 @@ const MenuItem = ({item}) => {
   // const router = useRouter();
   const navi = useNavigation();
 
-  console.log('\n\n ================== \n\n');
-  console.log('item_MenuItem: ', item);
+  // console.log('\n\n ================== \n\n');
+  // console.log('item_MenuItem: ', item);
   // console.log('item_priceBySize_MenuItem: ', item?.priceBySize);
   // if (item?.priceBySize !== undefined) {
   //   let minSizeAndMoney = getMinSizeAndPrice(item?.priceBySize);

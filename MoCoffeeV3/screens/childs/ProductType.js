@@ -36,6 +36,13 @@ import {db} from '../../firebase';
 // Helper
 import {translateCategory} from '../../utils/globalHelpers';
 
+// OVERLAY
+import {Button, Overlay} from 'react-native-elements';
+
+// SELECTION FROM BOTTOM
+// import RBSheet from 'react-native-raw-bottom-sheet';
+// import BottomSheet from 'react-native-simple-bottom-sheet';
+
 // export default function ProductType({navigation, route}) {
 export default function ProductType({navigation}) {
   // Redux
@@ -48,7 +55,7 @@ export default function ProductType({navigation}) {
   const route = useRoute();
   const navi = useNavigation();
   const isFocused = useIsFocused();
-  console.log('router123: ', route);
+  // console.log('router123: ', route);
   const cart = useSelector(state => state.cart.cart);
   console.log('ProductType-Cart: ', cart);
 
@@ -129,12 +136,61 @@ export default function ProductType({navigation}) {
   //   </View>
   // );
 
+  // OVERLAY OR SELECTION SIZE
+  const [visible, setVisible] = useState(false);
+
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
+
+  // SELECTION
+  // const refRBSheet = useRef();
+  // const panelRef = useRef(null);
+
+  // // V2 - CHỌN SIZES
+  // const [selectedSizes, setSelectedSizes] = useState({}); // State lưu kích thước được chọn cho từng sản phẩm
+
+  // const handleSizeChange = (productId, size) => {
+  //   setSelectedSizes(prevState => ({
+  //     ...prevState,
+  //     [productId]: size,
+  //   }));
+  // };
+
+  // V3 - CHỌN SIZES
+  const [selectedSizes, setSelectedSizes] = useState({}); // State lưu kích thước được chọn cho từng sản phẩm
+
+  // Thiết lập kích thước mặc định cho mỗi sản phẩm khi cart thay đổi
+  useEffect(() => {
+    const defaultSizes = {};
+    cart.forEach(item => {
+      defaultSizes[item._id] = item.available_sizes[0]; // Chọn kích thước đầu tiên làm mặc định
+    });
+    setSelectedSizes(defaultSizes);
+  }, [cart]);
+
+  const handleSizeChange = (productId, size) => {
+    setSelectedSizes(prevState => ({
+      ...prevState,
+      [productId]: size,
+    }));
+  };
+
   return (
     <SafeAreaProvider>
       <ScrollView
         ref={scrollViewRef}
         // style={{backgroundColor: 'white', paddingTop: 40}}>
-        style={{backgroundColor: 'white', paddingTop: 60}}>
+        style={{
+          backgroundColor: 'white',
+          paddingTop: 60,
+          // pointerEvents: cart?.length > 0 && !isCartClean ? 'none' : 'unset',
+          // pointerEvents:
+          //   cart?.length > 0 && !isCartClean
+          //     ? console.log('BLOCK')
+          //     : console.log('UNBLOCK'),
+          // opacity: cart?.length > 0 && !isCartClean ? 0.5 : 1,
+        }}>
         <View
           style={{
             marginTop: 5,
@@ -347,40 +403,332 @@ export default function ProductType({navigation}) {
       </View>
 
       <View style={{backgroundColor: '#fff', paddingBottom: 40}}>
-        {cart?.length > 0 && !isCartClean && (
-          <Pressable
-            onPress={() => {
-              // XÓA CART UI
-              dispatch(cleanCartUI());
+        {console.log('cart?.length, isCartClean', cart?.length, !isCartClean)}
+        {/* {cart?.length > 0 && !isCartClean && ( */}
+        {cart?.length > 0 && (
+          <View>
+            {/* PRICE & NAME*/}
+            {/* V1 */}
+            {/* <ScrollView style={{maxHeight: 380}}>
+              {cart?.map((item, index) => (
+                <View>
+                  <View
+                    key={index}
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text style={{paddingLeft: 30, fontWeight: '600'}}>{`${
+                      index + 1
+                    }. ${item.name}`}</Text>
+                    <Text
+                      style={{
+                        paddingRight: 30,
+                        color: '#ee4d2d',
+                        fontWeight: '600',
+                      }}>
+                      {item.priceBySize['S']}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      padding: 4,
+                      paddingLeft: 28,
+                      paddingRight: 28,
+                      // backgroundColor: 'blue',
+                      marginBottom: 20,
+                    }}>
+                    {item.available_sizes.map((_, _index, sizes) => (
+                      <TouchableOpacity
+                        onPress={() => alert(123)}
+                        key={_index}
+                        style={{
+                          minWidth: 60,
+                          maxWidth: 60,
+                          minHeight: 28,
+                          maxHeight: 28,
+                          borderWidth: 0.5,
+                          borderRadius: 12,
+                          borderColor: 'gray',
+                          paddingVertical: 4,
+                          paddingHorizontal: 8,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          // marginBottom: index === array.length - 1 ? 50 : 10, // Kiểm tra nếu là phần tử cuối cùng
+                        }}>
+                        <Text>{`Size ${sizes[_index]}`}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ))}
+            </ScrollView> */}
 
-              navi.navigate('Cart', {
-                currentScreen: 'ProductTypeScreen',
-                category,
-              });
-            }}
-            style={{
-              backgroundColor: '#fd5c63',
-              paddingHorizontal: 10,
-              paddingVertical: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginLeft: 20,
-              marginRight: 20,
-              borderRadius: '15%',
-            }}>
-            <Text
+            {/* V2 */}
+            {/* <ScrollView style={{maxHeight: 380}}>
+              {cart?.map((item, index) => (
+                <View key={index}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text style={{paddingLeft: 30, fontWeight: '600'}}>{`${
+                      index + 1
+                    }. ${item.name}`}</Text>
+                    <Text
+                      style={{
+                        paddingRight: 30,
+                        color: '#ee4d2d',
+                        fontWeight: '600',
+                      }}>
+                      {item.priceBySize[selectedSizes[item._id] || 'S']}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      padding: 4,
+                      paddingLeft: 28,
+                      paddingRight: 28,
+                      marginBottom: 20,
+                    }}>
+                    {item.available_sizes.map((size, _index) => (
+                      <TouchableOpacity
+                        onPress={() => handleSizeChange(item._id, size)}
+                        key={_index}
+                        style={{
+                          minWidth: 60,
+                          maxWidth: 60,
+                          minHeight: 28,
+                          maxHeight: 28,
+                          borderWidth: 0.5,
+                          borderRadius: 12,
+                          borderColor:
+                            selectedSizes[item._id] === size
+                              ? '#ee4d2d'
+                              : 'gray',
+                          backgroundColor:
+                            selectedSizes[item._id] === size
+                              ? '#ee4d2d'
+                              : 'transparent',
+                          paddingVertical: 4,
+                          paddingHorizontal: 8,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            color:
+                              selectedSizes[item._id] === size
+                                ? '#fff'
+                                : '#000',
+                          }}>{`Size ${size}`}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ))}
+            </ScrollView> */}
+
+            {/* V3 */}
+            <ScrollView style={{maxHeight: 380}}>
+              {cart?.map((item, index) => (
+                <View key={index}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text style={{paddingLeft: 30, fontWeight: '600'}}>{`${
+                      index + 1
+                    }. ${item.name}`}</Text>
+                    <Text
+                      style={{
+                        paddingRight: 30,
+                        color: '#ee4d2d',
+                        fontWeight: '600',
+                      }}>
+                      {
+                        item.priceBySize[
+                          selectedSizes[item._id] || item.available_sizes[0]
+                        ]
+                      }
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      padding: 4,
+                      paddingLeft: 28,
+                      paddingRight: 28,
+                      marginBottom: 20,
+                    }}>
+                    {item.available_sizes.map((size, _index) => (
+                      <TouchableOpacity
+                        onPress={() => handleSizeChange(item._id, size)}
+                        key={_index}
+                        style={{
+                          minWidth: 75,
+                          maxWidth: 75,
+                          minHeight: 28,
+                          maxHeight: 28,
+                          borderWidth: 0.5,
+                          borderRadius: 12,
+                          borderColor:
+                            selectedSizes[item._id] === size
+                              ? '#ee4d2d'
+                              : 'gray',
+                          backgroundColor:
+                            selectedSizes[item._id] === size
+                              ? '#ee4d2d'
+                              : 'transparent',
+                          paddingVertical: 4,
+                          paddingHorizontal: 8,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            color:
+                              selectedSizes[item._id] === size
+                                ? '#fff'
+                                : '#000',
+                          }}>{`Size ${size}`}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
+
+            {/* SELECT SIZE */}
+            {/* <View
               style={{
-                paddingVertical: 10,
-                textAlign: 'center',
-                color: 'white',
-                fontSize: 15,
-                fontWeight: '600',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                // backgroundColor: 'blue',
+                marginBottom: 20,
               }}>
-              Đã thêm {cart.length} sản phẩm
-            </Text>
-          </Pressable>
+              {[...Array(4)].map((_, index, array) => (
+                <TouchableOpacity
+                  onPress={() => alert(123)}
+                  key={`${index}`}
+                  style={{
+                    minWidth: 80,
+                    maxWidth: 80,
+                    minHeight: 40,
+                    maxHeight: 40,
+                    borderWidth: 0.5,
+                    borderRadius: 12,
+                    borderColor: 'gray',
+                    paddingVertical: 4,
+                    paddingHorizontal: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    // marginBottom: index === array.length - 1 ? 50 : 10, // Kiểm tra nếu là phần tử cuối cùng
+                  }}>
+                  <Text>{`Size ${index + 1}`}</Text>
+                </TouchableOpacity>
+              ))}
+            </View> */}
+
+            {/* BUTTON THÊM */}
+            <Pressable
+              onPress={() => {
+                // toggleOverlay();
+                // XÓA CART UI
+                dispatch(cleanCartUI());
+
+                navi.navigate('Cart', {
+                  currentScreen: 'ProductTypeScreen',
+                  category,
+                });
+              }}
+              style={{
+                backgroundColor: '#fd5c63',
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft: 20,
+                marginRight: 20,
+                borderRadius: '15%',
+              }}>
+              <Text
+                style={{
+                  paddingVertical: 10,
+                  textAlign: 'center',
+                  color: 'white',
+                  fontSize: 15,
+                  fontWeight: '600',
+                }}>
+                Đã thêm {cart.length} sản phẩm
+              </Text>
+            </Pressable>
+          </View>
         )}
       </View>
+
+      {/* OVERLAY */}
+      {/* <Button title='Open Overlay' onPress={toggleOverlay} /> */}
+
+      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Text>Hello from Overlay!</Text>
+      </Overlay>
+
+      {/* SELECTION */}
+      {/* display: 'flex' : 'none' */}
+      {/* <BottomSheet
+        isOpen={true}
+        // wrapperStyle={{display: 'none', pointerEvents: 'unset'}}>
+        wrapperStyle={{
+          // display: 'none',
+          // pointerEvents: cart?.length > 0 && !isCartClean ? 'none' : 'unset',
+          display: cart?.length > 0 && !isCartClean ? 'unset' : 'none',
+        }}>
+        {onScrollEndDrag => (
+          <ScrollView onScrollEndDrag={onScrollEndDrag}>
+            {[...Array(4)].map((_, index, array) => (
+              <TouchableOpacity
+                onPress={() => alert(123)}
+                key={`${index}`}
+                style={{
+                  borderWidth: 0.5,
+                  borderRadius: 12,
+                  borderColor: 'gray',
+                  paddingVertical: 20,
+                  paddingHorizontal: 10,
+                  marginBottom: index === array.length - 1 ? 50 : 10, // Kiểm tra nếu là phần tử cuối cùng
+                }}>
+                <Text>{`Size ${index + 1}`}</Text>
+              </TouchableOpacity>
+            ))}
+            <View
+              style={{
+                borderWidth: 0.5,
+                borderRadius: 12,
+                borderColor: 'gray',
+                paddingVertical: 20,
+                paddingHorizontal: 10,
+              }}>
+              <Text>123</Text>
+            </View>
+          </ScrollView>
+        )}
+      </BottomSheet> */}
+
+      {/* V2*/}
+      {/* <TouchableOpacity onPress={() => panelRef.current.togglePanel()}>
+        <Text>Toggle</Text>
+      </TouchableOpacity>
+      <BottomSheet ref={ref => (panelRef.current = ref)}>
+        <Text style={{paddingVertical: 20}}>Some random content</Text>
+      </BottomSheet> */}
     </SafeAreaProvider>
   );
 }
