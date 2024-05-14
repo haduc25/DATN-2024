@@ -37,7 +37,7 @@ import {db} from '../../firebase';
 import {translateCategory} from '../../utils/globalHelpers';
 
 // OVERLAY
-import {Button, Overlay} from 'react-native-elements';
+// import {Button, Overlay} from 'react-native-elements';
 
 // SELECTION FROM BOTTOM
 // import RBSheet from 'react-native-raw-bottom-sheet';
@@ -136,12 +136,12 @@ export default function ProductType({navigation}) {
   //   </View>
   // );
 
-  // OVERLAY OR SELECTION SIZE
-  const [visible, setVisible] = useState(false);
+  // // OVERLAY OR SELECTION SIZE
+  // const [visible, setVisible] = useState(false);
 
-  const toggleOverlay = () => {
-    setVisible(!visible);
-  };
+  // const toggleOverlay = () => {
+  //   setVisible(!visible);
+  // };
 
   // SELECTION
   // const refRBSheet = useRef();
@@ -643,11 +643,12 @@ export default function ProductType({navigation}) {
                 // toggleOverlay();
                 // XÓA CART UI
                 dispatch(cleanCartUI());
-
                 navi.navigate('Cart', {
                   currentScreen: 'ProductTypeScreen',
                   category,
+                  selectedSizes: selectedSizes,
                 });
+                // console.log('selectedSizes: ', selectedSizes); //selectedSizes:  {"1UzgFTMOjSRXICcqzrjU": "S", "BuTrSYU6PuCLUG2TJAMW": "M", "JX5EYlkAuFr5Sj4UHxk3": "M"}
               }}
               style={{
                 backgroundColor: '#fd5c63',
@@ -676,10 +677,10 @@ export default function ProductType({navigation}) {
 
       {/* OVERLAY */}
       {/* <Button title='Open Overlay' onPress={toggleOverlay} /> */}
-
+      {/* 
       <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
         <Text>Hello from Overlay!</Text>
-      </Overlay>
+      </Overlay> */}
 
       {/* SELECTION */}
       {/* display: 'flex' : 'none' */}

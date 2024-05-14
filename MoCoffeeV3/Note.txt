@@ -49,24 +49,26 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Remove item in `Edit Screen` => ok
 - Size sản phẩm default k hoạt động => ok
 - Thêm dữ liệu cho db => ok
-- BUG: Khi sửa sản phẩm (hình ảnh bìa) luôn lấy hình ảnh cuối cùng hoặc không, vì đang lấy ảnh linh tinh
-- Hoàn thành lại đơn hàng ở ngoài & trong admin
-- Order ngoài (thêm url image, lấy uid đang đăng nhập `đang để mặc định id lMsKBPaYTpORRtBxprjjHppCy0U2 (admin)`)
-- Xem chi tiết đơn hàng Order ở ngoài chưa có
-- Xem lại giỏ hàng chưa có
 - Xử lý thêm giỏ hàng trong Detail => ok
 - Loại bỏ chọn size (available_sizes) => k bỏ mà sẽ làm tiếp => ok
 - Duyệt đơn => ok
 - SORT: Mới nhất, chưa duyệt, đang giao hàng, đã hủy => ok
 - Sửa sản phẩm: chỉ update ảnh nếu đó là ảnh mới còn nếu là ảnh cũ thì k update ảnh => ok
-- Chức năng tìm kiếm
 - Lấy vị trị => ok
 - Vị trí trong USERPROFILE => ok
 - Vị trí khi đặt hàng => ok
 - Xử lý chuyển từ giỏ hàng về detail => ok
-- Chức năng đặt hàng khi nhều size + giá
-- Giỏ hàng làm lại vì size
+- Chức năng đặt hàng khi nhều size + giá => ok
+- Giỏ hàng làm lại vì size => ok
+- Cần sửa lại phần đặt hàng giá theo size từu DetailItem
+- Sửa lại Đơn hàng ở ngoài UI
+- Xem chi tiết đơn hàng Order ở ngoài chưa có
+- Xem lại giỏ hàng chưa có
 - Lọc sản phẩm ở Ngoài, Trong Admin
+- Chức năng tìm kiếm
+- BUG: Khi sửa sản phẩm (hình ảnh bìa) luôn lấy hình ảnh cuối cùng hoặc không, vì đang lấy ảnh linh tinh
+- Hoàn thành lại đơn hàng ở ngoài & trong admin
+- Order ngoài (thêm url image, lấy uid đang đăng nhập `đang để mặc định id lMsKBPaYTpORRtBxprjjHppCy0U2 (admin)`)
 - Phiếu giảm giá
 - Thống kê, phân tích đơn hàng (Số người đăng ký mới - 7 ngày, số đơn hàng trong 7 ngày, doanh thu trong tháng, số đơn đã được giao trong tháng, số đơn đã hủy)
 

@@ -36,7 +36,7 @@ export default function AdminOrders({navigation}) {
         // minHeight: 250,
         // minHeight: 340,
         // minHeight: 320,
-        minHeight: item.san_pham_order.length > 3 ? 380 : 340,
+        minHeight: item.san_pham_order.length > 3 ? 380 : 360,
         //   paddingHorizontal: 20,
         //   marginHorizontal: 10,
 
@@ -185,14 +185,17 @@ export default function AdminOrders({navigation}) {
               }}
             />
             <Text style={{fontSize: 16, fontWeight: '600'}}>
-              Sản phẩm đã đặt
+              Sản phẩm đã đặt ({item.san_pham_order.length})
             </Text>
             {item.san_pham_order.slice(0, 3).map((itemOrdered, index) => (
               <View key={index}>
                 <Text
                   style={{fontSize: 16, maxWidth: 310, paddingLeft: 6}}
                   numberOfLines={1}>
-                  - {itemOrdered.ten_sp}
+                  -{' '}
+                  {`${itemOrdered.ten_sp} (SL: ${
+                    itemOrdered.so_luong
+                  }), Size: ${itemOrdered?.selected_size ?? 'S'}`}
                 </Text>
                 {/* <Text style={{fontSize: 16}}>Số lượng: {itemOrdered.so_luong}</Text> */}
               </View>

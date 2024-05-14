@@ -63,6 +63,7 @@ export default function CartScreen({navigation}) {
   const isCartClean = useSelector(state => state.cart.isClean);
   // console.log('DATA FROM REDUX: ', productInfo);
   // console.log('DATA FROM REDUX222_Cart: ', isCartClean);
+  console.log('DATA FROM REDUX222_Cart: ', cart);
   const dispatch = useDispatch();
   const paymentMethods = [
     {
@@ -117,11 +118,12 @@ export default function CartScreen({navigation}) {
   //
   const route = useRoute();
   const navi = useNavigation();
-  const {currentScreen, category, item} = route?.params;
+  const {currentScreen, category, item, selectedSizes} = route?.params;
 
   // console.log('currentScreen_CART:  ', currentScreen);
   // console.log('route?.params_CART:  ', route?.params);
   // console.log('item_CART:  ', item);
+  console.log('selectedSizes_CART:  ', selectedSizes);
   //  PHÍ GIAO HÀNG
   const phiship = 15000;
   const phiapdung = 6000;
@@ -217,12 +219,14 @@ export default function CartScreen({navigation}) {
       let san_pham_order = [];
 
       // Duyệt qua mỗi đối tượng trong mảng cart
-      cart.forEach(item => {
+      // cart.forEach(item => {
+      updatedCart.forEach(item => {
         // Tạo một đối tượng mới chứa thông tin sản phẩm đơn hàng
         let sp_order = {
           ten_sp: item.name,
           gia_sp: item.price,
           so_luong: item.quantity,
+          selected_size: item.selected_size,
           size_sp: item.available_sizes.join(', '), // Chuyển mảng available_sizes thành chuỗi
         };
 
@@ -363,6 +367,16 @@ export default function CartScreen({navigation}) {
 
   console.log('minSizeAndMoney:', minSizeAndMoney);
 
+  // Assume cart and selectedSizes are defined, trường vừa thêm có thê là `selected_size`
+  const updatedCart = cart.map(item => ({
+    ...item,
+    selected_size:
+      selectedSizes[item._id] ||
+      (item.available_sizes && item.available_sizes[0]), // Lấy kích thước đã chọn từ selectedSizes hoặc kích thước đầu tiên trong danh sách available_sizes nếu không có trong selectedSizes
+  }));
+
+  console.log('Updated Cart:', updatedCart);
+
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
     //   <Text
@@ -430,7 +444,8 @@ export default function CartScreen({navigation}) {
         </View>
 
         <View>
-          {cart?.map((item, index) => {
+          {/* {cart?.map((item, index) => { */}
+          {updatedCart?.map((item, index) => {
             // Sắp xếp available_sizes của mỗi sản phẩm
             item.available_sizes = sortSizes(item.available_sizes);
 
@@ -440,7 +455,8 @@ export default function CartScreen({navigation}) {
                 style={{
                   backgroundColor: 'white',
                   padding: 10,
-                  borderBottomWidth: 1,
+                  borderBottomWidth: 0.5,
+                  borderColor: '#999',
                 }}
                 key={index}>
                 <View
@@ -452,7 +468,7 @@ export default function CartScreen({navigation}) {
                   }}>
                   {console.log('cart?.map: ', item)}
                   <Text style={{width: 200, fontSize: 16, fontWeight: '600'}}>
-                    {item?.name}
+                    {`${index + 1}. ${item?.name}`}
                   </Text>
                   <Pressable
                     style={{
@@ -522,14 +538,15 @@ export default function CartScreen({navigation}) {
                     {/* {convertIntegerToPriceString(
                     convertPriceStringToInteger(item.price) * item.quantity,
                   )} */}
-                    {(item?.priceBySize !== undefined &&
+                    {/* {(item?.priceBySize !== undefined &&
                       item?.priceBySize !== null &&
                       convertIntegerToPriceString(
                         convertPriceStringToInteger(
                           getMinSizeAndPrice(item.priceBySize).price,
                         ) * item.quantity,
                       )) ||
-                      'Đang cập nhật giá'}
+                      'Đang cập nhật giá'} */}
+                    {item.priceBySize[item.selected_size]}
                   </Text>
                   <Text style={{fontSize: 15, fontWeight: '500'}}>
                     Số lượng: {item?.quantity}
@@ -545,11 +562,11 @@ export default function CartScreen({navigation}) {
                     paddingTop: 10,
                   }}>
                   <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-                    Size:{' '}
-                    {(item?.priceBySize !== undefined &&
+                    Size: {item?.selected_size}
+                    {/* {(item?.priceBySize !== undefined &&
                       item?.priceBySize !== null &&
                       getMinSizeAndPrice(item.priceBySize).size) ||
-                      'Đang cập nhật size'}
+                      'Đang cập nhật size'} */}
                   </Text>
                   <TouchableOpacity
                     onPress={() => {
