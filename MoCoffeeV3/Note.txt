@@ -60,7 +60,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Xử lý chuyển từ giỏ hàng về detail => ok
 - Chức năng đặt hàng khi nhều size + giá => ok
 - Giỏ hàng làm lại vì size => ok
-- Cần sửa lại phần đặt hàng giá theo size từu DetailItem
+- Cần sửa lại phần đặt hàng giá theo size từ DetailItem => ok
 - Sửa lại Đơn hàng ở ngoài UI
 - Xem chi tiết đơn hàng Order ở ngoài chưa có
 - Xem lại giỏ hàng chưa có

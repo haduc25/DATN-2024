@@ -239,6 +239,11 @@ export default function CartScreen({navigation}) {
 
       // timeOutForChecking = 0;
       // sau khi upload leen db thì chờ 3s mới chuyển qua screen `OrderConfirmationSuccessfully`
+      console.log(
+        'category, ordersConfirmationLength: ',
+        category,
+        ordersConfirmationLength,
+      );
 
       let ma_don_hang = generateKeyID(category, ordersConfirmationLength);
 

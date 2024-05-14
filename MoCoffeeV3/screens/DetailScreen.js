@@ -34,7 +34,7 @@ import {addToCart} from '../redux/CartReducer';
 import {db, auth} from '../firebase';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {sortSizes} from '../utils/globalHelpers';
+import {getMinSizeAndPrice, sortSizes} from '../utils/globalHelpers';
 
 // START: DynamicHeader
 
@@ -132,8 +132,8 @@ export default function DetailScreen({}) {
           isFavorited,
           parsedFavoritedItems,
         );
-        console.log('\n\n===================\n\n');
-        console.log('Giá trị hiện tại của <3: ', isFavorite);
+        // console.log('\n\n===================\n\n');
+        // console.log('Giá trị hiện tại của <3: ', isFavorite);
         setIsFavorite(isFavorited);
         // Trả về giá trị isFavorited
         return isFavorited;
@@ -272,12 +272,29 @@ export default function DetailScreen({}) {
   // const [titlePage, setTitlePage] = useState(item.name);
   // END: DynamicHeader
 
+  //
+  const minSizeAndMoney =
+    item?.priceBySize !== undefined
+      ? getMinSizeAndPrice(item.priceBySize)
+      : null;
+
+  // console.log('minSizeAndMoney: ', minSizeAndMoney);
+
   // Size: active
-  const [activeSize, setActiveSize] = useState(item.available_sizes[0]); //mặc định là `active` size đầu tiên
+  // const [activeSize, setActiveSize] = useState(item.available_sizes[0]); //mặc định là `active` size đầu tiên
+  const [activeSize, setActiveSize] = useState(minSizeAndMoney.size); //mặc định là `active` size đầu tiên
   const [sizeSelected, setSizeSelected] = useState(false);
 
-  const handleSizeSelect = size => {
+  console.log('DETAIL_activeSize', activeSize);
+
+  const handleSizeSelect = (productId, size) => {
     if (!sizeSelected || activeSize !== size) {
+      console.log('Selected size: ', size);
+      // Lưu id và size
+      setSelectedSizes(prevState => ({
+        ...prevState,
+        [productId]: size,
+      }));
       setActiveSize(size);
       setSizeSelected(true);
       // console.log('set này');
@@ -321,6 +338,8 @@ export default function DetailScreen({}) {
   console.log('productInfo.category: ', productInfo.category);
 
   const sortedSizes = sortSizes(item.available_sizes);
+  // console.log('DETAIL_item._id: ', item._id);
+  const [selectedSizes, setSelectedSizes] = useState({});
 
   return (
     <View style={{flex: 1}}>
@@ -490,7 +509,7 @@ export default function DetailScreen({}) {
                         activeSize === size ? '#6E5532' : 'transparent',
                       borderWidth: 1,
                     }}
-                    onPress={() => handleSizeSelect(size)}>
+                    onPress={() => handleSizeSelect(item._id, size)}>
                     <Text
                       style={{
                         fontSize: 16,
@@ -671,14 +690,19 @@ export default function DetailScreen({}) {
                 {
                   text: 'OK',
                   onPress: () => {
+                    // console.log(
+                    //   'DETAIL_productInfo.category: ',
+                    //   productInfo.category,
+                    // );
                     dispatch(addToCart(item));
-                    console.log('DETAIL: ', item);
+                    console.log('DETAIL: ', item, selectedSizes);
                     alert('ĐÃ THÊM SẢN PHẨM VÀO GIỎ HÀNG');
-
                     setTimeout(() => {
                       navi.navigate('Cart', {
                         currentScreen: 'DetailScreen',
+                        category: productInfo.category,
                         item: item,
+                        selectedSizes: selectedSizes,
                       });
                     }, 3000);
                   },
