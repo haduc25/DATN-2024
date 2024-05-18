@@ -61,6 +61,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Chức năng đặt hàng khi nhều size + giá => ok
 - Giỏ hàng làm lại vì size => ok
 - Cần sửa lại phần đặt hàng giá theo size từ DetailItem => ok
+- Chỉnh sửa chi tiết đơn hàng `DetailItemOrdered` => 60%
 - Sửa lại Đơn hàng ở ngoài UI
 - Xem chi tiết đơn hàng Order ở ngoài chưa có
 - Xem lại giỏ hàng chưa có

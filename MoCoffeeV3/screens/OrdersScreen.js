@@ -142,10 +142,7 @@ export default function FavouriteScreen({navigation}) {
               <Text
                 style={{fontSize: 16, maxWidth: 310, paddingLeft: 6}}
                 numberOfLines={1}>
-                -{' '}
-                {`${itemOrdered.ten_sp} (SL: ${itemOrdered.so_luong}), Size: ${
-                  itemOrdered?.selected_size ?? 'S'
-                }`}
+                - {itemOrdered.ten_sp}
               </Text>
             </View>
           ))}

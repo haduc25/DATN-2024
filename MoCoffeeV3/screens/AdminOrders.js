@@ -281,6 +281,8 @@ export default function AdminOrders({navigation}) {
           borderBottomRightRadius: 10,
         }}>
         <TouchableOpacity
+          onPress={() => navi.navigate('DetailItemOrdered', {item})}
+          // onPress={() => console.log('item_DETAIL: ', item)}
           style={{
             borderWidth: 1,
             height: 45,
@@ -826,7 +828,7 @@ export default function AdminOrders({navigation}) {
             renderItem={renderItem}
             keyExtractor={item => item._id}
           />
-          {console.log('1orders__: ', orders)}
+          {/* {console.log('1orders__: ', orders)} */}
 
           {/* {products.map(product => (
             <View key={product._id}>

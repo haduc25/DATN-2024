@@ -225,6 +225,8 @@ export default function CartScreen({navigation}) {
         let sp_order = {
           ten_sp: item.name,
           gia_sp: item.price,
+          anh_sp: item.featured_image,
+          id_sp: item._id,
           so_luong: item.quantity,
           selected_size: item.selected_size,
           size_sp: item.available_sizes.join(', '), // Chuyển mảng available_sizes thành chuỗi
@@ -256,6 +258,7 @@ export default function CartScreen({navigation}) {
       isValidData.user_id_ordered = userId;
 
       // PUSH TO SERVER
+      console.log('isValidData_LASTVERSION: ', isValidData);
       createOrders(isValidData);
     } else {
       timeOutForChecking++;
