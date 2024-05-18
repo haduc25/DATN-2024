@@ -133,6 +133,42 @@ export const translateStatusOrders = status => {
   return translations[status] || status;
 };
 
+export const translateStatusDetailOrders = status => {
+  const statusInfo = {
+    wait4pay: {
+      message: 'Đơn hàng đang chờ thanh toán',
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/8704/8704866.png', // Thay thế bằng đường dẫn icon thực tế
+    },
+    pending: {
+      message: 'Đơn hàng đang chờ duyệt',
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/831/831110.png',
+    },
+    processing: {
+      message: 'Đơn hàng đang được xử lý',
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/9431/9431379.png',
+    },
+    shipping: {
+      message: 'Đơn hàng đang được giao',
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/411/411712.png',
+    },
+    shipped: {
+      message: 'Đơn hàng đã giao thành công',
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/12964/12964027.png',
+    },
+    cancelled: {
+      message: 'Đơn hàng đã hủy',
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/338/338056.png',
+    },
+  };
+
+  return (
+    statusInfo[status] || {
+      message: 'Trạng thái không xác định',
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/6146/6146689.png',
+    }
+  );
+};
+
 export const translatePaymentMethod = method => {
   const translations = {
     cash: 'Tiền mặt',

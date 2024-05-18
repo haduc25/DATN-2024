@@ -20,50 +20,22 @@ import {
   convertISOToFormattedDate,
 } from '../utils/globalHelpers';
 import {AntDesign} from '@expo/vector-icons';
-import {db, getDocs, collection, updateDoc, doc, getDoc} from '../firebase';
+import {db, getDocs, collection, updateDoc, doc} from '../firebase';
 
 export default function DetailItemOrdered({navigation}) {
   const route = useRoute();
-  const {orderIdItem} = route?.params;
-  // console.log('route_DETAIL-ITEM: ', item);
+  const {item, orderIdItem} = route?.params;
+  console.log('route_DETAIL-ITEM: ', item);
   console.log('route_DETAIL-orderIdItem: ', orderIdItem);
   const screenWidth = Dimensions.get('window').width;
 
-  // FETCH DATA
   const [orderData, setOrderData] = useState(null);
-
-  const fetchOrderData = async () => {
-    try {
-      const orderDoc = await getDoc(doc(db, 'OrdersConfirmation', orderIdItem));
-      if (orderDoc.exists()) {
-        setOrderData(orderDoc.data());
-      } else {
-        console.log('No such document!');
-      }
-    } catch (error) {
-      console.log('Error fetching order data: ', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchOrderData();
-  }, [orderIdItem]);
-
-  if (!orderData) {
-    return (
-      <SafeAreaProvider>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>Loading...</Text>
-        </View>
-      </SafeAreaProvider>
-    );
-  }
 
   //  PHÍ GIAO HÀNG
   const phiship = 15000;
   const phiapdung = 6000;
 
-  const {message, iconUrl} = translateStatusDetailOrders(orderData?.status);
+  const {message, iconUrl} = translateStatusDetailOrders(item.status);
 
   // ############################ START: HANDLE DUYỆT ĐƠN & HỦY ĐƠN ############################ //
   const handleApproveOrders = (orderId, ma_don_hang, orderStatus) => {
@@ -92,7 +64,7 @@ export default function DetailItemOrdered({navigation}) {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
                   alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
-                  fetchOrderData(); // Lấy dữ liệu mới
+                  fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
@@ -131,7 +103,7 @@ export default function DetailItemOrdered({navigation}) {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
                   alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
-                  fetchOrderData(); // Lấy dữ liệu mới
+                  // fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
@@ -170,7 +142,7 @@ export default function DetailItemOrdered({navigation}) {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
                   alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
-                  fetchOrderData(); // Lấy dữ liệu mới
+                  // fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
@@ -208,7 +180,7 @@ export default function DetailItemOrdered({navigation}) {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
                   alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
-                  fetchOrderData(); // Lấy dữ liệu mới
+                  // fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
@@ -248,7 +220,7 @@ export default function DetailItemOrdered({navigation}) {
                   // Dữ liệu cập nhật thành công
                   console.log(`Đã hủy đơn #${orderId}!!!`);
                   alert(`Đã hủy đơn #${ma_don_hang}!!!`);
-                  fetchOrderData(); // Lấy dữ liệu mới
+                  // fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
@@ -324,7 +296,7 @@ export default function DetailItemOrdered({navigation}) {
               <Text style={{fontWeight: '700'}}>Mã đơn hàng</Text>
             </View>
             <View style={{padding: 12}}>
-              <Text>#{orderData?.ma_don_hang}</Text>
+              <Text>#{item.ma_don_hang}</Text>
             </View>
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -333,7 +305,7 @@ export default function DetailItemOrdered({navigation}) {
             </View>
             <View style={{padding: 12}}>
               <Text numberOfLines={3} style={{maxWidth: 240}}>
-                {orderData?.dia_chi}
+                {item.dia_chi}
               </Text>
             </View>
           </View>
@@ -342,7 +314,7 @@ export default function DetailItemOrdered({navigation}) {
               <Text style={{fontWeight: '700'}}>Số điện thoại</Text>
             </View>
             <View style={{padding: 12}}>
-              <Text>{orderData?.so_dien_thoai}</Text>
+              <Text>{item.so_dien_thoai}</Text>
             </View>
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -350,7 +322,7 @@ export default function DetailItemOrdered({navigation}) {
               <Text style={{fontWeight: '700'}}>Thời gian đặt hàng</Text>
             </View>
             <View style={{padding: 12}}>
-              <Text>{orderData?.thoi_gian_tao_don_hang}</Text>
+              <Text>{item.thoi_gian_tao_don_hang}</Text>
             </View>
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -358,7 +330,7 @@ export default function DetailItemOrdered({navigation}) {
               <Text style={{fontWeight: '700'}}>Thời gian hủy</Text>
             </View>
             <View style={{padding: 12}}>
-              <Text>{orderData?.thoi_gian_cap_nhat_don_hang_moi_nhat}</Text>
+              <Text>{item.thoi_gian_cap_nhat_don_hang_moi_nhat}</Text>
             </View>
           </View>
 
@@ -375,9 +347,9 @@ export default function DetailItemOrdered({navigation}) {
           {/* THÔNG TIN SẢN PHẨM */}
           <View style={{paddingHorizontal: 10}}>
             <Text style={{fontSize: 16, fontWeight: '600'}}>
-              Sản phẩm đã đặt ({orderData?.san_pham_order.length})
+              Sản phẩm đã đặt ({item.san_pham_order.length})
             </Text>
-            {orderData?.san_pham_order.map((itemOrdered, index) => {
+            {item.san_pham_order.map((itemOrdered, index) => {
               let gia_sp_sau_khi_cong_voi_sl =
                 itemOrdered.so_luong *
                 convertPriceStringToInteger(itemOrdered?.gia_sp);
@@ -468,7 +440,7 @@ export default function DetailItemOrdered({navigation}) {
                   CHI TIẾT HÓA ĐƠN
                 </Text>
               </View>
-              {orderData?.san_pham_order.map((itemOrdered, index) => {
+              {item.san_pham_order.map((itemOrdered, index) => {
                 let gia_sp_sau_khi_cong_voi_sl_hoa_don =
                   itemOrdered.so_luong *
                   convertPriceStringToInteger(itemOrdered?.gia_sp);
@@ -577,7 +549,7 @@ export default function DetailItemOrdered({navigation}) {
                   </Text>
                 </View>
                 <View>
-                  <Text style={{fontSize: 16}}>{orderData?.tong_tien}</Text>
+                  <Text style={{fontSize: 16}}>{item.tong_tien}</Text>
                 </View>
               </View>
             </View>
@@ -591,14 +563,10 @@ export default function DetailItemOrdered({navigation}) {
             marginVertical: 55,
             paddingHorizontal: 20,
           }}>
-          {isShippedOrCancelled(orderData?.status) && (
+          {isShippedOrCancelled(item.status) && (
             <TouchableOpacity
               onPress={() =>
-                handleApproveOrders(
-                  orderData?._id,
-                  orderData?.ma_don_hang,
-                  orderData?.status,
-                )
+                handleApproveOrders(item._id, item.ma_don_hang, item.status)
               }
               style={{
                 borderWidth: 0.5,
@@ -616,19 +584,15 @@ export default function DetailItemOrdered({navigation}) {
                   color: '#fff',
                   textTransform: 'uppercase',
                 }}>
-                {convertStatusToMessage(orderData?.status)}
+                {convertStatusToMessage(item.status)}
               </Text>
             </TouchableOpacity>
           )}
 
-          {isShippedOrCancelled(orderData?.status) && (
+          {isShippedOrCancelled(item.status) && (
             <TouchableOpacity
               onPress={() =>
-                handleCancelOrders(
-                  orderData?._id,
-                  orderData?.ma_don_hang,
-                  orderData?.status,
-                )
+                handleCancelOrders(item._id, item.ma_don_hang, item.status)
               }
               style={{
                 marginTop: 25,

@@ -281,7 +281,9 @@ export default function AdminOrders({navigation}) {
           borderBottomRightRadius: 10,
         }}>
         <TouchableOpacity
-          onPress={() => navi.navigate('DetailItemOrdered', {item})}
+          onPress={() =>
+            navi.navigate('DetailItemOrdered', {orderIdItem: item._id})
+          }
           // onPress={() => console.log('item_DETAIL: ', item)}
           style={{
             borderWidth: 1,
