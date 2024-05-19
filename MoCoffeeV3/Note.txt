@@ -62,9 +62,9 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Giỏ hàng làm lại vì size => ok
 - Cần sửa lại phần đặt hàng giá theo size từ DetailItem => ok
 - Chỉnh sửa chi tiết đơn hàng `DetailItemOrdered` => ok
-- Sửa lại Đơn hàng ở ngoài UI
-- Xem chi tiết đơn hàng Order ở ngoài chưa có
-- Xem lại giỏ hàng chưa có
+- Sửa lại Đơn hàng ở ngoài UI => ok
+- Xem chi tiết đơn hàng Order ở ngoài chưa có => ok
+- Xem lại giỏ hàng chưa có => ok
 - Lọc sản phẩm ở Ngoài, Trong Admin
 - Chức năng tìm kiếm
 - BUG: Khi sửa sản phẩm (hình ảnh bìa) luôn lấy hình ảnh cuối cùng hoặc không, vì đang lấy ảnh linh tinh

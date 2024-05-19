@@ -23,7 +23,7 @@ import {doc, getDoc} from 'firebase/firestore';
 
 export default function ProfileScreen({navigation}) {
   const [imageURI, setImageURI] = useState(null);
-  console.log('storage: ', storage);
+  // console.log('storage: ', storage);
 
   const [displayName, setDisplayName] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
@@ -58,8 +58,8 @@ export default function ProfileScreen({navigation}) {
           const userData = docSnap.data();
           const mergedData = mergeObjects(user, userData);
           setUserInfo(mergedData);
-          console.log('Merged data:', mergedData);
-          console.log('Merged data - role:', mergedData.role);
+          // console.log('Merged data:', mergedData);
+          // console.log('Merged data - role:', mergedData.role);
 
           if (mergedData.role === 'admin') {
             setShowUIAdmin(true);
@@ -208,7 +208,7 @@ export default function ProfileScreen({navigation}) {
     // fetchImageURI();
   }, []);
 
-  console.log('image URI: ', imageURI);
+  // console.log('image URI: ', imageURI);
 
   return (
     <SafeAreaProvider>
@@ -382,6 +382,33 @@ export default function ProfileScreen({navigation}) {
             </TouchableOpacity>
           )}
 
+          <TouchableOpacity
+            // onPress={() => alert('navigate to Giỏ hàng')}
+            onPress={() =>
+              navi.navigate('Cart', {
+                currentScreen: 'Tài khoản',
+                // category,
+                // selectedSizes: selectedSizes,
+              })
+            }
+            style={{
+              borderBottomWidth: 1,
+              borderColor: '#ccc',
+              padding: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+              <AntDesign
+                name={'shoppingcart'}
+                size={18}
+                color={'#000'}
+                // style={{marginTop: 10, borderWidth: 1, borderColor: '#000'}}
+              />
+              <Text style={{paddingLeft: 10}}>Giỏ hàng</Text>
+            </View>
+            <AntDesign name={'right'} size={18} color={'#000'} />
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => alert('navigate to Quản lý thẻ')}
             style={{

@@ -36,6 +36,9 @@ import {db} from '../../firebase';
 // Helper
 import {translateCategory} from '../../utils/globalHelpers';
 
+// AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // OVERLAY
 // import {Button, Overlay} from 'react-native-elements';
 
@@ -174,6 +177,17 @@ export default function ProductType({navigation}) {
       ...prevState,
       [productId]: size,
     }));
+  };
+
+  // save to AsyncStorage
+  const saveSelectedSizes = async selectedSizes => {
+    try {
+      const jsonValue = JSON.stringify(selectedSizes);
+      await AsyncStorage.setItem('selectedSizes_CART', jsonValue);
+      console.log('Selected sizes đã lưu vào AsyncStorage');
+    } catch (e) {
+      console.error('Failed to save selected sizes.', e);
+    }
   };
 
   return (
@@ -552,11 +566,11 @@ export default function ProductType({navigation}) {
                         color: '#ee4d2d',
                         fontWeight: '600',
                       }}>
-                      {
-                        item.priceBySize[
-                          selectedSizes[item._id] || item.available_sizes[0]
-                        ]
-                      }
+                      {item.priceBySize?.[
+                        selectedSizes[item._id] || item.available_sizes[0]
+                      ] ?? 'Giá không có sẵn'}
+
+                      {/* {console.log('item, selectedSizes: ', selectedSizes)} */}
                     </Text>
                   </View>
                   <View
@@ -643,10 +657,14 @@ export default function ProductType({navigation}) {
                 // toggleOverlay();
                 // XÓA CART UI
                 dispatch(cleanCartUI());
+                console.log('selectedSizes_PRODUCTTYPE: ', selectedSizes);
+                // SAVE TO STORAGE
+                saveSelectedSizes(selectedSizes);
+
                 navi.navigate('Cart', {
                   currentScreen: 'ProductTypeScreen',
                   category,
-                  selectedSizes: selectedSizes,
+                  // selectedSizes: selectedSizes,
                 });
                 // console.log('selectedSizes: ', selectedSizes); //selectedSizes:  {"1UzgFTMOjSRXICcqzrjU": "S", "BuTrSYU6PuCLUG2TJAMW": "M", "JX5EYlkAuFr5Sj4UHxk3": "M"}
               }}
@@ -668,7 +686,7 @@ export default function ProductType({navigation}) {
                   fontSize: 15,
                   fontWeight: '600',
                 }}>
-                Đã thêm {cart.length} sản phẩm
+                Đã thêm {cart?.length} sản phẩm
               </Text>
             </Pressable>
           </View>

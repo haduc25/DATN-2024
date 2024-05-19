@@ -29,7 +29,7 @@ import {
 } from '../redux/CartReducer';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {useRoute, useNavigation} from '@react-navigation/native';
+import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 import {
   convertPriceStringToInteger,
   convertIntegerToPriceString,
@@ -65,6 +65,7 @@ export default function CartScreen({navigation}) {
   // console.log('DATA FROM REDUX222_Cart: ', isCartClean);
   console.log('DATA FROM REDUX222_Cart: ', cart);
   const dispatch = useDispatch();
+
   const paymentMethods = [
     {
       id: '0',
@@ -118,7 +119,27 @@ export default function CartScreen({navigation}) {
   //
   const route = useRoute();
   const navi = useNavigation();
-  const {currentScreen, category, item, selectedSizes} = route?.params;
+  const {currentScreen, category = 'OTH', item} = route?.params;
+  const isFocused = useIsFocused();
+
+  const [selectedSizes, setSelectedSizes] = useState({});
+
+  useEffect(() => {
+    const fetchSelectedSizesFromStorage = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('selectedSizes_CART');
+        if (jsonValue != null) {
+          setSelectedSizes(JSON.parse(jsonValue));
+        }
+      } catch (e) {
+        console.error('Failed to load selected sizes from storage.', e);
+      }
+    };
+
+    if (isFocused) {
+      fetchSelectedSizesFromStorage();
+    }
+  }, [isFocused]);
 
   // console.log('currentScreen_CART:  ', currentScreen);
   // console.log('route?.params_CART:  ', route?.params);
@@ -190,6 +211,7 @@ export default function CartScreen({navigation}) {
 
   // Địa chỉ
   const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [deliveryDetailAddress, setDeliveryDetailAddress] = useState('');
   const [userCurrentLocation, setUserCurrentLocation] = useState('');
   const [errorDeliveryAddress, setErrorDeliveryAddress] = useState(null);
 
@@ -360,6 +382,7 @@ export default function CartScreen({navigation}) {
     setActiveIndex(0);
     setShowQR(false);
     setDeliveryAddress('');
+    setDeliveryDetailAddress('');
     setPhoneNumber('');
   };
 
@@ -376,15 +399,39 @@ export default function CartScreen({navigation}) {
 
   console.log('minSizeAndMoney:', minSizeAndMoney);
 
-  // Assume cart and selectedSizes are defined, trường vừa thêm có thê là `selected_size`
-  const updatedCart = cart.map(item => ({
-    ...item,
-    selected_size:
-      selectedSizes[item._id] ||
-      (item.available_sizes && item.available_sizes[0]), // Lấy kích thước đã chọn từ selectedSizes hoặc kích thước đầu tiên trong danh sách available_sizes nếu không có trong selectedSizes
-  }));
+  // // Assume cart and selectedSizes are defined, trường vừa thêm có thê là `selected_size`
+  // const updatedCart = cart.map(item => ({
+  //   ...item,
+  //   selected_size:
+  //     selectedSizes[item._id] ||
+  //     (item.available_sizes && item.available_sizes[0]), // Lấy kích thước đã chọn từ selectedSizes hoặc kích thước đầu tiên trong danh sách available_sizes nếu không có trong selectedSizes
+  // }));
 
-  console.log('Updated Cart:', updatedCart);
+  // console.log('Updated Cart:', updatedCart);
+
+  const updateCart = (cart, selectedSizes) => {
+    if (selectedSizes) {
+      return cart.map(item => ({
+        ...item,
+        selected_size:
+          selectedSizes[item._id] ||
+          (item.available_sizes && item.available_sizes[0]), // Lấy kích thước đã chọn từ selectedSizes hoặc kích thước đầu tiên trong danh sách available_sizes nếu không có trong selectedSizes
+      }));
+    }
+    return cart;
+  };
+
+  // Cập nhật giỏ hàng nếu cần
+  const updatedCart = updateCart(cart, selectedSizes);
+
+  const combineAddresses = (address1, address2) => {
+    // Kiểm tra xem address1 có dấu phẩy ở cuối hay không
+    const formattedAddress1 = address1.trim().endsWith(',')
+      ? address1.trim()
+      : `${address1.trim()},`;
+    // Ghép hai địa chỉ lại với nhau
+    return `${formattedAddress1} ${address2.trim()}`;
+  };
 
   return (
     // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -759,7 +806,42 @@ export default function CartScreen({navigation}) {
           )}
           {/* END: PAYMENT ATM, MOMO, ZALO */}
 
-          {/* START: ĐỊA CHỈ */}
+          {/* START: ĐỊA CHỈ CHI TIẾT */}
+          <View style={{marginVertical: 10}}>
+            <Text style={{fontSize: 16, fontWeight: '600'}}>
+              Địa chỉ chi tiết
+            </Text>
+            <TextInput
+              value={deliveryDetailAddress}
+              onChangeText={text => setDeliveryDetailAddress(text)}
+              style={{
+                color: 'gray',
+                marginVertical: 10,
+                width: '100%',
+                backgroundColor: '#fff',
+                borderWidth: 1,
+                borderColor: '#ccc',
+                borderRadius: 12,
+                height: 50,
+                padding: 10,
+              }}
+              placeholder='Số nhà 25, số tầng 9'
+            />
+            {errorDeliveryAddress ? (
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: 'red',
+                  marginLeft: 10,
+                  marginRight: 10,
+                }}>
+                {errorDeliveryAddress}
+              </Text>
+            ) : null}
+          </View>
+          {/* END: ĐỊA CHỈ */}
+
+          {/* START: ĐỊA CHỈ CHI TIẾT */}
           <View style={{marginVertical: 10}}>
             <Text style={{fontSize: 16, fontWeight: '600'}}>Địa chỉ</Text>
             <TextInput
@@ -780,17 +862,6 @@ export default function CartScreen({navigation}) {
               }}
               placeholder='Nhập địa chỉ nhận hàng của bạn'
             />
-            {errorDeliveryAddress ? (
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: 'red',
-                  marginLeft: 10,
-                  marginRight: 10,
-                }}>
-                {errorDeliveryAddress}
-              </Text>
-            ) : null}
           </View>
           {/* END: ĐỊA CHỈ */}
 
@@ -1178,9 +1249,10 @@ export default function CartScreen({navigation}) {
                 paymentMethods,
               );
               // validate Dia chi
-              const isDeliveryAddressNotEmpty = deliveryAddress.trim() !== '';
+              const isDeliveryAddressNotEmpty =
+                deliveryDetailAddress.trim() !== '';
               if (isDeliveryAddressNotEmpty) {
-                let deliveryAddressValid = deliveryAddress.trim();
+                let deliveryAddressValid = deliveryDetailAddress.trim();
                 setErrorDeliveryAddress(null);
 
                 const regex = /^\d{10,11}$/;
@@ -1199,9 +1271,26 @@ export default function CartScreen({navigation}) {
                   //   deliveryAddressValid,
                   //   phoneNumberValid,
                   // );
+
+                  // const combinedAddress = combineAddresses(
+                  //   deliveryDetailAddress,
+                  //   userCurrentLocation,
+                  // );
+
+                  // console.log(
+                  //   deliveryDetailAddress + userCurrentLocation,
+                  //   combinedAddress,
+                  //   phoneNumberValid,
+                  // );
+
+                  // ################ ALL IS OKAY ################ //
                   handlePlaceOrder({
                     phuong_thuc_thanh_toan: paymentValid,
-                    dia_chi: deliveryAddressValid,
+                    // dia_chi: deliveryAddressValid,
+                    dia_chi: combineAddresses(
+                      deliveryDetailAddress,
+                      userCurrentLocation,
+                    ),
                     so_dien_thoai: phoneNumberValid,
                     tong_tien: convertIntegerToPriceString(total),
                   });

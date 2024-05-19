@@ -325,6 +325,17 @@ export default function DetailScreen({}) {
     addItemToFavoritedItems(itemId);
   };
 
+  // save to AsyncStorage
+  const saveSelectedSizes = async selectedSizes => {
+    try {
+      const jsonValue = JSON.stringify(selectedSizes);
+      await AsyncStorage.setItem('selectedSizes_CART', jsonValue);
+      console.log('Selected sizes đã lưu vào AsyncStorage');
+    } catch (e) {
+      console.error('Failed to save selected sizes.', e);
+    }
+  };
+
   //
   // const imagesSlider = [
   //   item.featured_image[0],
@@ -696,13 +707,17 @@ export default function DetailScreen({}) {
                     // );
                     dispatch(addToCart(item));
                     console.log('DETAIL: ', item, selectedSizes);
+                    console.log('selectedSizes_PRODUCTTYPE: ', selectedSizes);
+                    // SAVE TO STORAGE
+                    saveSelectedSizes(selectedSizes);
+
                     alert('ĐÃ THÊM SẢN PHẨM VÀO GIỎ HÀNG');
                     setTimeout(() => {
                       navi.navigate('Cart', {
                         currentScreen: 'DetailScreen',
                         category: productInfo.category,
                         item: item,
-                        selectedSizes: selectedSizes,
+                        // selectedSizes: selectedSizes,
                       });
                     }, 3000);
                   },
