@@ -125,7 +125,7 @@ export const translateStatusOrders = status => {
     pending: 'Đang chờ duyệt', // info => blue
     processing: 'Đang được xử lý', // approved: đơn được duyệt sẽ chuyển qua trạng thái này info => blue
     shipping: 'Đang giao hàng', // đang được chuyển đến khách hàng => green
-    shipped: 'Đã giao hàng thành công', // khi đơn đã được giao đến khách hàng thành công => blue
+    shipped: 'Giao hàng thành công', // khi đơn đã được giao đến khách hàng thành công => blue
     cancelled: 'Đã hủy đơn hàng', // khi đơn hàng bị hủy => red
   };
   // Nếu có, trả về giá trị tương ứng

@@ -16,7 +16,7 @@ import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 import {Ionicons, FontAwesome, AntDesign} from '@expo/vector-icons';
 import {translateStatusOrders} from '../utils/globalHelpers';
 
-export default function FavouriteScreen({navigation}) {
+export default function OrdersSceen({navigation}) {
   const [listItemFavorited, setListItemFavorited] = useState([]);
   const [userDataList, setUserDataList] = useState([]);
 
@@ -124,7 +124,8 @@ export default function FavouriteScreen({navigation}) {
           shadowRadius: 10,
           shadowOffset: {width: 0, height: 0},
           elevation: 5,
-          maxHeight: 250, //200
+          maxHeight: 198, //200
+          minHeight: 198, //200
         }}>
         <View style={{padding: 14, maxWidth: '50%', minWidth: '50%'}}>
           {/* <Text>User ID: {item.userId}</Text> */}
@@ -137,15 +138,17 @@ export default function FavouriteScreen({navigation}) {
           <Text numberOfLines={1} style={{maxWidth: 165}}>
             Sản phẩm đã đặt ({item.san_pham_order.length})
           </Text>
-          {item.san_pham_order.slice(0, 3).map((itemOrdered, index) => (
-            <View key={index}>
-              <Text
-                style={{fontSize: 16, maxWidth: 310, paddingLeft: 6}}
-                numberOfLines={1}>
-                - {itemOrdered.ten_sp}
-              </Text>
-            </View>
-          ))}
+          <View style={{minHeight: 45, maxHeight: 45}}>
+            {item.san_pham_order.slice(0, 2).map((itemOrdered, index) => (
+              <View key={index}>
+                <Text
+                  style={{fontSize: 16, maxWidth: 310, paddingLeft: 6}}
+                  numberOfLines={1}>
+                  - {itemOrdered.ten_sp}
+                </Text>
+              </View>
+            ))}
+          </View>
 
           <View
             style={{
@@ -156,7 +159,7 @@ export default function FavouriteScreen({navigation}) {
             }}>
             <Text
               style={{
-                marginTop: 10,
+                marginTop: 4,
                 borderRadius: 4,
                 fontSize: 16,
               }}>
@@ -182,14 +185,6 @@ export default function FavouriteScreen({navigation}) {
             }}>
             <Text
               style={{
-                marginTop: 10,
-                borderRadius: 4,
-                fontSize: 16,
-              }}>
-              Thành tiền:{' '}
-            </Text>
-            <Text
-              style={{
                 color: '#ee4d2d',
                 fontWeight: '600',
                 fontSize: 18,
@@ -204,7 +199,8 @@ export default function FavouriteScreen({navigation}) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginTop: 14,
+              // marginTop: 14,
+              marginTop: 10,
               // backgroundColor: 'red',
               maxWidth: 170,
             }}>
@@ -228,29 +224,38 @@ export default function FavouriteScreen({navigation}) {
               </Text>
             </View>
           </View>
+        </View>
+        <View>
+          <Image
+            // source={{uri: item.data.featured_image[0]}}
+            source={{
+              // uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0qTl31Xof9ahjahcSbZVgLfwPPzKLV8LV8rCd5AhczA&s',
+              uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Fitem-default%2Fitem-order-no-image.jpg?alt=media&token=251d05cb-9618-4ff6-951f-0c1122273a18',
+            }}
+            style={{
+              width: 198, //200
+              height: 198, //200
+              borderTopRightRadius: 10,
+              borderBottomRightRadius: 10,
+            }}
+          />
 
           <View
             style={{
               flexDirection: 'row',
               paddingTop: 10,
               alignItems: 'center',
+              zIndex: 999,
+              position: 'absolute',
+              bottom: 4,
+              right: 12,
             }}>
-            <Text style={{color: 'blue'}}>Xem chi tiết </Text>
+            <Text style={{color: 'blue', textDecorationLine: 'underline'}}>
+              Xem chi tiết{' '}
+            </Text>
             <AntDesign name='doubleright' size={18} color='blue' />
           </View>
         </View>
-        <Image
-          // source={{uri: item.data.featured_image[0]}}
-          source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0qTl31Xof9ahjahcSbZVgLfwPPzKLV8LV8rCd5AhczA&s',
-          }}
-          style={{
-            width: 250, //200
-            height: 250, //200
-            borderTopRightRadius: 10,
-            borderBottomRightRadius: 10,
-          }}
-        />
       </TouchableOpacity>
     );
   };
