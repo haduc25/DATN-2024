@@ -18,6 +18,7 @@ import {
   isShippedOrCancelled,
   convertStatusToMessage,
   convertISOToFormattedDate,
+  isCancelled,
 } from '../utils/globalHelpers';
 import {AntDesign} from '@expo/vector-icons';
 import {db, getDocs, collection, updateDoc, doc, getDoc} from '../firebase';
@@ -355,12 +356,29 @@ export default function DetailItemOrdered({navigation}) {
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={{padding: 12}}>
-              <Text style={{fontWeight: '700'}}>Thời gian hủy</Text>
+              <Text style={{fontWeight: '700'}}>
+                {isCancelled(orderData?.status)
+                  ? 'Thời gian cập nhật lần cuối'
+                  : 'Thời gian hủy'}
+              </Text>
             </View>
             <View style={{padding: 12}}>
               <Text>{orderData?.thoi_gian_cap_nhat_don_hang_moi_nhat}</Text>
             </View>
           </View>
+          {orderData?.requestCancel && (
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{padding: 12}}>
+                <Text style={{fontWeight: '700'}}>
+                  Yêu cầu hủy đơn (Lý do):{' '}
+                </Text>
+              </View>
+              <View style={{padding: 12}}>
+                <Text>{orderData?.reason}</Text>
+              </View>
+            </View>
+          )}
 
           {/* SPLIT LINE */}
           <View

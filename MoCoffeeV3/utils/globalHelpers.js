@@ -219,6 +219,10 @@ export const isShippedOrCancelled = status => {
   return !(status === 'shipped' || status === 'cancelled');
 };
 
+export const isCancelled = status => {
+  return !(status === 'cancelled');
+};
+
 // Định nghĩa hàm sortSizes
 export const sortSizes = sizes => {
   // Định nghĩa hàm so sánh để sắp xếp các kích thước từ nhỏ đến lớn

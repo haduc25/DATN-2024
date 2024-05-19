@@ -102,12 +102,9 @@ export default function OrdersSceen({navigation}) {
     const totalQuantity = getTotalQuantity(item.san_pham_order);
     return (
       <TouchableOpacity
-        // onPress={() =>
-        //   navi.navigate('DetailScreen', {
-        //     item: item.data,
-        //     currentScreen: 'Yêu thích',
-        //   })
-        // }
+        onPress={() =>
+          navi.navigate('DetailItemOrderedUser', {orderIdItem: item._id})
+        }
         // onPress={() => console.log('item.data: ', item)}
         style={{
           // borderWidth: 1,

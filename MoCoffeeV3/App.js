@@ -8,6 +8,7 @@ import {Ionicons} from '@expo/vector-icons';
 import HomeScreen from './screens/HomeScreen';
 import OrdersScreen from './screens/OrdersScreen';
 import DetailItemOrdered from './screens/DetailItemOrdered';
+import DetailItemOrderedUser from './screens/DetailItemOrderedUser';
 import FavouriteScreen from './screens/FavouriteScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import CartScreen from './screens/CartScreen';
@@ -104,6 +105,15 @@ export default function App() {
           <BottomTab.Screen
             name={'DetailItemOrdered'}
             component={DetailItemOrdered}
+            options={{
+              headerShown: false,
+              tabBarStyle: {display: 'none'},
+              tabBarButton: () => null,
+            }}
+          />
+          <BottomTab.Screen
+            name={'DetailItemOrderedUser'}
+            component={DetailItemOrderedUser}
             options={{
               headerShown: false,
               tabBarStyle: {display: 'none'},

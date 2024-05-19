@@ -293,6 +293,7 @@ export default function CartScreen({navigation}) {
       status: status, // Cập nhật status ở đây
       thoi_gian_tao_don_hang: createdAt,
       thoi_gian_cap_nhat_don_hang_moi_nhat: updatedAt,
+      requestCancel: false,
       ...validData,
     })
       .then(() => {

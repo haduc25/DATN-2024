@@ -36,7 +36,7 @@ export default function AdminOrders({navigation}) {
         // minHeight: 250,
         // minHeight: 340,
         // minHeight: 320,
-        minHeight: item.san_pham_order.length > 3 ? 380 : 360,
+        minHeight: item.san_pham_order.length > 3 ? 400 : 360,
         //   paddingHorizontal: 20,
         //   marginHorizontal: 10,
 
@@ -258,6 +258,28 @@ export default function AdminOrders({navigation}) {
                 </Text>
               </View>
             </View>
+
+            {/* Yêu cầu hủy đơn */}
+            {item?.requestCancel && (
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text numberOfLines={1} style={{fontSize: 16, maxWidth: 245}}>
+                  Yêu cầu hủy đơn (Lý do):{' '}
+                </Text>
+                <View
+                  style={{
+                    padding: 2,
+                  }}>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      maxWidth: 195,
+                      fontWeight: 'bold',
+                    }}>
+                    {item?.reason}
+                  </Text>
+                </View>
+              </View>
+            )}
           </View>
         </View>
         {/* BOTTOM */}
@@ -592,6 +614,8 @@ export default function AdminOrders({navigation}) {
               updateDoc(doc(db, 'OrdersConfirmation', orderId), {
                 status: 'cancelled',
                 thoi_gian_cap_nhat_don_hang_moi_nhat: updateAt,
+                requestCancel: true,
+                // replyReason: 'Đơn hàng đã được hủy bởi QTV!',
               })
                 .then(() => {
                   // Dữ liệu cập nhật thành công
