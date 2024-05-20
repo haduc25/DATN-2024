@@ -66,7 +66,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Xem chi tiết đơn hàng Order ở ngoài chưa có => ok
 - Xem lại giỏ hàng chưa có => ok
 - Lọc sản phẩm ở Ngoài, Trong Admin
-- Chức năng tìm kiếm
+- Chức năng tìm kiếm => 90%
 - BUG: Khi sửa sản phẩm (hình ảnh bìa) luôn lấy hình ảnh cuối cùng hoặc không, vì đang lấy ảnh linh tinh
 - Hoàn thành lại đơn hàng ở ngoài & trong admin
 - Order ngoài (thêm url image, lấy uid đang đăng nhập `đang để mặc định id lMsKBPaYTpORRtBxprjjHppCy0U2 (admin)`)

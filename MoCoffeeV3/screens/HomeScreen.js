@@ -20,6 +20,8 @@ import Categories from '../components/Categories';
 import Products from '../components/Products';
 import Carousel from '../components/Carousel';
 import CustomStatusBar from '../components/CustomStatusBar';
+import SearchComponent from '../components/SearchComponent';
+import SearchComponentV2 from '../components/SearchComponentV2';
 
 // Database
 // import {supabase} from '../supabase';
@@ -39,7 +41,6 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 
 import {GOOGLE_API_KEY} from '@env';
-import SearchComponent from '../components/SearchComponent';
 
 const reverseGeocode = async (location, setViTriHienTai) => {
   try {
@@ -364,7 +365,7 @@ export default function HomeScreen({navigation}) {
             </TouchableOpacity>
           )}
         </View>
-
+        {/* 
         <View
           style={{
             flexDirection: 'row',
@@ -385,10 +386,11 @@ export default function HomeScreen({navigation}) {
           <TouchableOpacity onPress={() => console.log('SEARCHING...')}>
             <AntDesign name='search1' size={24} color='#E52B50' />
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         {/* SEARCH */}
-        <SearchComponent />
+        {/* <SearchComponent /> */}
+        <SearchComponentV2 />
 
         {/* <Carousel /> */}
 
