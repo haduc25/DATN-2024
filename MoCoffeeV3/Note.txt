@@ -66,12 +66,19 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Xem chi tiết đơn hàng Order ở ngoài chưa có => ok
 - Xem lại giỏ hàng chưa có => ok
 - Lọc sản phẩm ở Ngoài, Trong Admin
-- Chức năng tìm kiếm => 90%
+- Chức năng tìm kiếm => ok
 - BUG: Khi sửa sản phẩm (hình ảnh bìa) luôn lấy hình ảnh cuối cùng hoặc không, vì đang lấy ảnh linh tinh
-- Hoàn thành lại đơn hàng ở ngoài & trong admin
+- Hoàn thành lại đơn hàng ở ngoài & trong admin (ok)
 - Order ngoài (thêm url image, lấy uid đang đăng nhập `đang để mặc định id lMsKBPaYTpORRtBxprjjHppCy0U2 (admin)`)
 - Phiếu giảm giá
 - Thống kê, phân tích đơn hàng (Số người đăng ký mới - 7 ngày, số đơn hàng trong 7 ngày, doanh thu trong tháng, số đơn đã được giao trong tháng, số đơn đã hủy)
+
+# 21/05/2024
+- Cần thêm loading
+- Thêm thông báo bằng (Toast Message)
+- Thêm thông ra màn hình chính, ra điện thoại
+- Xử lý khác nền tảng cho (android/ios)
+- Build apk
 
 - User order => nếu là thanh toán tiền mặt (1) | nếu là thanh toán online (2)
 => (1) =>  Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang xử lý (processing) => Đang giao hàng => Đã giao hàng (shipped) => ok

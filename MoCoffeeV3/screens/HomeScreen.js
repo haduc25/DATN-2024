@@ -176,46 +176,41 @@ export default function HomeScreen({navigation}) {
       id: 0,
       name: 'Cà phê đen',
       image:
-        // 'https://b.zmtcdn.com/data/pictures/chains/3/50713/81d0735ce259a6bf800e16bb54cb9e5e.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-        'https://changibakery.com/wp-content/uploads/2023/05/CAFE-DEN-GHEP-ANH-scaled.jpg',
-      time: '35 - 45',
+        'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Frecommend_HOME_Khampha%2Fca-phe-den-da.jpg?alt=media&token=a82f35d8-e820-4d8a-b318-236e3c389b8f',
+      time: '25',
       type: 'Cà phê',
     },
     {
-      id: 0,
+      id: 1,
       name: 'Cà phê sữa đá',
       image:
-        // 'https://b.zmtcdn.com/data/pictures/0/20844770/f9582144619b80d30566f497a02e2c8d.jpg?output-format=webp&fit=around|771.75:416.25&crop=771.75:416.25;*,*',
-        'https://bonjourcoffee.vn/blog/wp-content/uploads/2020/11/cac-luu-y-cafe-sua-tuoi.jpg',
-      time: '10 - 35',
+        'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Frecommend_HOME_Khampha%2Fca-phe-sua-tuoi.jpg?alt=media&token=aeb296af-806f-4e6e-8c8d-7ec5d60c0d3c',
+      time: '10 - 25',
       type: 'Cà phê',
     },
     {
-      id: 0,
-      name: 'Cappuccino',
+      id: 2,
+      name: 'Capuchino',
       image:
-        // 'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-        'https://bonjourcoffee.vn/blog/wp-content/uploads/2020/11/Caramel-Macchiato-da-xay.jpg',
+        'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Frecommend_HOME_Khampha%2Fca-phe-cappuccino.jpg?alt=media&token=8d417675-60c3-49ac-b18d-5c5170fc4eec',
       time: '20 - 25',
-      type: 'Cà phê',
+      type: 'Cà phê pha máy',
     },
 
     {
-      id: 0,
+      id: 3,
       name: 'Trà sữa đá',
       image:
-        // 'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-        'https://cdn.tgdd.vn/2021/07/CookRecipe/GalleryStep/thanh-pham-959.jpg',
-      time: '20 - 25',
-      type: 'Trà',
+        'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Frecommend_HOME_Khampha%2Ftra-sua-da.jpg?alt=media&token=64d11140-ae3e-47a8-b4a9-406cbaca3e5d',
+      time: '5 - 10',
+      type: 'Trà sữa',
     },
     {
-      id: 0,
+      id: 4,
       name: 'Trà chanh',
       image:
-        // 'https://b.zmtcdn.com/data/reviews_photos/2f1/c66cf9c2c68f652db16f2c0a6188a2f1_1659295848.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-        'https://thienthanhtea.com/wp-content/uploads/2022/10/cach-lam-hong-tra-trai-cay-giai-nhiet-sau-mot-ngay-met-moi-5f3-6620628.jpg',
-      time: '20 - 25',
+        'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Frecommend_HOME_Khampha%2Ftra-chanh.jpg?alt=media&token=dfe1bea1-a161-41bf-877e-3415bcc73cf4',
+      time: '5',
       type: 'Trà',
     },
   ];
@@ -428,6 +423,7 @@ export default function HomeScreen({navigation}) {
                     marginTop: 3,
                     color: 'gray',
                     fontWeight: '500',
+                    fontStyle: 'italic',
                   }}>
                   {item?.type}
                 </Text>

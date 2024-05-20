@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import {Octicons, Ionicons, AntDesign, FontAwesome} from '@expo/vector-icons';
 
+// navigation
+import {useNavigation} from '@react-navigation/native';
+
 import {
   addDoc,
   collection,
@@ -58,6 +61,8 @@ export default function SearchComponentV2({navigation}) {
   const [noResults, setNoResults] = useState(false);
   const [isEnterToButtonSearch, setIsEnterToButtonSearch] = useState(false);
 
+  const navi = useNavigation();
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await readMenuData();
@@ -77,13 +82,19 @@ export default function SearchComponentV2({navigation}) {
     );
     setMenuItems(filteredItems);
     setNoResults(filteredItems.length === 0);
-    setIsEnterToButtonSearch(true);
+    if (!isEnterToButtonSearch) {
+      setIsEnterToButtonSearch(true);
+    }
   };
 
   const handleChangeText = text => {
     setKeyword(text);
-    setNoResults(false);
-    setIsEnterToButtonSearch(false);
+    if (isEnterToButtonSearch) {
+      setIsEnterToButtonSearch(false);
+    }
+    if (noResults) {
+      setNoResults(false);
+    }
   };
 
   return (
@@ -104,7 +115,7 @@ export default function SearchComponentV2({navigation}) {
         <TextInput
           value={keyword}
           onChangeText={text => handleChangeText(text)}
-          placeholder='Tìm kiếm cà phê, trà sữa, nước hoa quả...'
+          placeholder='Tìm kiếm cà phê, trà sữa, sinh tố...'
           style={{width: 335, height: '100%'}}
         />
         <TouchableOpacity onPress={handleSearch}>
@@ -120,7 +131,9 @@ export default function SearchComponentV2({navigation}) {
             borderBottomColor: '#ccc',
             borderBottomWidth: 0.5,
           }}>
-          <Text style={{fontSize: 18}}>
+          <Text
+            style={{fontSize: 18, maxWidth: 380, textAlign: 'center'}}
+            numberOfLines={2}>
             Không tìm thấy kết quả phù hợp với "{keyword}"
           </Text>
           <Image
@@ -137,6 +150,13 @@ export default function SearchComponentV2({navigation}) {
           scrollEnabled={false}
           renderItem={({item, index}) => (
             <TouchableOpacity
+              //   onPress={() => console.log('item_menuItems_SEARCH: ', item)}
+              onPress={() =>
+                navi.navigate('DetailScreen', {
+                  item,
+                  currentScreen: 'Trang chủ',
+                })
+              }
               style={{
                 paddingHorizontal: 12,
                 borderBottomColor:
