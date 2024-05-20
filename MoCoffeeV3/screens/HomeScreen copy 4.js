@@ -39,7 +39,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 
 import {GOOGLE_API_KEY} from '@env';
-import SearchComponent from '../components/SearchComponent';
+import SearchComponent from '../components/SearchComponent ';
 
 const reverseGeocode = async (location, setViTriHienTai) => {
   try {

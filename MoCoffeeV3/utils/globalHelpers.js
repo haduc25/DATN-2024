@@ -16,13 +16,19 @@ export const translateCategory = category => {
 };
 
 export const convertPriceStringToInteger = priceString => {
-  // Loại bỏ ký tự '₫' từ chuỗi giá tiền
-  const cleanedPriceString = priceString.replace('₫', '');
-  // Loại bỏ tất cả các dấu ',' từ chuỗi giá tiền
-  const priceWithoutCommas = cleanedPriceString.replace(/,/g, '');
-  // Chuyển đổi chuỗi giá tiền thành số nguyên
-  const priceInteger = parseInt(priceWithoutCommas);
-  return priceInteger;
+  if (priceString !== undefined) {
+    console.log('priceString: ', priceString);
+    // Loại bỏ ký tự '₫' từ chuỗi giá tiền
+    const cleanedPriceString = priceString.replace('₫', '');
+    // Loại bỏ tất cả các dấu ',' từ chuỗi giá tiền
+    const priceWithoutCommas = cleanedPriceString.replace(/,/g, '');
+    // Chuyển đổi chuỗi giá tiền thành số nguyên
+    const priceInteger = parseInt(priceWithoutCommas, 10);
+    return priceInteger;
+  } else {
+    // Xử lý trường hợp priceString là undefined (có thể trả về null hoặc 0 tuỳ theo yêu cầu của bạn)
+    return null;
+  }
 };
 
 export const convertIntegerToPriceString = priceInteger => {

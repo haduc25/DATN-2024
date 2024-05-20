@@ -11,7 +11,6 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
-// Import `db` từ file firebase.js
 import {db} from '../firebase';
 
 const SearchComponent = () => {
@@ -57,13 +56,14 @@ const SearchComponent = () => {
   // Hàm đọc tất cả các ID từ Firestore và lưu dữ liệu cần thiết vào mảng productsData
   const readAllIds = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'CoffeeTeaMenu'));
+      const querySnapshot = await getDocs(collection(db, 'MenuMoC&T'));
       const data = [];
       querySnapshot.forEach(doc => {
         const productData = doc.data();
         if (productData.listItems && productData.listItems.items) {
           data.push(...productData.listItems.items);
         }
+        console.log('LOADING DATA THANH CONG: ', productData);
       });
       setProductsData(data);
     } catch (error) {
@@ -97,7 +97,7 @@ const SearchComponent = () => {
       />
       <Button title='Tìm kiếm' onPress={handleSearch} />
       <FlatList
-        style={{borderWidth: 1}}
+        style={{borderWidth: 1, height: 100}}
         data={searchResults}
         keyExtractor={item => item.id} // Đảm bảo rằng mỗi sản phẩm có một id để định danh duy nhất
         renderItem={({item}) => (
