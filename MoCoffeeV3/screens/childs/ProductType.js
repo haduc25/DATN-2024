@@ -8,13 +8,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useState, useEffect, useRef} from 'react';
-import CustomStatusBar from '../../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 // Icons
-import {Ionicons} from '@expo/vector-icons';
-import {SimpleLineIcons} from '@expo/vector-icons';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {
+  Ionicons,
+  SimpleLineIcons,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 
 // Components
 import FoodItem from '../../components/FoodItem';
@@ -34,13 +35,11 @@ import {translateCategory} from '../../utils/globalHelpers';
 
 // AsyncStorage
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-// export default function ProductType({navigation, route}) {
 export default function ProductType({navigation}) {
   // Redux
   const dispatch = useDispatch();
-  const isCartClean = useSelector(state => state.cart.isClean);
   const route = useRoute();
   const navi = useNavigation();
   const isFocused = useIsFocused();
@@ -54,10 +53,17 @@ export default function ProductType({navigation}) {
 
   const [categoryItems, setCategoryItems] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState({});
+  const [isLoadingSpinner, setIsLoadingSpinner] = useState(true);
 
   useEffect(() => {
     if (isFocused) {
-      fetchCategoryItems(category);
+      setIsLoadingSpinner(true);
+      const timer = setTimeout(() => {
+        fetchCategoryItems(category).finally(() => {
+          setIsLoadingSpinner(false);
+        });
+      }, 300); // Thay đổi thời gian delay
+      return () => clearTimeout(timer);
     }
   }, [category, isFocused]);
 
@@ -116,157 +122,169 @@ export default function ProductType({navigation}) {
     scrollViewRef.current.scrollTo({y: yOffset, animated: true});
   };
 
-  const handleGoBack = () => {
-    if (cart?.length) {
-      Alert.alert(
-        'Sản phẩm chưa được thêm vào giỏ hàng',
-        'Sản phẩm chưa được thêm vào giỏ hàng. Bạn có chắc chắn muốn quay lại?',
-        [
-          {
-            text: 'Hủy',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'Đồng ý',
-            onPress: () => {
-              // dispatch(cleanCart());
-              navigation.goBack();
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-    } else {
-      navigation.goBack();
-    }
-  };
+  const [isLess, setIsLess] = useState(false);
 
   return (
     <SafeAreaProvider>
-      <ScrollView ref={scrollViewRef} style={styles.scrollView}>
-        <View style={styles.header}>
-          <Ionicons
-            onPress={() => navigation.canGoBack() && navigation.goBack()}
-            // onPress={() => navigation.canGoBack() && handleGoBack()}
-            style={styles.iconPadding}
-            name='arrow-back'
-            size={24}
-            color='black'
-          />
-          <View style={styles.headerIcons}>
-            <SimpleLineIcons name='camera' size={24} color='black' />
-            <Ionicons name='bookmark-outline' size={24} color='black' />
-            <MaterialCommunityIcons
-              name='share-outline'
-              size={24}
-              color='black'
-              onPress={() => {
-                dispatch(cleanCart());
-                alert('CLEAN');
-              }}
-            />
-          </View>
-        </View>
-        <View style={styles.centerContent}>
-          <Text style={styles.titleText}>
-            {translateCategory(category)} ({categoryItems.length})
-          </Text>
-          <Text style={styles.subtitleText}>♥ • Coffee & Tea • ♥</Text>
-          <View style={styles.ratingRow}>
-            <View style={styles.ratingBox}>
-              <Text style={styles.ratingText}>4.8</Text>
+      {isLoadingSpinner ? (
+        <Spinner
+          overlayColor={'#fff'}
+          color='#999'
+          visible={isLoadingSpinner}
+          textContent={'Đang tải danh sách sản phẩm...'}
+          textStyle={styles.spinnerText}
+        />
+      ) : (
+        <>
+          <ScrollView ref={scrollViewRef} style={styles.scrollView}>
+            <View style={styles.header}>
               <Ionicons
-                name={Ionicons['ios-star'] ? 'ios-star' : 'star'}
-                size={15}
-                color='#fff'
+                onPress={() => navigation.canGoBack() && navigation.goBack()}
+                // onPress={() => navigation.canGoBack() && handleGoBack()}
+                style={styles.iconPadding}
+                name='arrow-back'
+                size={24}
+                color='black'
               />
+              <View style={styles.headerIcons}>
+                <SimpleLineIcons name='camera' size={24} color='black' />
+                <Ionicons name='bookmark-outline' size={24} color='black' />
+                <MaterialCommunityIcons
+                  name='share-outline'
+                  size={24}
+                  color='black'
+                  onPress={() => {
+                    dispatch(cleanCart());
+                    alert('CLEAN');
+                  }}
+                />
+              </View>
             </View>
-            <Text style={styles.reviewCountText}>3.2K Đánh giá</Text>
-          </View>
-          <View style={styles.deliveryInfo}>
-            <Text>10 - 15 phút • 2 km | Bắc Kạn</Text>
-          </View>
-        </View>
-
-        <Text style={styles.productListTitle}>
-          Các sản phẩm từ {translateCategory(category)}
-        </Text>
-        {categoryItems.map((item, index) => (
-          <FoodItem key={index} item={item} />
-        ))}
-        <View style={styles.bottomPadding} />
-      </ScrollView>
-
-      <View style={styles.bottomNav}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {categoryItems.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => scrollToCategory(index)}
-              style={styles.categoryButton}>
-              <Text>♥_{item?.name}_♥</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      <View style={styles.cartContainer}>
-        {cart?.length > 0 && (
-          <View>
-            <ScrollView style={styles.cartScrollView}>
-              {cart?.map((item, index) => (
-                <View key={index}>
-                  <View style={styles.cartItemRow}>
-                    <Text style={styles.cartItemText}>{`${index + 1}. ${
-                      item.name
-                    }`}</Text>
-                    <Text style={styles.cartItemPrice}>
-                      {item.priceBySize?.[
-                        selectedSizes[item._id] || item.available_sizes[0]
-                      ] ?? 'Giá không có sẵn'}
-                    </Text>
-                  </View>
-                  <View style={styles.sizeSelectionRow}>
-                    {item.available_sizes.map((size, _index) => (
-                      <TouchableOpacity
-                        onPress={() => handleSizeChange(item._id, size)}
-                        key={_index}
-                        style={[
-                          styles.sizeButton,
-                          selectedSizes[item._id] === size &&
-                            styles.selectedSizeButton,
-                        ]}>
-                        <Text
-                          style={[
-                            styles.sizeButtonText,
-                            selectedSizes[item._id] === size &&
-                              styles.selectedSizeButtonText,
-                          ]}>{`Size ${size}`}</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
+            <View style={styles.centerContent}>
+              <Text style={styles.titleText}>
+                {translateCategory(category)} ({categoryItems.length})
+              </Text>
+              <Text style={styles.subtitleText}>♥ • Coffee & Tea • ♥</Text>
+              <View style={styles.ratingRow}>
+                <View style={styles.ratingBox}>
+                  <Text style={styles.ratingText}>4.8</Text>
+                  <Ionicons
+                    name={Ionicons['ios-star'] ? 'ios-star' : 'star'}
+                    size={15}
+                    color='#fff'
+                  />
                 </View>
+                <Text style={styles.reviewCountText}>3.2K Đánh giá</Text>
+              </View>
+              <View style={styles.deliveryInfo}>
+                <Text>10 - 15 phút • 2 km | Bắc Kạn</Text>
+              </View>
+            </View>
+
+            <Text style={styles.productListTitle}>
+              Các sản phẩm từ {translateCategory(category)}
+            </Text>
+            {categoryItems.map((item, index) => (
+              <FoodItem key={index} item={item} />
+            ))}
+            <View style={styles.bottomPadding} />
+          </ScrollView>
+
+          {/* ITEM BOTTOM NAV */}
+          <View style={styles.bottomNav}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {/* Rút gọn, mở rộng */}
+              <TouchableOpacity
+                onPress={() => setIsLess(!isLess)}
+                style={[
+                  styles.categoryButton,
+                  {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  },
+                ]}>
+                <Text>{isLess ? 'Mở rộng' : 'Thu nhỏ'}</Text>
+                <Ionicons
+                  style={{paddingLeft: 4}}
+                  // name='chevron-down-outline'
+                  name={isLess ? 'chevron-up-outline' : 'chevron-down-outline'}
+                  size={18}
+                  color='black'
+                />
+              </TouchableOpacity>
+
+              {categoryItems.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => scrollToCategory(index)}
+                  style={styles.categoryButton}>
+                  <Text>♥_{item?.name}_♥</Text>
+                </TouchableOpacity>
               ))}
             </ScrollView>
-
-            <Pressable
-              onPress={() => {
-                // dispatch(cleanCartUI());
-                saveSelectedSizes(selectedSizes);
-                navi.navigate('Cart', {
-                  currentScreen: 'ProductTypeScreen',
-                  category,
-                });
-              }}
-              style={styles.addToCartButton}>
-              <Text style={styles.addToCartButtonText}>
-                Thêm {cart?.length} sản phẩm vào giỏ hàng
-              </Text>
-            </Pressable>
           </View>
-        )}
-      </View>
+
+          {/* SELECT SIZE */}
+          <View style={styles.cartContainer}>
+            {cart?.length > 0 && (
+              <View>
+                {console.log('PRIUCT_ITEM_cart: ', cart)}
+                <ScrollView style={{maxHeight: isLess ? 60 : 380}}>
+                  {cart?.map((item, index) => (
+                    <View key={index}>
+                      <View style={styles.cartItemRow}>
+                        <Text style={styles.cartItemText}>{`${index + 1}. ${
+                          item.name
+                        } (${item?.quantity})`}</Text>
+                        <Text style={styles.cartItemPrice}>
+                          {item.priceBySize?.[
+                            selectedSizes[item._id] || item.available_sizes[0]
+                          ] ?? 'Giá không có sẵn'}
+                        </Text>
+                      </View>
+                      <View style={styles.sizeSelectionRow}>
+                        {item.available_sizes.map((size, _index) => (
+                          <TouchableOpacity
+                            onPress={() => handleSizeChange(item._id, size)}
+                            key={_index}
+                            style={[
+                              styles.sizeButton,
+                              selectedSizes[item._id] === size &&
+                                styles.selectedSizeButton,
+                            ]}>
+                            <Text
+                              style={[
+                                styles.sizeButtonText,
+                                selectedSizes[item._id] === size &&
+                                  styles.selectedSizeButtonText,
+                              ]}>{`Size ${size}`}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+                  ))}
+                </ScrollView>
+
+                <Pressable
+                  onPress={() => {
+                    // dispatch(cleanCartUI());
+                    saveSelectedSizes(selectedSizes);
+                    navi.navigate('Cart', {
+                      currentScreen: 'ProductTypeScreen',
+                      category,
+                    });
+                  }}
+                  style={styles.addToCartButton}>
+                  <Text style={styles.addToCartButtonText}>
+                    Thêm {cart?.length} sản phẩm vào giỏ hàng
+                  </Text>
+                </Pressable>
+              </View>
+            )}
+          </View>
+        </>
+      )}
     </SafeAreaProvider>
   );
 }
@@ -372,6 +390,7 @@ const styles = StyleSheet.create({
   },
   cartScrollView: {
     maxHeight: 380,
+    // maxHeight: 55, //khi cái thu nhỏ đc active
   },
   cartItemRow: {
     flexDirection: 'row',

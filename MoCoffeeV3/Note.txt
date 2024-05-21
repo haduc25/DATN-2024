@@ -82,7 +82,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Build apk
 
 # Performance Optimization (Component, Screen...)
-- (LOADING) Order, Favourite 
+- (LOADING) Order, Favourite, ProductType
 
 - User order => nếu là thanh toán tiền mặt (1) | nếu là thanh toán online (2)
 => (1) =>  Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang xử lý (processing) => Đang giao hàng => Đã giao hàng (shipped) => ok

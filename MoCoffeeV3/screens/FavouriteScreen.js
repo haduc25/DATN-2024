@@ -70,7 +70,7 @@ export default function FavouriteScreen() {
 
   // LOADING SPINNER
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoadingSpinner(false), 3000);
+    const timer = setTimeout(() => setIsLoadingSpinner(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 

@@ -6,7 +6,7 @@ import MenuItem from './MenuItem';
 const FoodItem = ({item}) => {
   const data = [item];
 
-  console.log('\n\n =============================== \n\n');
+  // console.log('\n\n =============================== \n\n');
   // console.log('FoodItem_item: ', item);
   // console.log('FoodItem_data: ', data);
 
@@ -15,7 +15,7 @@ const FoodItem = ({item}) => {
     isShowQuantityCalculator: false,
   }));
 
-  console.log('Updated_FoodItem_data: ', newData);
+  // console.log('Updated_FoodItem_data: ', newData);
   // console.log('data?.length: ', data?.length);
   // console.log('item?.items?.length: ', item?.items?.length);
   // console.log('item?.items?: ', item?.items);
