@@ -74,7 +74,8 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - Thống kê, phân tích đơn hàng (Số người đăng ký mới - 7 ngày, số đơn hàng trong 7 ngày, doanh thu trong tháng, số đơn đã được giao trong tháng, số đơn đã hủy)
 
 # 21/05/2024
-- Cần thêm loading
+- Cần thêm loading (Loading Spinner) => Đã thêm được cho screen: Order(User)
+- Sửa lại screeen Favourite
 - Thêm thông báo bằng (Toast Message)
 - Thêm thông ra màn hình chính, ra điện thoại
 - Xử lý khác nền tảng cho (android/ios)

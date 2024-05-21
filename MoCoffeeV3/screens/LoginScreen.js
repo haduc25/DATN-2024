@@ -246,7 +246,7 @@ export default function LoginScreen({navigation}) {
         <View style={{marginTop: 50}}>
           <Button
             title={'Đăng nhập'}
-            onPress={() => signInWithEmail(email, password)}
+            onPress={() => signInWithEmail(email.trim(), password.trim())}
             // loading={loading.buttonLoading}
             // disabled={loading.buttonLoading}
             buttonStyleCustom={{
@@ -297,7 +297,7 @@ export default function LoginScreen({navigation}) {
 
           <Button
             title={'Đăng nhập với quyền quản trị viên'}
-            onPress={() => signInWithEmail(email, password, true)}
+            onPress={() => signInWithEmail(email.trim(), password.trim(), true)}
             // loading={loading.buttonLoading}
             // disabled={loading.buttonLoading}
             buttonStyleCustom={{
