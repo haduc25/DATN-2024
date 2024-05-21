@@ -20,6 +20,7 @@ import {Ionicons, Fontisto, AntDesign} from '@expo/vector-icons';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {doc, getDoc} from 'firebase/firestore';
+import {removeAllKeyAndDataInAsyncStorage} from '../utils/globalHelpers';
 
 export default function ProfileScreen({navigation}) {
   const [imageURI, setImageURI] = useState(null);
@@ -141,6 +142,16 @@ export default function ProfileScreen({navigation}) {
   };
   // read();
 
+  // Xóa all key trong `AsyncStorage`
+  const clearAllKeys = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('Đã xóa hết các key từ AsyncStorage');
+    } catch (error) {
+      console.error('Lỗi khi xóa các key:', error);
+    }
+  };
+
   // Đăng xuất
   const handleDangXuat = async () => {
     try {
@@ -156,12 +167,8 @@ export default function ProfileScreen({navigation}) {
           {
             text: 'Đăng xuất',
             onPress: async () => {
-              // Xóa token xác thực khỏi AsyncStorage
-              await AsyncStorage.removeItem('authToken');
-              await AsyncStorage.removeItem('usersProfile');
-
+              await removeAllKeyAndDataInAsyncStorage(); // Gọi hàm để xóa hết các key
               // Chuyển người dùng đến màn hình đăng nhập
-
               navi.reset({
                 index: 0,
                 routes: [{name: 'LoginScreen'}],

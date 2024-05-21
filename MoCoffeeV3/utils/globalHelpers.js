@@ -263,3 +263,36 @@ export const getMinSizeAndPrice = priceBySize => {
   // Trả về một object chứa size nhỏ nhất và giá trị kèm theo
   return {size: minSize, price: minPrice};
 };
+
+// AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Lấy tất cả Key
+export const getAllKeyAndDataInAsyncStorage = async () => {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    const data = await AsyncStorage.multiGet(keys);
+
+    console.log(`\n\n AsyncStorage - ALLKEYS [${keys.length}]: ${keys}`);
+
+    // Lặp qua mảng data để lấy ra dữ liệu tương ứng với mỗi key
+    data.forEach((item, index) => {
+      const key = item[0];
+      const value = item[1];
+      console.log(`\n - Key [${index + 1}]: ${key} => Value: ${value}`);
+    });
+  } catch (error) {
+    console.error('Lỗi khi lấy dữ liệu:', error);
+  }
+};
+
+// Xóa tất cả key
+export const removeAllKeyAndDataInAsyncStorage = async () => {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    await AsyncStorage.multiRemove(keys);
+    console.log('AsyncStorage - Đã xóa tất cả key');
+  } catch (error) {
+    console.error('Lỗi khi xóa các key:', error);
+  }
+};

@@ -128,7 +128,8 @@ export default function HomeScreen({navigation}) {
   // console.log('auth.currentUser: ', auth.currentUser);
   // console.log('userId: ', userId);
 
-  const read = async () => {
+  // Lấy ra danh sách sản phẩm đã yêu thích của người dùng
+  const fecthListItemFavoritedOfUser = async () => {
     try {
       // Lấy dữ liệu từ AsyncStorage
       const data = await AsyncStorage.getItem('usersProfile');
@@ -168,7 +169,7 @@ export default function HomeScreen({navigation}) {
       // setUserData(null);
     }
   };
-  // read();
+  fecthListItemFavoritedOfUser();
 
   // START: RECOMMENDED, ITEMS DATA
   const recommended = [
