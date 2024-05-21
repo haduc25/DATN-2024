@@ -63,7 +63,7 @@ export default function CartScreen({navigation}) {
   const isCartClean = useSelector(state => state.cart.isClean);
   // console.log('DATA FROM REDUX: ', productInfo);
   // console.log('DATA FROM REDUX222_Cart: ', isCartClean);
-  console.log('DATA FROM REDUX222_Cart: ', cart);
+  // console.log('DATA FROM REDUX222_Cart: ', cart);
   const dispatch = useDispatch();
 
   const paymentMethods = [
@@ -144,7 +144,7 @@ export default function CartScreen({navigation}) {
   // console.log('currentScreen_CART:  ', currentScreen);
   // console.log('route?.params_CART:  ', route?.params);
   // console.log('item_CART:  ', item);
-  console.log('selectedSizes_CART:  ', selectedSizes);
+  // console.log('selectedSizes_CART:  ', selectedSizes);
   //  PHÍ GIAO HÀNG
   const phiship = 15000;
   const phiapdung = 6000;
@@ -386,7 +386,7 @@ export default function CartScreen({navigation}) {
     setPhoneNumber('');
   };
 
-  console.log('deliveryAddress: ', deliveryAddress);
+  // console.log('deliveryAddress: ', deliveryAddress);
   // console.log('cart_CARTSCREEN: ', cart);
   // console.log('cart-available_sizes_CARTSCREEN: ', cart.available_sizes);
   // const sortedSizes = sortSizes(cart.available_sizes);
@@ -397,7 +397,7 @@ export default function CartScreen({navigation}) {
       ? getMinSizeAndPrice(cart.priceBySize)
       : null;
 
-  console.log('minSizeAndMoney:', minSizeAndMoney);
+  // console.log('minSizeAndMoney:', minSizeAndMoney);
 
   // // Assume cart and selectedSizes are defined, trường vừa thêm có thê là `selected_size`
   // const updatedCart = cart.map(item => ({
@@ -522,7 +522,7 @@ export default function CartScreen({navigation}) {
                     justifyContent: 'space-between',
                     marginVertical: 6,
                   }}>
-                  {console.log('cart?.map: ', item)}
+                  {/* {console.log('cart?.map: ', item)} */}
                   <Text style={{width: 200, fontSize: 16, fontWeight: '600'}}>
                     {`${index + 1}. ${item?.name}`}
                   </Text>

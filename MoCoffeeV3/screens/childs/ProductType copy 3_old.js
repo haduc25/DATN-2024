@@ -130,7 +130,7 @@ export default function ProductType({navigation}) {
           {
             text: 'Đồng ý',
             onPress: () => {
-              // dispatch(cleanCart());
+              dispatch(cleanCart());
               navigation.goBack();
             },
           },
@@ -147,8 +147,8 @@ export default function ProductType({navigation}) {
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
         <View style={styles.header}>
           <Ionicons
-            onPress={() => navigation.canGoBack() && navigation.goBack()}
-            // onPress={() => navigation.canGoBack() && handleGoBack()}
+            // onPress={() => navigation.canGoBack() && navigation.goBack()}
+            onPress={() => navigation.canGoBack() && handleGoBack()}
             style={styles.iconPadding}
             name='arrow-back'
             size={24}

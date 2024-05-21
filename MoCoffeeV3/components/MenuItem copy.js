@@ -24,14 +24,16 @@ import {getMinSizeAndPrice} from '../utils/globalHelpers';
 const MenuItem = ({item}) => {
   // console.log('MenuItem_item: ', item);
   const [additems, setAddItems] = useState(0);
-
+  const [selected, setSelected] = useState(false);
   const dispatch = useDispatch();
   const isCartClean = useSelector(state => state.cart.isClean);
+  const cart = useSelector(state => state.cart.cart);
 
   useEffect(() => {
     if (isCartClean) {
       // Nếu mà ấn clean thì set lại cái dữ liệu
       setAddItems(0);
+      setSelected(false);
     }
   }, [isCartClean]);
 
@@ -121,45 +123,124 @@ const MenuItem = ({item}) => {
           </Text>
         </View>
 
-        <Pressable style={{marginRight: 10}}>
+        <Pressable
+          style={{marginRight: 10}}
+          onPress={() => console.log('item.id: ', item.id)}>
           <Image
             style={{width: 120, height: 120, borderRadius: 8}}
             source={{uri: item?.featured_image[0]}}
           />
-
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => {
-              if (additems == 0) {
-                setAddItems(c => c + 1);
-              }
-              dispatch(addToCart(item));
-            }}
-            style={{
-              position: 'absolute',
-              top: 95,
-              left: 42,
-              flexDirection: 'row',
-              paddingHorizontal: 2,
-              paddingVertical: 4,
-              alignItems: 'center',
-              backgroundColor: '#fd5c63',
-              borderRadius: 5,
-            }}>
-            {/* Dấu + */}
-            <View>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: '900',
-                  color: 'white',
-                  paddingHorizontal: 12,
-                  paddingVertical: 3,
+          {selected ? (
+            <Pressable
+              style={{
+                position: 'absolute',
+                top: 95,
+                left: 10,
+                backgroundColor: '#fd5c63',
+                flexDirection: 'row',
+                paddingHorizontal: 10,
+                paddingVertical: 2,
+                alignItems: 'center',
+                borderRadius: 5,
+                minWidth: 100,
+              }}>
+              {/* Dấu - */}
+              <Pressable
+                onPress={() => {
+                  if (additems == 1) {
+                    // dispatch(removeFromCart(item));
+                    dispatch(decrementQuantity(item));
+                    setAddItems(0);
+                    setSelected(true);
+                    console.log('HERE');
+                    return;
+                  }
+                  setAddItems(c => c - 1);
+                  dispatch(decrementQuantity(item));
                 }}>
-                +
-              </Text>
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    fontSize: 25,
+                    fontWeight: '700',
+                    color: 'white',
+                    paddingHorizontal: 6,
+                  }}>
+                  -
+                </Text>
+              </Pressable>
+
+              {/* số lượng sp */}
+              <Pressable>
+                <Text
+                  style={{
+                    color: 'white',
+                    paddingHorizontal: 6,
+                    fontSize: 15,
+                    fontWeight: '700',
+                    minWidth: 30,
+                    textAlign: 'center',
+                  }}>
+                  {additems}
+                </Text>
+              </Pressable>
+
+              {/* Dấu + */}
+              <Pressable
+                onPress={() => {
+                  setAddItems(c => c + 1);
+                  dispatch(incrementQuantity(item));
+                }}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: '700',
+                    color: 'white',
+                    paddingHorizontal: 6,
+                  }}>
+                  +
+                </Text>
+              </Pressable>
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => {
+                setSelected(true);
+                if (additems == 0) {
+                  setAddItems(c => c + 1);
+                }
+                dispatch(addToCart(item));
+              }}
+              style={{
+                position: 'absolute',
+                top: 95,
+                // left: 10,
+                left: 42,
+                // borderColor: '#E32636',
+                // borderWidth: 1,
+                flexDirection: 'row',
+                // paddingHorizontal: 33,
+                paddingHorizontal: 2,
+                paddingVertical: 4,
+                alignItems: 'center',
+                backgroundColor: '#fd5c63',
+                borderRadius: 5,
+              }}>
+              {/* Dấu + ban đầu (Khi chưa nhấn) */}
+              <View>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: '900',
+                    color: 'white',
+                    // paddingHorizontal: 12,
+                    paddingHorizontal: 12,
+                    paddingVertical: 3,
+                  }}>
+                  +
+                </Text>
+              </View>
+            </Pressable>
+          )}
         </Pressable>
       </TouchableOpacity>
     </View>

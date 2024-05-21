@@ -5,7 +5,9 @@ import {
   ScrollView,
   Pressable,
   Animated,
+  Image,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import {useState, useEffect, useRef} from 'react';
 import CustomStatusBar from '../../components/CustomStatusBar';
@@ -34,7 +36,6 @@ import {translateCategory} from '../../utils/globalHelpers';
 
 // AsyncStorage
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert} from 'react-native';
 
 // export default function ProductType({navigation, route}) {
 export default function ProductType({navigation}) {
@@ -42,7 +43,6 @@ export default function ProductType({navigation}) {
   const dispatch = useDispatch();
   const isCartClean = useSelector(state => state.cart.isClean);
   const route = useRoute();
-  const navi = useNavigation();
   const isFocused = useIsFocused();
   const cart = useSelector(state => state.cart.cart);
 
@@ -116,39 +116,12 @@ export default function ProductType({navigation}) {
     scrollViewRef.current.scrollTo({y: yOffset, animated: true});
   };
 
-  const handleGoBack = () => {
-    if (cart?.length) {
-      Alert.alert(
-        'Sản phẩm chưa được thêm vào giỏ hàng',
-        'Sản phẩm chưa được thêm vào giỏ hàng. Bạn có chắc chắn muốn quay lại?',
-        [
-          {
-            text: 'Hủy',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'Đồng ý',
-            onPress: () => {
-              // dispatch(cleanCart());
-              navigation.goBack();
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-    } else {
-      navigation.goBack();
-    }
-  };
-
   return (
     <SafeAreaProvider>
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
         <View style={styles.header}>
           <Ionicons
             onPress={() => navigation.canGoBack() && navigation.goBack()}
-            // onPress={() => navigation.canGoBack() && handleGoBack()}
             style={styles.iconPadding}
             name='arrow-back'
             size={24}
@@ -252,7 +225,7 @@ export default function ProductType({navigation}) {
 
             <Pressable
               onPress={() => {
-                // dispatch(cleanCartUI());
+                dispatch(cleanCartUI());
                 saveSelectedSizes(selectedSizes);
                 navi.navigate('Cart', {
                   currentScreen: 'ProductTypeScreen',
@@ -261,7 +234,7 @@ export default function ProductType({navigation}) {
               }}
               style={styles.addToCartButton}>
               <Text style={styles.addToCartButtonText}>
-                Thêm {cart?.length} sản phẩm vào giỏ hàng
+                Đã thêm {cart?.length} sản phẩm
               </Text>
             </Pressable>
           </View>

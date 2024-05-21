@@ -17,7 +17,7 @@ export const translateCategory = category => {
 
 export const convertPriceStringToInteger = priceString => {
   if (priceString !== undefined) {
-    console.log('priceString: ', priceString);
+    // console.log('priceString: ', priceString);
     // Loại bỏ ký tự '₫' từ chuỗi giá tiền
     const cleanedPriceString = priceString.replace('₫', '');
     // Loại bỏ tất cả các dấu ',' từ chuỗi giá tiền

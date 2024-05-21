@@ -20,7 +20,8 @@ export const CartSlice = createSlice({
       }
     },
     removeFromCart: (state, action) => {
-      state.isClean = true;
+      // state.isClean = true;
+      state.isClean = false;
       const removeItem = state.cart.filter(
         item => item.id !== action.payload.id,
       );
@@ -44,8 +45,11 @@ export const CartSlice = createSlice({
         if (itemPresent.quantity === 1) {
           state.cart = state.cart.filter(item => item.id !== action.payload.id);
           state.isClean = true;
+          console.log('CLEAN');
         } else {
           itemPresent.quantity--;
+          console.log('itemPresent: ', itemPresent);
+          console.log('Decrement: ', itemPresent.quantity, state.cart);
         }
       }
     },
