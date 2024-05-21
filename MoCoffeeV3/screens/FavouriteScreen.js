@@ -1,83 +1,101 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
   FlatList,
   Image,
   TouchableOpacity,
-  Button,
+  StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {db, doc, getDoc} from '../firebase';
-
-import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {Ionicons, FontAwesome} from '@expo/vector-icons';
-import {getAllKeyAndDataInAsyncStorage} from '../utils/globalHelpers';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-export default function FavouriteScreen({navigation}) {
-  const [listItemFavorited, setListItemFavorited] = useState([]);
+export default function FavouriteScreen() {
   const [userDataList, setUserDataList] = useState([]);
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const [isLoadingSpinner, setIsLoadingSpinner] = useState(true);
 
-  const route = useRoute();
-  const navi = useNavigation();
+  const fetchFavoriteData = useCallback(async () => {
+    try {
+      const data = await AsyncStorage.getItem('favoritedItems');
+      if (data) {
+        const favoriteItems = JSON.parse(data);
+        console.log('Favorited items from AsyncStorage:', favoriteItems);
+        await readMultiple(favoriteItems);
+      } else {
+        console.log('No favorite items found in AsyncStorage.');
+      }
+    } catch (error) {
+      console.error('Error fetching data from AsyncStorage:', error);
+      alert('Error fetching data from AsyncStorage');
+    }
+  }, []);
 
-  // Hàm render item cho FlatList
+  const readMultiple = useCallback(async productIds => {
+    try {
+      const docRefs = productIds.map(productId =>
+        doc(db, 'MenuMoC&T', productId),
+      );
+      const docSnaps = await Promise.all(docRefs.map(getDoc));
+
+      const fetchedData = docSnaps
+        .map((docSnap, index) => {
+          if (docSnap.exists()) {
+            return {productId: productIds[index], data: docSnap.data()};
+          } else {
+            console.log(`No document found for item ${productIds[index]}`);
+            return null;
+          }
+        })
+        .filter(data => data !== null);
+
+      setUserDataList(fetchedData);
+    } catch (error) {
+      console.error('Error fetching documents from Firestore:', error);
+      alert('Error fetching documents from Firestore');
+      setUserDataList([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchFavoriteData();
+      console.log('Fetching data...');
+    }
+  }, [isFocused, fetchFavoriteData]);
+
+  // LOADING SPINNER
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoadingSpinner(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const renderItem = ({item}) => (
     <TouchableOpacity
       onPress={() =>
-        navi.navigate('DetailScreen', {
+        navigation.navigate('DetailScreen', {
           item: item.data,
           currentScreen: 'Yêu thích',
         })
       }
-      style={{
-        // borderWidth: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginVertical: 4,
-
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        margin: 10,
-        marginBottom: 8,
-        shadowColor: '#000',
-        shadowOpacity: 0.25,
-        shadowRadius: 10,
-        shadowOffset: {width: 0, height: 0},
-        elevation: 5,
-        maxHeight: 200,
-      }}>
-      <View style={{padding: 14}}>
-        {/* <Text>User ID: {item.userId}</Text> */}
-        <Text
-          numberOfLines={1}
-          style={{fontSize: 16, fontWeight: '600', maxWidth: 160}}>
+      style={styles.itemContainer}>
+      <View style={styles.itemDetails}>
+        <Text numberOfLines={1} style={styles.itemName}>
           {item.data.name}
         </Text>
-        {console.log('item.data_FAV: ', item.data.id)}
-        <Text numberOfLines={3} style={{maxWidth: 165, minWidth: 165}}>
+        <Text numberOfLines={3} style={styles.itemDescription}>
           {item.data.description}
         </Text>
-        <Text
-          style={{
-            color: '#ee4d2d',
-            fontWeight: '600',
-            fontSize: 18,
-            marginTop: 10,
-          }}>
-          {item.data.price}
-        </Text>
-        <Text
-          style={{
-            marginTop: 5,
-            borderRadius: 4,
-          }}>
-          {[0, 0, 0, 0, 0].map((en, i) => (
+        <Text style={styles.itemPrice}>{item.data.price}</Text>
+        <View style={styles.ratingContainer}>
+          {[...Array(5)].map((_, i) => (
             <FontAwesome
-              // key={`${food.id}-${i}`}
               key={i}
-              style={{paddingHorizontal: 3}}
-              // name={i < Math.floor(item.rating) ? 'star' : 'star-o'}
+              style={styles.starIcon}
               name={
                 i < Math.floor(item.data.ratings['average_rating'])
                   ? 'star'
@@ -87,174 +105,171 @@ export default function FavouriteScreen({navigation}) {
               color='#FFD700'
             />
           ))}
-        </Text>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: 16,
-          }}>
-          {/* ADD TO CART */}
+        </View>
+        <View style={styles.footer}>
           <TouchableOpacity
             onPress={() => alert('Đã thêm sản phẩm vào giỏ hàng!')}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 34,
-              height: 34,
-              backgroundColor: 'red',
-              borderRadius: 20,
-            }}>
-            <Ionicons
-              name={true ? 'cart-outline' : 'heart-outline'}
-              size={24}
-              color={true ? '#fff' : '#b7b7b7'}
-              // color={true ? '#ff424f' : '#b7b7b7'}
-            />
+            style={styles.cartButton}>
+            <Ionicons name='cart-outline' size={24} color='#fff' />
           </TouchableOpacity>
-          <View>
-            <Text>Đã bán {item.data.sold_count}</Text>
-          </View>
+          <Text>Đã bán {item.data.sold_count}</Text>
         </View>
       </View>
       <Image
         source={{uri: item.data.featured_image[0]}}
-        style={{
-          width: 200,
-          height: 200,
-          borderTopRightRadius: 10,
-          borderBottomRightRadius: 10,
-        }}
+        style={styles.itemImage}
       />
     </TouchableOpacity>
   );
 
-  // // refresh test
-  const isFocused = useIsFocused();
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     // Gọi hàm refreshData() khi màn hình được focus
-  //     refreshData();
-  //   }
-  // }, [isFocused]);
-
-  // const refreshData = () => {
-  //   // Đặt logic làm mới dữ liệu ở đây, ví dụ: gọi API để lấy danh sách sản phẩm yêu thích mới
-  //   console.log('Refreshing favourite data...');
-  // };
-
-  // UPGRADE TO AUTO FETCHING DATA FROM FIREBASE
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await AsyncStorage.getItem('favoritedItems');
-        if (data !== null) {
-          const danhSachSPYeuThichTrongAsyncStorage = JSON.parse(data);
-          console.log(
-            'DS san pham yeu thich trong AsyncStorage:',
-            danhSachSPYeuThichTrongAsyncStorage,
-          );
-
-          // getAllKeyAndDataInAsyncStorage();
-          // Gọi hàm readMultiple với danh sách SP Yêu thích trong AsyncStorage
-          // readMultiple([]);
-          readMultiple(danhSachSPYeuThichTrongAsyncStorage);
-        } else {
-          console.log(
-            'FavouriteScreen_Danh sách sản phẩm cho user hiện tại trống!!',
-          );
-        }
-      } catch (error) {
-        console.log('Error getting document:', error);
-        alert('Error getting document:', error);
-      }
-    };
-
-    const readMultiple = async productIds => {
-      try {
-        const docRefs = productIds.map(productId =>
-          doc(db, 'MenuMoC&T', productId),
-        );
-        const docSnaps = await Promise.all(
-          docRefs.map(docRef => getDoc(docRef)),
-        );
-
-        const userDataList = docSnaps.map((docSnap, index) => {
-          if (docSnap.exists()) {
-            console.log(
-              `Dữ liệu từ sản phẩm có ID là: ${productIds[index]}:`,
-              docSnap.data(),
-            );
-            return {productId: productIds[index], data: docSnap.data()};
-          } else {
-            console.log(
-              `Document does not exist for item ${productIds[index]}`,
-            );
-            return null;
-          }
-        });
-
-        setUserDataList(userDataList.filter(data => data !== null));
-      } catch (error) {
-        console.error('Error getting documents:', error);
-        alert('Error getting documents:', error);
-        setUserDataList([]);
-      }
-    };
-
-    if (isFocused) {
-      fetchData();
-      console.log('Fetching...');
-    }
-  }, [isFocused]);
-
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 50,
-        width: '100%',
-      }}>
-      <View
-        style={{
-          width: '100%',
-          alignItems: 'center',
-          borderBottomColor: '#ccc',
-          borderBottomWidth: 1,
-        }}>
-        <Text
-          style={{
-            fontSize: 26,
-            fontWeight: '500',
-            paddingBottom: 20,
-          }}>
-          Yêu thích
-        </Text>
-      </View>
-      {/* Sử dụng FlatList để hiển thị dữ liệu người dùng */}
-      {userDataList.length > 0 ? (
-        <FlatList
-          style={{width: '100%'}}
-          data={userDataList}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
+    <View style={styles.container}>
+      {/* <Spinner
+        overlayColor={'#fff'}
+        color='#000'
+        visible={true}
+        textContent={'Đang tải danh sách sản phẩm yêu thích...'}
+        textStyle={styles.spinnerText}
+      /> */}
+
+      {isLoadingSpinner ? (
+        <Spinner
+          overlayColor={'#fff'}
+          color='#999'
+          visible={isLoadingSpinner}
+          textContent={'Đang tải danh sách sản phẩm yêu thích...'}
+          textStyle={styles.spinnerText}
         />
       ) : (
-        <View
-          style={{
-            height: '100%',
-            maxHeight: 713,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text style={{fontWeight: '700', fontSize: 28}}>Opps...!</Text>
-          <Text style={{fontSize: 20}}>Danh sách sản phẩm yêu thích trống</Text>
-        </View>
+        <>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Yêu thích</Text>
+          </View>
+          {userDataList.length > 0 ? (
+            <FlatList
+              style={styles.flatList}
+              data={userDataList}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          ) : (
+            <View style={styles.emptyState}>
+              <Image
+                source={{
+                  uri: 'https://cdn-icons-png.flaticon.com/512/5089/5089733.png',
+                }}
+                style={{width: 200, height: 200}}
+              />
+              <Text style={styles.emptyStateTitle}>Opps...!</Text>
+              <Text style={styles.emptyStateSubtitle}>
+                Danh sách sản phẩm yêu thích trống
+              </Text>
+            </View>
+          )}
+        </>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
+    width: '100%',
+  },
+  header: {
+    width: '100%',
+    alignItems: 'center',
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+  },
+  headerTitle: {
+    fontSize: 26,
+    fontWeight: '500',
+    paddingBottom: 20,
+  },
+  flatList: {
+    width: '100%',
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 4,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    margin: 10,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    shadowOffset: {width: 0, height: 0},
+    elevation: 5,
+    maxHeight: 200,
+  },
+  itemDetails: {
+    padding: 14,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: '600',
+    maxWidth: 160,
+  },
+  itemDescription: {
+    maxWidth: 165,
+    minWidth: 165,
+    minHeight: 55,
+    maxHeight: 55,
+  },
+  itemPrice: {
+    color: '#ee4d2d',
+    fontWeight: '600',
+    fontSize: 18,
+    marginTop: 10,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    marginTop: 5,
+    borderRadius: 4,
+  },
+  starIcon: {
+    paddingHorizontal: 3,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  cartButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 34,
+    height: 34,
+    backgroundColor: 'red',
+    borderRadius: 20,
+  },
+  itemImage: {
+    width: 200,
+    height: 200,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  emptyState: {
+    // height: '100%',
+    minHeight: 713,
+    maxHeight: 713,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyStateTitle: {
+    fontWeight: '700',
+    fontSize: 28,
+    marginTop: 16,
+  },
+  emptyStateSubtitle: {
+    fontSize: 20,
+  },
+});

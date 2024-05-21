@@ -163,6 +163,12 @@ export default function OrdersScreen() {
             />
           ) : (
             <View style={styles.noOrdersContainer}>
+              <Image
+                source={{
+                  uri: 'https://cdn-icons-png.flaticon.com/512/5058/5058432.png',
+                }}
+                style={{width: 200, height: 200, marginLeft: 40}}
+              />
               <Text style={styles.noOrdersTitle}>Opps...!</Text>
               <Text style={styles.noOrdersText}>Bạn chưa có đơn hàng nào</Text>
             </View>
@@ -202,14 +208,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   noOrdersContainer: {
-    height: '100%',
+    // height: '100%',
     maxHeight: 713,
+    minHeight: 713,
     alignItems: 'center',
     justifyContent: 'center',
   },
   noOrdersTitle: {
     fontWeight: '700',
     fontSize: 28,
+    marginTop: 16,
   },
   noOrdersText: {
     fontSize: 20,
