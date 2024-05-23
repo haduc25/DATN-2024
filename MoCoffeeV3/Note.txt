@@ -83,6 +83,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 
 # Performance Optimization (Component, Screen...)
 - (LOADING) Order, Favourite, ProductType, DetailScreen (optimized, loading image only)
+- (OPTIMIZED ONLY) ProfileScreen
 
 - User order => nếu là thanh toán tiền mặt (1) | nếu là thanh toán online (2)
 => (1) =>  Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang xử lý (processing) => Đang giao hàng => Đã giao hàng (shipped) => ok
