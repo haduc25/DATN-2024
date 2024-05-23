@@ -75,7 +75,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 
 # 21/05/2024
 - Cần thêm loading (Loading Spinner) => Đã thêm được cho screen: Order(User)
-- Sửa lại screeen Favourite
+- Sửa lại screeen Favourite => ok
 - Thêm thông báo bằng (Toast Message)
 - Thêm thông ra màn hình chính, ra điện thoại
 - Xử lý khác nền tảng cho (android/ios)

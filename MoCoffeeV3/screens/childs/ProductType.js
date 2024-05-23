@@ -62,7 +62,7 @@ export default function ProductType({navigation}) {
         fetchCategoryItems(category).finally(() => {
           setIsLoadingSpinner(false);
         });
-      }, 300); // Thay đổi thời gian delay
+      }, 200); // Thay đổi thời gian delay
       return () => clearTimeout(timer);
     }
   }, [category, isFocused]);

@@ -107,11 +107,11 @@ export default function FavouriteScreen() {
           ))}
         </View>
         <View style={styles.footer}>
-          <TouchableOpacity
+          <View
             onPress={() => alert('Đã thêm sản phẩm vào giỏ hàng!')}
             style={styles.cartButton}>
             <Ionicons name='cart-outline' size={24} color='#fff' />
-          </TouchableOpacity>
+          </View>
           {/* <Text>Đã bán {item.data.sold_count}</Text> */}
         </View>
       </View>

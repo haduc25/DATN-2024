@@ -276,23 +276,23 @@ export default function HomeScreen({navigation}) {
     'Đang tìm vị trí của bạn...',
   );
 
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       await Location.requestForegroundPermissionsAsync();
-  //       const currentLocation = await Location.getCurrentPositionAsync({});
-  //       reverseGeocode(currentLocation, setViTriHienTai);
-  //     } catch (error) {
-  //       Alert.alert(
-  //         'Quyền truy cập không được cấp',
-  //         'Cho phép ứng dụng sử dụng dịch vụ định vị',
-  //         [{text: 'OK'}],
-  //         {cancelable: false},
-  //       );
-  //       console.error('Error fetching location:', error);
-  //     }
-  //   })();
-  // }, []);
+  useEffect(() => {
+    (async () => {
+      try {
+        await Location.requestForegroundPermissionsAsync();
+        const currentLocation = await Location.getCurrentPositionAsync({});
+        reverseGeocode(currentLocation, setViTriHienTai);
+      } catch (error) {
+        Alert.alert(
+          'Quyền truy cập không được cấp',
+          'Cho phép ứng dụng sử dụng dịch vụ định vị',
+          [{text: 'OK'}],
+          {cancelable: false},
+        );
+        console.error('Error fetching location:', error);
+      }
+    })();
+  }, []);
   // ######################## END: LOCATION ########################
 
   // HEIGHT & WIDTH DEVICE

@@ -178,6 +178,34 @@ export default function DetailScreen() {
   // IMAGE LOADING
   const [imagesLoaded, setImagesLoaded] = useState(true);
 
+  // handle add 2 cart
+  const handleAddItemToCart = () => {
+    Alert.alert(
+      'Xác nhận',
+      'Sản phẩm này sẽ được thêm vào giỏ hàng. Bạn có chắc chắn muốn tiếp tục?',
+      [
+        {text: 'Hủy', style: 'cancel'},
+        {
+          text: 'OK',
+          onPress: () => {
+            dispatch(addToCart(item));
+            console.log('DETAIL: ', item, selectedSizes);
+            console.log('selectedSizes_PRODUCTTYPE: ', selectedSizes);
+            saveSelectedSizes(selectedSizes);
+            alert('ĐÃ THÊM SẢN PHẨM VÀO GIỎ HÀNG');
+            setTimeout(() => {
+              navi.navigate('Cart', {
+                currentScreen: 'DetailScreen',
+                category: productInfo.category,
+                item: item,
+              });
+            }, 3000);
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={{position: 'relative'}}>
@@ -327,7 +355,8 @@ export default function DetailScreen() {
                 Chia sẻ trải nghiệm đặt hàng của bạn với mọi người nhé!
               </Text>
               <TouchableOpacity
-                onPress={getAllKeyAndDataInAsyncStorage}
+                // onPress={getAllKeyAndDataInAsyncStorage}
+                onPress={handleAddItemToCart}
                 style={styles.orderButton}>
                 <Text style={styles.orderButtonText}>Đặt món ngay</Text>
               </TouchableOpacity>
@@ -350,37 +379,10 @@ export default function DetailScreen() {
       />
       {/* Order Button */}
       <View style={styles.orderButtonContainer}>
-        <Pressable
-          onPress={() => {
-            Alert.alert(
-              'Xác nhận',
-              'Sản phẩm này sẽ được thêm vào giỏ hàng. Bạn có chắc chắn muốn tiếp tục?',
-              [
-                {text: 'Hủy', style: 'cancel'},
-                {
-                  text: 'OK',
-                  onPress: () => {
-                    dispatch(addToCart(item));
-                    console.log('DETAIL: ', item, selectedSizes);
-                    console.log('selectedSizes_PRODUCTTYPE: ', selectedSizes);
-                    saveSelectedSizes(selectedSizes);
-                    alert('ĐÃ THÊM SẢN PHẨM VÀO GIỎ HÀNG');
-                    setTimeout(() => {
-                      navi.navigate('Cart', {
-                        currentScreen: 'DetailScreen',
-                        category: productInfo.category,
-                        item: item,
-                      });
-                    }, 3000);
-                  },
-                },
-              ],
-            );
-          }}
-          style={styles.orderPressable}>
+        <Pressable onPress={handleAddItemToCart} style={styles.orderPressable}>
           <View style={styles.orderPressableContent}>
             <Text style={styles.orderPressableText}>
-              {item?.priceBySize?.[activeSize] ?? 'Đang cập nhật'} | Giao hàng
+              {item?.priceBySize?.[activeSize] ?? 'Đang cập nhật'} | Đặt hàng
               ngay
             </Text>
             <Image
