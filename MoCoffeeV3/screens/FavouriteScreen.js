@@ -70,7 +70,7 @@ export default function FavouriteScreen() {
 
   // LOADING SPINNER
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoadingSpinner(false), 2000);
+    const timer = setTimeout(() => setIsLoadingSpinner(false), 1800);
     return () => clearTimeout(timer);
   }, []);
 
@@ -112,7 +112,7 @@ export default function FavouriteScreen() {
             style={styles.cartButton}>
             <Ionicons name='cart-outline' size={24} color='#fff' />
           </TouchableOpacity>
-          <Text>Đã bán {item.data.sold_count}</Text>
+          {/* <Text>Đã bán {item.data.sold_count}</Text> */}
         </View>
       </View>
       <Image

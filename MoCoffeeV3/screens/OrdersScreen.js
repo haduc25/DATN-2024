@@ -70,7 +70,7 @@ export default function OrdersScreen() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoadingSpinner(false), 2000);
+    const timer = setTimeout(() => setIsLoadingSpinner(false), 1800);
     return () => clearTimeout(timer);
   }, []);
 

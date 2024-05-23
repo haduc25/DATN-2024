@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState, useCallback} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 
@@ -32,10 +33,14 @@ import {addToCart} from '../redux/CartReducer';
 import {db, auth, doc, updateDoc} from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
+  convertStringToNumber,
   getAllKeyAndDataInAsyncStorage,
   getMinSizeAndPrice,
   sortSizes,
 } from '../utils/globalHelpers';
+
+// VIEW IMAGE FULL SCREEN
+import ImageView from 'react-native-image-viewing';
 
 export default function DetailScreen() {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -48,14 +53,22 @@ export default function DetailScreen() {
   useEffect(() => {
     const checkFavorite = async () => {
       try {
-        let itemId = item.id || item._id;
+        let itemId = item?.id || item?._id;
         await getFavoritedItems2(itemId);
       } catch (error) {
         console.log('Error checking favorite:', error);
       }
     };
     checkFavorite();
-  }, [item.id, userId, isFavorite, currentScreen, isFocused]);
+
+    if (isFocused) {
+      setActiveSize(minSizeAndMoney.size);
+      setImagesLoaded(true);
+
+      const timer = setTimeout(() => setImagesLoaded(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [item?.id, userId, isFavorite, currentScreen, isFocused]);
 
   // Lấy danh sách sản phẩm yêu thích từ AsyncStorage và kiểm tra xem sản phẩm hiện tại có trong danh sách không
   const getFavoritedItems2 = async itemId => {
@@ -107,7 +120,7 @@ export default function DetailScreen() {
   const scrollA = useRef(new Animated.Value(0)).current;
 
   const minSizeAndMoney = item?.priceBySize
-    ? getMinSizeAndPrice(item.priceBySize)
+    ? getMinSizeAndPrice(item?.priceBySize)
     : null;
   const [activeSize, setActiveSize] = useState(minSizeAndMoney.size);
   const [sizeSelected, setSizeSelected] = useState(false);
@@ -122,7 +135,7 @@ export default function DetailScreen() {
   };
 
   const toggleFavorite = () => {
-    let itemId = item.id || item._id;
+    let itemId = item?.id || item?._id;
     addItemToFavoritedItems(itemId);
   };
 
@@ -135,12 +148,40 @@ export default function DetailScreen() {
     }
   };
 
-  const sortedSizes = sortSizes(item.available_sizes);
+  const sortedSizes = sortSizes(item?.available_sizes);
+
+  // HANDLE IMAGE FULLSCREEN
+  const [isImageViewVisible, setImageViewVisible] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const onCurrentImagePressed = index => {
+    setCurrentIndex(index);
+    setImageViewVisible(true);
+  };
+
+  // LIKE COUNT
+  const [likesCount, setLikesCount] = useState(0);
+  const [totalRating, setTotalRating] = useState(0);
+  const [totalSold, setTotalSold] = useState(0);
+  useEffect(() => {
+    // setImagesLoaded(true);
+    setLikesCount(Math.floor(Math.random() * 5) + 1);
+    setTotalRating(Math.floor(Math.random() * 71) + 10);
+    setTotalSold(Math.floor(Math.random() * 46) + 5);
+    console.log('imagesLoaded: ', imagesLoaded);
+    console.log('activeSize: ', activeSize);
+
+    // const timer = setTimeout(() => setImagesLoaded(false), 800);
+    // return () => clearTimeout(timer);
+  }, [item?.id]);
+
+  // IMAGE LOADING
+  const [imagesLoaded, setImagesLoaded] = useState(true);
 
   return (
     <View style={{flex: 1}}>
       <View style={{position: 'relative'}}>
-        <TopNavigation title={item.name} scrollA={scrollA} />
+        <TopNavigation title={item?.name} scrollA={scrollA} />
         <Animated.ScrollView
           onScroll={Animated.event(
             [{nativeEvent: {contentOffset: {y: scrollA}}}],
@@ -150,26 +191,40 @@ export default function DetailScreen() {
           <View>
             {/* Banner Slider */}
             <View style={styles.bannerContainer}>
-              <SliderBox
-                images={item.featured_image}
-                dotColor='brown'
-                inactiveDotColor='lightblue'
-                sliderBoxHeight='100%'
-                onCurrentImagePressed={index =>
-                  console.warn(`Image at index ${index} pressed`)
-                }
-                ImageComponentStyle={{}}
-                circleLoop={true} // Hiệu ứng vòng lặp
-                autoplay={false} // Không tự động chuyển đổi ảnh
-                imageLoadingColor='#E91E63'
-                autoplayInterval={100}
-              />
+              {imagesLoaded ? (
+                <View
+                  style={{
+                    // backgroundColor: 'red',
+                    height: '100%',
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator size='large' color='#0000ff' />
+                </View>
+              ) : (
+                <SliderBox
+                  onImageLoad={() => console.log('123')}
+                  disableOnPress={false}
+                  images={item?.featured_image}
+                  dotColor='brown'
+                  inactiveDotColor='lightblue'
+                  sliderBoxHeight='100%'
+                  onCurrentImagePressed={onCurrentImagePressed}
+                  ImageComponentStyle={{}}
+                  circleLoop={true}
+                  autoplay={false}
+                  imageLoadingColor='#0000ff'
+                  autoplayInterval={100}
+                />
+              )}
             </View>
+            {/* )} */}
           </View>
           <View style={styles.contentContainer}>
             <View style={styles.header}>
               <Text numberOfLines={2} style={styles.itemName}>
-                {item.name}
+                {item?.name}
               </Text>
               {/* Heart Icon */}
               <View style={styles.favoriteContainer}>
@@ -180,7 +235,18 @@ export default function DetailScreen() {
                     color={isFavorite ? '#ff424f' : '#b7b7b7'}
                   />
                 </TouchableOpacity>
-                <Text style={styles.likesText}>Đã thích ({item.likes}k)</Text>
+                {/* <Text style={styles.likesText}>
+                  Đã thích (
+                  {item?.likes === '0'
+                    ? Math.floor(Math.random() * 5) + 1
+                    : item?.likes}
+                  k)
+                </Text> */}
+                {/* <Text style={styles.likesText}>Đã thích ({likesCount}k)</Text> */}
+                <Text style={styles.likesText}>
+                  Đã thích ({item?.likes === '0' ? likesCount : item?.likes}
+                  k)
+                </Text>
               </View>
             </View>
             {/* Item Price */}
@@ -190,7 +256,7 @@ export default function DetailScreen() {
               </Text>
             </Text>
             {/* Item Description */}
-            <Text style={styles.descriptionText}>{item.description}</Text>
+            <Text style={styles.descriptionText}>{item?.description}</Text>
             {/* Item Rating */}
             <Text style={styles.ratingText}>
               <View style={styles.ratingIconContainer}>
@@ -201,12 +267,19 @@ export default function DetailScreen() {
                 />
               </View>
               <Text style={styles.ratingValue}>
-                {item.ratings['average_rating']}
+                {item?.ratings['average_rating']}
               </Text>
               <Text style={styles.totalRatings}>
-                ({item.ratings['total_ratings']})
+                (
+                {convertStringToNumber(
+                  item?.ratings['total_ratings'],
+                  totalRating,
+                )}
+                )
               </Text>
-              <Text style={styles.soldCount}> | {item.sold_count} đã bán</Text>
+              <Text style={styles.soldCount}>
+                | {convertStringToNumber(item?.sold_count, totalSold)} đã bán
+              </Text>
             </Text>
             {/* Size Options */}
             <View>
@@ -224,7 +297,7 @@ export default function DetailScreen() {
                           activeSize === size ? '#6E5532' : 'transparent',
                       },
                     ]}
-                    onPress={() => handleSizeSelect(item._id, size)}>
+                    onPress={() => handleSizeSelect(item?._id, size)}>
                     <Text
                       style={[
                         styles.sizeText,
@@ -319,6 +392,14 @@ export default function DetailScreen() {
           </View>
         </Pressable>
       </View>
+
+      {/* IMAGE FULL SCREEN */}
+      <ImageView
+        images={item?.featured_image.map(image => ({uri: image}))}
+        imageIndex={currentIndex}
+        visible={isImageViewVisible}
+        onRequestClose={() => setImageViewVisible(false)}
+      />
     </View>
   );
 }
@@ -328,6 +409,7 @@ const styles = {
     alignItems: 'center',
     overflow: 'hidden',
     height: 500,
+    // opacity: 0,
   },
   contentContainer: {
     minHeight: 800,

@@ -39,6 +39,19 @@ export const convertIntegerToPriceString = priceInteger => {
   return priceString;
 };
 
+export const convertStringToNumber = (inputString = '0', numberToAdd = 0) => {
+  // Chuyển đổi chuỗi thành số
+  const number = parseInt(inputString);
+
+  // Kiểm tra nếu number là NaN (không phải số)
+  if (isNaN(number && numberToAdd)) {
+    return 'Không phải số';
+  }
+
+  // Thêm số vào kết quả
+  return number + numberToAdd;
+};
+
 export const generateKeyID = (value, orderNumber) => {
   // Lấy mã category từ value
   let categoryCode = '';

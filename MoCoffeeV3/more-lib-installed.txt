@@ -86,3 +86,6 @@ npx expo install expo-image-picker
 
 #Loader | for loading
 `npm i react-native-loading-spinner-overlay`
+
+#Xem ảnh ở chế độ full màn hình
+`npm i react-native-image-viewing`
