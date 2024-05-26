@@ -26,6 +26,10 @@ import {
   convertFormattedDateToUnixTime,
 } from '../utils/globalHelpers';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function AdminOrders({navigation}) {
   const renderItem = ({item, index}) => (
     <View
@@ -410,7 +414,6 @@ export default function AdminOrders({navigation}) {
       return orders;
     } catch (error) {
       console.error('Error getting documents:', error);
-      alert('Error getting documents:', error);
       return [];
     }
   };
@@ -461,14 +464,18 @@ export default function AdminOrders({navigation}) {
               })
                 .then(() => {
                   // Dữ liệu cập nhật thành công
-                  console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+                  console.log(`Duyệt đơn #${orderId} thành công111!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đơn hàng #${ma_don_hang} đã được duyệt`,
+                  });
+
                   fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
           },
@@ -501,13 +508,16 @@ export default function AdminOrders({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đơn hàng #${ma_don_hang} đã được xử lý!`,
+                  });
                   fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
           },
@@ -540,13 +550,16 @@ export default function AdminOrders({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đơn hàng #${ma_don_hang} đã được giao thành công!`,
+                  });
                   fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
           },
@@ -578,13 +591,16 @@ export default function AdminOrders({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đơn hàng #${ma_don_hang} đã được duyệt`,
+                  });
                   fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
           },
@@ -619,14 +635,18 @@ export default function AdminOrders({navigation}) {
               })
                 .then(() => {
                   // Dữ liệu cập nhật thành công
-                  console.log(`Đã hủy đơn #${orderId}!!!`);
-                  alert(`Đã hủy đơn #${ma_don_hang}!!!`);
+                  console.log(`Đã hủy đơn #${orderId} ${ma_don_hang} !!!`);
+                  // alert(`Đã hủy đơn #${ma_don_hang}!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đã hủy đơn #${ma_don_hang}!!!`,
+                  });
                   fetchData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
             style: 'destructive', // Thêm style 'destructive' để làm màu nút đỏ
@@ -913,6 +933,7 @@ export default function AdminOrders({navigation}) {
           textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
         /> */}
       </View>
+      <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );
 }

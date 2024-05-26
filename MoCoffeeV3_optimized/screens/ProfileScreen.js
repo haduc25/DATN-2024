@@ -52,11 +52,10 @@ export default function ProfileScreen() {
           }
         } else {
           console.log('Document does not exist');
-          alert('Document does not exist');
         }
       } catch (error) {
         console.log('Error getting document:', error);
-        alert('Error getting document:', error.message); // Chỉ hiển thị thông báo lỗi
+        console.log('Error getting document:', error.message); // Chỉ hiển thị thông báo lỗi
       }
     };
 

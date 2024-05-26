@@ -46,6 +46,10 @@ import {
 } from '../firebase';
 import {convertISOToFormattedDate, sortSizes} from '../utils/globalHelpers';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function AdminEditItem({navigation}) {
   const navi = useNavigation();
   const route = useRoute();
@@ -385,6 +389,7 @@ export default function AdminEditItem({navigation}) {
         await uploadAndSaveURL();
         console.log('done');
         if (!savePhotoURL.length) {
+          setIsLoading(false);
           // console.log('NEW_Mảng rỗng.', savePhotoURL);
           return;
         } else {
@@ -410,7 +415,7 @@ export default function AdminEditItem({navigation}) {
           // hanlde tiếp sau khi upload image thành công
           updateItemOnFireStore(dataObject, savePhotoURL);
         }
-
+        setIsLoading(false);
         return;
       }
     }
@@ -589,6 +594,8 @@ export default function AdminEditItem({navigation}) {
   };
 
   const handlePress = dataObject => {
+    setIsLoading(true);
+
     const isValid = validateData();
     if (isValid) {
       // CHỈ LẤY KEY NÀO CÓ DỮ LIỆU
@@ -655,6 +662,7 @@ export default function AdminEditItem({navigation}) {
     } else {
       console.log('ERROR: ', itemInfo);
       console.log('Dữ liệu không hợp lệ:', errors);
+      setIsLoading(false);
     }
   };
 
@@ -675,59 +683,6 @@ export default function AdminEditItem({navigation}) {
       }));
     }, timeout);
   };
-
-  // // // CREATE NEW ITEM ON FIRESTORE
-  // const createNewItemOnFireStore = (dataObject, imageURL) => {
-  //   console.log('USERDATA(itemInfo): ', dataObject);
-  //   const {available, category, description, name, price, size} = dataObject;
-
-  //   console.log('imageURL: ', imageURL);
-
-  //   const timeNow = new Date().toISOString();
-  //   const createdAt = convertISOToFormattedDate(timeNow);
-  //   const updatedAt = createdAt;
-
-  //   console.log('createdAt: ', createdAt);
-
-  //   // // Tạo một document reference mới mà không cần truyền vào ID cụ thể
-  //   // const docRef = doc(collection(db, 'MenuMoC&T'));
-
-  //   // // Lấy ID mới tạo và gán cho sản phẩm
-  //   // const productId = docRef.id;
-
-  //   // // Thêm sản phẩm vào Firestore với ID được tạo
-  //   // setDoc(docRef, {
-  //   //   _id: productId,
-  //   //   name,
-  //   //   description,
-  //   //   available,
-  //   //   available_sizes: size,
-  //   //   category,
-  //   //   featured_image: imageURL,
-  //   //   price,
-  //   //   // DEFAULT VALUE
-  //   //   likes: '0',
-  //   //   // preparation_time # bỏ
-  //   //   ratings: {average_rating: '5', total_ratings: '0'},
-  //   //   sold_count: '0',
-  //   //   createdAt,
-  //   //   updatedAt,
-  //   // })
-  //   //   .then(() => {
-  //   //     // Data create successfully!
-  //   //     console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!', productId);
-  //   //     alert('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
-  //   //     resetItemInfo();
-
-  //   //     setTimeout(() => {
-  //   //       navi.navigate('AdminProductsCRUD');
-  //   //     }, 3000);
-  //   //   })
-  //   //   .catch(error => {
-  //   //     console.log('error: ', error);
-  //   //     alert('error: ', error);
-  //   //   });
-  // };
 
   // UPDATE ITEM ON FIRESTORE
   const updateItemOnFireStore = (dataObject, imageURL) => {
@@ -766,7 +721,13 @@ export default function AdminEditItem({navigation}) {
       .then(() => {
         // Data updated successfully!
         console.log('ĐÃ CẬP NHẬT SẢN PHẨM THÀNH CÔNG!!!', _id);
-        alert('ĐÃ CẬP NHẬT SẢN PHẨM THÀNH CÔNG!!!');
+        // alert('ĐÃ CẬP NHẬT SẢN PHẨM THÀNH CÔNG!!!');
+        Toast.show({
+          type: 'successHigher',
+          text1: 'Cập nhật sản phẩm',
+          text2: 'ĐÃ CẬP NHẬT SẢN PHẨM THÀNH CÔNG!',
+        });
+        setIsLoading(false);
         resetItemInfo();
 
         setTimeout(() => {
@@ -775,7 +736,6 @@ export default function AdminEditItem({navigation}) {
       })
       .catch(error => {
         console.log('error: ', error);
-        alert('error: ', error);
       });
   };
 
@@ -804,6 +764,7 @@ export default function AdminEditItem({navigation}) {
     });
     setEnableEditing(false);
     setIsImageChanged(false);
+    setIsLoading(false);
   };
 
   // button `enableEditing`
@@ -850,7 +811,6 @@ export default function AdminEditItem({navigation}) {
       })
       .catch(error => {
         console.log('error: ', error);
-        alert('error: ', error);
       });
   };
 
@@ -901,6 +861,8 @@ export default function AdminEditItem({navigation}) {
 
   // SORT
   const sortedSizes = sortSizes(itemInfo.size);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // return <View>{console.log('sortedSizes: ', sortedSizes)}</View>;
   return (
@@ -1557,6 +1519,8 @@ export default function AdminEditItem({navigation}) {
           }}>
           <Button
             title={'Cập nhật sản phẩm'}
+            disabled={isLoading}
+            loading={isLoading}
             onPress={() => handlePress(itemInfo)}
             buttonStyleCustom={{
               borderRadius: '15%',
@@ -1568,6 +1532,7 @@ export default function AdminEditItem({navigation}) {
           />
         </View>
       )}
+      <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );
 }

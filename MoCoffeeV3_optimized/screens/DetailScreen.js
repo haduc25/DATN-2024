@@ -42,6 +42,10 @@ import {
 // VIEW IMAGE FULL SCREEN
 import ImageView from 'react-native-image-viewing';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function DetailScreen() {
   const [isFavorite, setIsFavorite] = useState(false);
   const userId = auth.currentUser.uid;
@@ -192,7 +196,12 @@ export default function DetailScreen() {
             console.log('DETAIL: ', item, selectedSizes);
             console.log('selectedSizes_PRODUCTTYPE: ', selectedSizes);
             saveSelectedSizes(selectedSizes);
-            alert('ĐÃ THÊM SẢN PHẨM VÀO GIỎ HÀNG');
+
+            Toast.show({
+              type: 'successHigher',
+              text1: 'Sản phẩm',
+              text2: `ĐÃ THÊM SẢN PHẨM VÀO GIỎ HÀNG`,
+            });
             setTimeout(() => {
               navi.navigate('Cart', {
                 currentScreen: 'DetailScreen',
@@ -402,6 +411,7 @@ export default function DetailScreen() {
         visible={isImageViewVisible}
         onRequestClose={() => setImageViewVisible(false)}
       />
+      <Toast config={toastConfigMessage} />
     </View>
   );
 }

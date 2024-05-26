@@ -78,7 +78,6 @@ const updateLocationForUser = (_userId, location) => {
     })
     .catch(error => {
       console.log('error: ', error);
-      alert('error: ', error);
     });
 };
 
@@ -156,15 +155,12 @@ export default function HomeScreen({navigation}) {
           );
         } else {
           console.log('Document does not exist');
-          alert('Document does not exist');
-          // setUserData(null);
         }
       } else {
         console.log('No user profiles found');
       }
     } catch (error) {
       console.log('Error getting document:', error);
-      alert('Error getting document:', error);
       // setUserData(null);
     }
   };

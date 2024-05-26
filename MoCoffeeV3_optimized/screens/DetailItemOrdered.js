@@ -23,6 +23,10 @@ import {
 import {AntDesign} from '@expo/vector-icons';
 import {db, getDocs, collection, updateDoc, doc, getDoc} from '../firebase';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function DetailItemOrdered({navigation}) {
   const route = useRoute();
   const {orderIdItem} = route?.params;
@@ -92,13 +96,16 @@ export default function DetailItemOrdered({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đơn hàng #${ma_don_hang} đã được duyệt`,
+                  });
                   fetchOrderData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
           },
@@ -131,13 +138,16 @@ export default function DetailItemOrdered({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đơn hàng #${ma_don_hang} đã được xử lý!`,
+                  });
                   fetchOrderData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
           },
@@ -170,13 +180,16 @@ export default function DetailItemOrdered({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đơn hàng #${ma_don_hang} đã được giao thành công!`,
+                  });
                   fetchOrderData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
           },
@@ -208,13 +221,16 @@ export default function DetailItemOrdered({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Duyệt đơn #${orderId} thành công!!!`);
-                  alert(`Duyệt đơn #${ma_don_hang} thành công!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đơn hàng #${ma_don_hang} đã được duyệt`,
+                  });
                   fetchOrderData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
           },
@@ -248,13 +264,16 @@ export default function DetailItemOrdered({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Đã hủy đơn #${orderId}!!!`);
-                  alert(`Đã hủy đơn #${ma_don_hang}!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Đơn hàng',
+                    text2: `Đã hủy đơn #${ma_don_hang}!!!`,
+                  });
                   fetchOrderData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
             style: 'destructive', // Thêm style 'destructive' để làm màu nút đỏ
@@ -673,6 +692,7 @@ export default function DetailItemOrdered({navigation}) {
         {/* ĐỆM DƯỚI */}
         <View style={{height: 120}} />
       </ScrollView>
+      <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );
 }

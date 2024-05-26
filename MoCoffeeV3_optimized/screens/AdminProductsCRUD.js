@@ -18,6 +18,10 @@ import {db, getDocs, collection, deleteDoc, doc} from '../firebase';
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {getMinSizeAndPrice} from '../utils/globalHelpers';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function AdminProductsCRUD({navigation}) {
   const renderItem = ({item, index}) => (
     <TouchableOpacity
@@ -222,7 +226,6 @@ export default function AdminProductsCRUD({navigation}) {
       return products;
     } catch (error) {
       console.error('Error getting documents:', error);
-      alert('Error getting documents:', error);
       return [];
     }
   };
@@ -276,12 +279,15 @@ export default function AdminProductsCRUD({navigation}) {
     deleteDoc(doc(db, 'MenuMoC&T', itemId))
       .then(() => {
         console.log('Sản phẩm đã được xóa. ', itemId);
-        alert('Sản phẩm đã được xóa.');
+        Toast.show({
+          type: 'successHigher',
+          text1: 'Xóa sản phẩm',
+          text2: `Sản phẩm #${itemId} đã được xóa`,
+        });
         setIsRefresh(!isRefresh);
       })
       .catch(error => {
         console.log('error: ', error);
-        alert('error: ', error);
       });
   };
 
@@ -389,6 +395,7 @@ export default function AdminProductsCRUD({navigation}) {
           textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
         />
       </View>
+      <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );
 }

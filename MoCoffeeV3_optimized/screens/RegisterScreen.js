@@ -106,11 +106,9 @@ export default function RegisterScreen({navigation}) {
             });
             // Data create successfully!
             console.log('Data created');
-            // alert('Data created');
 
             console.log('success created user: ', user.email);
             setIsLoading(false);
-            // alert('ĐĂNG KÝ THÀNH CÔNG!');
 
             // Quay sang đăng nhập
             setTimeout(() => {
@@ -231,7 +229,6 @@ export default function RegisterScreen({navigation}) {
           const errorMessage = error.message;
           console.log('false: ', errorMessage);
           console.log('false-code: ', errorCode);
-          // alert('ĐĂNG KÝ THẤT BẠI!');
           Toast.show({
             type: 'error',
             text1: 'Đăng ký',

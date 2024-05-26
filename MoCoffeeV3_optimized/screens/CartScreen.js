@@ -52,6 +52,10 @@ import {
 } from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function CartScreen({navigation}) {
   // console.log('navigation: ', navigation);
   // console.log('route: ', route);
@@ -320,7 +324,12 @@ export default function CartScreen({navigation}) {
     })
       .then(() => {
         console.log('Data created');
-        alert('ĐÃ TẠO ĐƠN HÀNG THÀNH CÔNG!!!');
+        // alert('ĐÃ TẠO ĐƠN HÀNG THÀNH CÔNG!!!');
+        Toast.show({
+          type: 'successHigher',
+          text1: 'Đơn hàng',
+          text2: 'ĐÃ TẠO ĐƠN HÀNG THÀNH CÔNG!',
+        });
         dispatch(cleanCart());
         setToDefault();
         setTimeout(() => {
@@ -331,7 +340,6 @@ export default function CartScreen({navigation}) {
       })
       .catch(error => {
         console.log('error: ', error);
-        alert('error: ', error);
       });
   };
 
@@ -1231,18 +1239,6 @@ export default function CartScreen({navigation}) {
 
           <Pressable
             onPress={() => {
-              // dispatch(cleanCart());
-              // router.replace({
-              //   pathname: '/order',
-              //   params: {
-              //     name: params?.name,
-              //   },
-              // });
-
-              // alert('Chuyen qua thanh toan: ', activeIndex);
-              // console.log('activeIndex: ', activeIndex);
-              // console.log('deliveryAddress: ', deliveryAddress);
-
               //check valid
               let paymentValid = kiemTraPhuongThucThanhToan(
                 activeIndex,
@@ -1330,6 +1326,7 @@ export default function CartScreen({navigation}) {
           </Pressable>
         </Pressable>
       )}
+      <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );
 }

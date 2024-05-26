@@ -27,6 +27,32 @@ export const toastConfigMessage = {
       }}
     />
   ),
+  successHigher: props => (
+    <BaseToast
+      {...props}
+      style={{
+        position: 'absolute',
+        top: 80,
+        borderLeftColor: '#82dd55',
+        minWidth: 400,
+        maxWidth: 400,
+        minHeight: 80,
+        backgroundColor: '#1c1c1e',
+        zIndex: 999,
+      }}
+      contentContainerStyle={{
+        paddingHorizontal: 15,
+      }}
+      text1Style={{
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#fff',
+      }}
+      text2Style={{
+        fontSize: 14,
+      }}
+    />
+  ),
   info: props => (
     <BaseToast
       {...props}
@@ -58,6 +84,31 @@ export const toastConfigMessage = {
       style={{
         position: 'absolute',
         top: 10,
+        borderLeftColor: '#ff1919',
+        minWidth: 400,
+        maxWidth: 400,
+        minHeight: 80,
+        backgroundColor: '#1c1c1e',
+      }}
+      contentContainerStyle={{
+        paddingHorizontal: 15,
+      }}
+      text1Style={{
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#fff',
+      }}
+      text2Style={{
+        fontSize: 14,
+      }}
+    />
+  ),
+  errorHigher: props => (
+    <ErrorToast
+      {...props}
+      style={{
+        position: 'absolute',
+        top: 80,
         borderLeftColor: '#ff1919',
         minWidth: 400,
         maxWidth: 400,

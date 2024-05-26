@@ -24,6 +24,10 @@ import {
 import {AntDesign} from '@expo/vector-icons';
 import {db, getDocs, collection, updateDoc, doc, getDoc} from '../firebase';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function DetailItemOrderedUser({navigation}) {
   const route = useRoute();
   const {orderIdItem} = route?.params;
@@ -98,13 +102,17 @@ export default function DetailItemOrderedUser({navigation}) {
                 .then(() => {
                   // Dữ liệu cập nhật thành công
                   console.log(`Đã gửi yêu cầu hủy đơn #${orderId}!!!`);
-                  alert(`Đã gửi yêu cầu hủy đơn #${ma_don_hang}!!!`);
+                  // alert(`Đã gửi yêu cầu hủy đơn #${ma_don_hang}!!!`);
+                  Toast.show({
+                    type: 'successHigher',
+                    text1: 'Yêu cầu hủy đơn hàng',
+                    text2: `Đã gửi yêu cầu hủy đơn #${ma_don_hang}!`,
+                  });
                   fetchOrderData(); // Lấy dữ liệu mới
                 })
                 .catch(error => {
                   // Xử lý lỗi
                   console.log('error: ', error);
-                  alert('error: ', error);
                 });
             },
             style: 'destructive', // Thêm style 'destructive' để làm màu nút đỏ
@@ -539,6 +547,7 @@ export default function DetailItemOrderedUser({navigation}) {
           />
         </KeyboardAvoidingView>
       </ScrollView>
+      <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );
 }

@@ -50,7 +50,6 @@ export default function LoginScreen({navigation}) {
           // navigation.navigate('Tài khoản');
         }
       } catch (error) {
-        alert('error: ', error);
         console.log(error);
       }
     };
@@ -62,7 +61,6 @@ export default function LoginScreen({navigation}) {
       setIsLoading(true);
       if (!email || !password) {
         console.log('Vui lòng nhập email và mật khẩu');
-        // alert('Vui lòng nhập email và mật khẩu');
         Toast.show({
           type: 'error',
           text1: 'Đăng nhập thất bại',
@@ -124,7 +122,6 @@ export default function LoginScreen({navigation}) {
           case 'user':
           default:
             console.log('Bạn không có quyền truy cập');
-            // alert('Bạn không có quyền truy cập');
             Toast.show({
               type: 'error',
               text1: 'Đăng nhập',
@@ -174,11 +171,9 @@ export default function LoginScreen({navigation}) {
         }
       } else {
         console.log('Document does not exist');
-        // alert('Document does not exist');
       }
     } catch (error) {
       console.log('Error getting document:', error);
-      // alert('Error getting document:', error);
     }
   };
 
@@ -283,7 +278,6 @@ export default function LoginScreen({navigation}) {
             </Text>
           </View>
           <TouchableOpacity
-            // onPress={() => alert('Go to Forgot Password Screen')}
             onPress={() =>
               Toast.show({
                 type: 'info',
@@ -331,7 +325,6 @@ export default function LoginScreen({navigation}) {
             // borderWidth: 1,
           }}>
           {/* <TouchableOpacity
-            onPress={() => alert('Go to admin screen')}
             style={{
               flexDirection: 'row',
               alignItems: 'center',

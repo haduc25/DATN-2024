@@ -35,6 +35,10 @@ import {
 } from '../firebase';
 import * as ImagePicker from 'expo-image-picker';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function EditProfileScreen({navigation}) {
   const route = useRoute();
   const {userInfo} = route.params;
@@ -243,7 +247,11 @@ export default function EditProfileScreen({navigation}) {
     // Kiểm tra xem có lỗi không
     const hasError = Object.values(errors).some(error => error !== '');
     if (hasError) {
-      Alert.alert('Lỗi', 'Vui lòng kiểm tra lại các trường nhập liệu.');
+      Toast.show({
+        type: 'errorHigher',
+        text1: 'Lỗi nhập dữ liệu',
+        text2: 'Vui lòng kiểm tra lại các trường nhập liệu.',
+      });
       return;
     }
 
@@ -308,12 +316,25 @@ export default function EditProfileScreen({navigation}) {
         await new Promise(resolve => setTimeout(resolve, 3000));
 
         console.log(`Cập nhật thành công!!!`);
+        Toast.show({
+          type: 'successHigher',
+          text1: 'Cập nhật',
+          text2: 'ĐÃ CẬP NHẬT DỮ LIỆU THÀNH CÔNG!',
+        });
       } else {
-        alert('Không tìm thấy người dùng hiện tại!');
+        Toast.show({
+          type: 'errorHigher',
+          text1: 'Lỗi không tìm thấy',
+          text2: 'Không tìm thấy người dùng hiện tại!',
+        });
       }
     } catch (error) {
       console.error('Lỗi khi cập nhật', error);
-      alert('Đã xảy ra lỗi khi cập nhật!');
+      Toast.show({
+        type: 'errorHigher',
+        text1: 'Lỗi khi cập nhật',
+        text2: 'Đã xảy ra lỗi khi cập nhật thông tin!',
+      });
     }
   };
 
@@ -1263,6 +1284,7 @@ export default function EditProfileScreen({navigation}) {
           />
         </View>
       )}
+      <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );
 }

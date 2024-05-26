@@ -45,7 +45,11 @@ import {
 } from '../firebase';
 import {convertISOToFormattedDate} from '../utils/globalHelpers';
 
-export default function AdminCRUDItem({navigation}) {
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
+export default function AdminCRUDItem() {
   // VALUE OF ITEM
   const [itemInfo, setItemInfo] = useState({
     featured_image: [],
@@ -347,6 +351,7 @@ export default function AdminCRUDItem({navigation}) {
       console.log('done');
       if (!savePhotoURL.length) {
         console.log('Mảng rỗng.', savePhotoURL);
+        setIsLoading(false);
         return;
       } else {
         console.log('Mảng không rỗng.', savePhotoURL);
@@ -356,6 +361,7 @@ export default function AdminCRUDItem({navigation}) {
       }
       return;
     }
+    setIsLoading(false);
   };
 
   // ####################### FUNCTIONS ####################### //
@@ -555,6 +561,7 @@ export default function AdminCRUDItem({navigation}) {
   };
 
   const handlePress = dataObject => {
+    setIsLoading(true);
     const isValid = validateData();
     if (isValid) {
       // CHỈ LẤY KEY NÀO CÓ DỮ LIỆU
@@ -604,6 +611,7 @@ export default function AdminCRUDItem({navigation}) {
     } else {
       console.log('ERROR: ', itemInfo);
       console.log('Dữ liệu không hợp lệ:', errors);
+      setIsLoading(false);
     }
   };
 
@@ -712,16 +720,22 @@ export default function AdminCRUDItem({navigation}) {
       .then(() => {
         // Data create successfully!
         console.log('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!', productId);
-        alert('ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!!!');
+        Toast.show({
+          type: 'successHigher',
+          text1: 'Thêm sản phẩm mới',
+          text2: 'ĐÃ THÊM SẢN PHẨM THÀNH CÔNG!',
+        });
+        setIsLoading(false);
         resetItemInfo();
 
         setTimeout(() => {
           navi.navigate('AdminProductsCRUD');
-        }, 3000);
+        }, 2000);
       })
       .catch(error => {
         console.log('error: ', error);
-        alert('error: ', error);
+        setIsLoading(false);
+        // alert('error: ', error);
       });
   };
 
@@ -782,6 +796,8 @@ export default function AdminCRUDItem({navigation}) {
       console.log('ĐÃ UPDATE PriceBySize');
     }
   };
+
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <SafeAreaProvider key={reloadFlag}>
@@ -1283,6 +1299,8 @@ export default function AdminCRUDItem({navigation}) {
         }}>
         <Button
           title={'Thêm sản phẩm'}
+          disabled={isLoading}
+          loading={isLoading}
           onPress={() => handlePress(itemInfo)}
           buttonStyleCustom={{
             borderRadius: '15%',
@@ -1293,6 +1311,7 @@ export default function AdminCRUDItem({navigation}) {
           textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
         />
       </View>
+      <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );
 }
