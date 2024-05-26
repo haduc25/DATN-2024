@@ -1,0 +1,97 @@
+#Checkbox for react-native
+npm install @react-native-community/checkbox
+
+#change database from `supabase` to `firebase`
+#install firebase
+`npm i firebase`
+
+
+#Thanh điều hướng bên dưới - page home
+`npm install @react-navigation/bottom-tabs`
+
+
+#Thay đổi router (expo router => React Navigation)
+`npm i @react-navigation/native`
+
+#Fetch image from `Storage` firebase
+docs `https://firebase.google.com/docs/storage/web/download-files`
+
+#slider
+https://www.npmjs.com/package/react-native-image-slider-box
+
+#custom statusbar (ios)
+https://snack.expo.dev/@ahmed_gaber/safe-area-context?platform=ios
+
+#slider image banner
+`npm i @pembajak/react-native-image-slider-banner`
+https://www.npmjs.com/package/@pembajak/react-native-image-slider-banner
+
+#animation cho header (detail)
+`npm i moti`
+https://www.npmjs.com/package/moti
+
+#env hide api
+npm install react-native-dotenv
+
+#radio-button
+npm i expo-radio-button --save
+
+#handle image (picker)
+expo-file-system
+npx expo install expo-image-picker
+
+#app.json
+#giống bên dưới nhưng đầy đủ
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ]
+  }
+}
+
+# giống bên trên nhưng gọn hơn
+"plugins": [
+    [
+    "expo-image-picker",
+    {
+        "photosPermission": "The app accesses your photos to let you share them with your friends."
+    }
+    ]
+],
+
+#SELECT FOR CATEGORY (Cái này trông dài hơn và cồng kềnh hơn - nhưng có icon cho mỗi select => đã xóa)
+`npm install react-native-select-dropdown`
+
+#SELECT FOR CATEGORY VERSION 2 (TRÔNG UI ĐẸP HƠN VÀ ĐƠN GIẢN HƠN)
+`npm i react-native-dropdown-select-list`
+
+#TABLE
+`npm i react-native-table-component`
+
+#CHARTS
+`npm i react-native-chart-kit`
+
+#HAVE OVERLAY
+`npm install react-native-elements` //chưa cần dùng tới  (chưa xóa)
+
+# THANH SELECTION OR ĐỂ SHARE TỪ DƯỚI TRƯỢT LÊN
+`npm i react-native-raw-bottom-sheet --save` //kb dùng => lỗi height  (đã xóa)
+`npm i --save react-native-simple-bottom-sheet` //chưa cần dùng tới  (đã xóa)
+
+#Loader | for loading
+`npm i react-native-loading-spinner-overlay`
+
+#Xem ảnh ở chế độ full màn hình
+`npm i react-native-image-viewing`
+
+#Dialog 
+`npm i react-native-alert-notification`
+
+#Toast Message
+`npm i react-native-toast-message`
