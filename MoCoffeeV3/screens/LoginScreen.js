@@ -18,9 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Brand from '../components/Brand';
 import Button from '../components/Button';
 
-// OVERLAY + TOAST MESSAGE
+// TOAST MESSAGE
 import Toast from 'react-native-toast-message';
-import {Overlay} from 'react-native-elements';
 import {toastConfigMessage} from '../utils/globalCustomStyle';
 
 export default function LoginScreen({navigation}) {
@@ -63,7 +62,12 @@ export default function LoginScreen({navigation}) {
       setIsLoading(true);
       if (!email || !password) {
         console.log('Vui lòng nhập email và mật khẩu');
-        alert('Vui lòng nhập email và mật khẩu');
+        // alert('Vui lòng nhập email và mật khẩu');
+        Toast.show({
+          type: 'error',
+          text1: 'Đăng nhập thất bại',
+          text2: 'Vui lòng nhập email và mật khẩu của bạn!',
+        });
         setIsLoading(false);
         return;
       }
@@ -102,12 +106,6 @@ export default function LoginScreen({navigation}) {
       );
       console.log('User profiles saved successfully');
 
-      Toast.show({
-        type: 'success',
-        text1: 'Đăng nhập',
-        text2: 'Đăng nhập thành công',
-      });
-
       // Kiểm tra quyền của người dùng nếu là admin
       if (isAdmin) {
         // Đọc dữ liệu role từ Firestore
@@ -122,16 +120,26 @@ export default function LoginScreen({navigation}) {
             setTimeout(() => {
               navigation.navigate('AdminDashboardScreen');
             }, 500); // Thời gian chờ
-
             return;
           case 'user':
           default:
             console.log('Bạn không có quyền truy cập');
-            alert('Bạn không có quyền truy cập');
+            // alert('Bạn không có quyền truy cập');
+            Toast.show({
+              type: 'error',
+              text1: 'Đăng nhập',
+              text2: 'Bạn không có quyền truy cập',
+            });
             setIsLoading(false);
             return;
         }
       }
+
+      Toast.show({
+        type: 'success',
+        text1: 'Đăng nhập',
+        text2: 'Đăng nhập thành công',
+      });
 
       setTimeout(() => {
         navigation.navigate('Trang chủ');
@@ -139,10 +147,16 @@ export default function LoginScreen({navigation}) {
 
       setIsLoading(false);
     } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Đăng nhập',
+        text2: 'Đăng nhập thất bại, vui lòng thử lại!',
+      });
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log('false: ', errorMessage);
       console.log('false-code: ', errorCode);
+      setIsLoading(false);
     }
   };
 
@@ -160,11 +174,11 @@ export default function LoginScreen({navigation}) {
         }
       } else {
         console.log('Document does not exist');
-        alert('Document does not exist');
+        // alert('Document does not exist');
       }
     } catch (error) {
       console.log('Error getting document:', error);
-      alert('Error getting document:', error);
+      // alert('Error getting document:', error);
     }
   };
 
@@ -269,7 +283,14 @@ export default function LoginScreen({navigation}) {
             </Text>
           </View>
           <TouchableOpacity
-            onPress={() => alert('Go to Forgot Password Screen')}>
+            // onPress={() => alert('Go to Forgot Password Screen')}
+            onPress={() =>
+              Toast.show({
+                type: 'info',
+                text1: 'Quên mật khẩu',
+                text2: 'Tính năng đang được hoàn thiện!',
+              })
+            }>
             <Text>Quên mật khẩu?</Text>
           </TouchableOpacity>
         </View>
@@ -329,8 +350,6 @@ export default function LoginScreen({navigation}) {
           <Button
             title={'Đăng nhập với quyền quản trị viên'}
             onPress={() => signInWithEmail(email.trim(), password.trim(), true)}
-            // loading={loading.buttonLoading}
-            // disabled={loading.buttonLoading}
             buttonStyleCustom={{
               borderRadius: '15%',
               paddingVertical: 16,

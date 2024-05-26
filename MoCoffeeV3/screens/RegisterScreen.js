@@ -28,6 +28,10 @@ import {
 } from '../firebase';
 import Button from '../components/Button';
 
+// TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function RegisterScreen({navigation}) {
   const [userValue, setUserValue] = useState({
     name: '',
@@ -95,30 +99,42 @@ export default function RegisterScreen({navigation}) {
           orderHistory: [],
         })
           .then(() => {
+            Toast.show({
+              type: 'success',
+              text1: 'Đăng ký',
+              text2: 'Đăng ký tài khoản thành công!',
+            });
             // Data create successfully!
             console.log('Data created');
             // alert('Data created');
 
             console.log('success created user: ', user.email);
-            alert('ĐĂNG KÝ THÀNH CÔNG!');
-            // setErrorMsg('valid');
+            setIsLoading(false);
+            // alert('ĐĂNG KÝ THÀNH CÔNG!');
 
             // Quay sang đăng nhập
-            navi.reset({
-              index: 0,
-              routes: [{name: 'LoginScreen'}],
-            });
+            setTimeout(() => {
+              navi.reset({
+                index: 0,
+                routes: [{name: 'LoginScreen'}],
+              });
+            }, 600); // Thời gian chờ
           })
           .catch(error => {
             console.log('error: ', error);
           });
       }
     }
+    setIsLoading(false);
   };
 
   // END: HANDLE PROFILE USER
 
   async function signUpNewUser(object) {
+    setIsLoading(true);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 3000);
     const fieldTranslations = {
       name: 'tên hiển thị',
       email: 'email',
@@ -139,6 +155,7 @@ export default function RegisterScreen({navigation}) {
             `Vui lòng nhập ${translatedFieldName}`,
             5000,
           );
+          setIsLoading(false);
         }
       });
     } else {
@@ -161,6 +178,7 @@ export default function RegisterScreen({navigation}) {
             5000,
           );
           isValid = false;
+          setIsLoading(false);
         }
       });
 
@@ -169,6 +187,7 @@ export default function RegisterScreen({navigation}) {
         if (object.password !== object.rePassword) {
           setErrorWithTimeout('password', 'Mật khẩu không khớp!', 5000);
           setErrorWithTimeout('rePassword', 'Mật khẩu không khớp!', 5000);
+          setIsLoading(false);
           return; // Trả về mà không tiếp tục xử lý
         }
 
@@ -212,7 +231,13 @@ export default function RegisterScreen({navigation}) {
           const errorMessage = error.message;
           console.log('false: ', errorMessage);
           console.log('false-code: ', errorCode);
-          alert('ĐĂNG KÝ THẤT BẠI!');
+          // alert('ĐĂNG KÝ THẤT BẠI!');
+          Toast.show({
+            type: 'error',
+            text1: 'Đăng ký',
+            text2: 'Đăng ký thất bại, vui lòng thử lại!',
+          });
+          setIsLoading(false);
         }
       }
     }
@@ -306,6 +331,8 @@ export default function RegisterScreen({navigation}) {
       }));
     }, timeout);
   };
+
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <SafeAreaView
@@ -739,8 +766,8 @@ export default function RegisterScreen({navigation}) {
             <Button
               title={'Đăng ký'}
               onPress={() => signUpNewUser(userValue)}
-              // loading={loading.buttonLoading}
-              // disabled={loading.buttonLoading}
+              loading={isLoading}
+              disabled={isLoading}
               buttonStyleCustom={{
                 borderRadius: '15%',
                 paddingVertical: 16,
@@ -764,6 +791,7 @@ export default function RegisterScreen({navigation}) {
           </Pressable>
         </KeyboardAvoidingView>
       </ScrollView>
+      <Toast config={toastConfigMessage} />
     </SafeAreaView>
   );
 }

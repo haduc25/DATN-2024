@@ -174,15 +174,17 @@ export default function ProfileScreen() {
             {userInfo && userInfo.email && (
               <Text style={{paddingTop: 4}}>{userInfo.email}</Text>
             )}
-            {userInfo && userInfo.emailVerified ? (
-              <Text style={{paddingTop: 4, fontStyle: 'italic', fontSize: 13}}>
-                Email đã được xác thực
-              </Text>
-            ) : (
-              <Text style={{paddingTop: 4, fontStyle: 'italic', fontSize: 13}}>
-                Email chưa được xác thực
-              </Text>
-            )}
+            {
+              // userInfo && userInfo.emailVerified ? (
+              //   <Text style={{paddingTop: 4, fontStyle: 'italic', fontSize: 13}}>
+              //     Email đã được xác thực
+              //   </Text>
+              // ) : (
+              //   <Text style={{paddingTop: 4, fontStyle: 'italic', fontSize: 13}}>
+              //     Email chưa được xác thực
+              //   </Text>
+              // )
+            }
           </View>
         </TouchableOpacity>
 
