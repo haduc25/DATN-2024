@@ -20,12 +20,9 @@ import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {removeAllKeyAndDataInAsyncStorage} from '../utils/globalHelpers';
 
-// TOAST MESSAGE
-// import Toast from 'react-native-toast-message';
-import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
-
-// OVERLAY
-import {Button as Button2, Overlay} from 'react-native-elements';
+// OVERLAY + TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {Overlay} from 'react-native-elements';
 import {toastConfigMessage} from '../utils/globalCustomStyle';
 
 export default function ProfileScreen() {
@@ -103,9 +100,10 @@ export default function ProfileScreen() {
             text: 'Đăng xuất',
             onPress: async () => {
               await removeAllKeyAndDataInAsyncStorage(); // Gọi hàm để xóa hết các key
+
+              // OVERLAY + TOAST MSG
               toggleOverlay();
 
-              // TOAST MSG
               Toast.show({
                 type: 'success',
                 text1: 'Đăng xuất',
@@ -118,7 +116,7 @@ export default function ProfileScreen() {
                   index: 0,
                   routes: [{name: 'LoginScreen'}],
                 });
-              }, 3000); // Thời gian chờ
+              }, 800); // Thời gian chờ
             },
           },
         ],
@@ -292,7 +290,7 @@ export default function ProfileScreen() {
         /> */}
       </ScrollView>
 
-      {/* OVERLAY */}
+      {/* OVERLAY + TOAST MESSAGE */}
       <Overlay
         overlayStyle={{
           backgroundColor: 'transparent',

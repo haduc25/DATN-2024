@@ -18,6 +18,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Brand from '../components/Brand';
 import Button from '../components/Button';
 
+// OVERLAY + TOAST MESSAGE
+import Toast from 'react-native-toast-message';
+import {Overlay} from 'react-native-elements';
+import {toastConfigMessage} from '../utils/globalCustomStyle';
+
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -55,9 +60,11 @@ export default function LoginScreen({navigation}) {
 
   const signInWithEmail = async (email, password, isAdmin) => {
     try {
+      setIsLoading(true);
       if (!email || !password) {
         console.log('Vui lòng nhập email và mật khẩu');
         alert('Vui lòng nhập email và mật khẩu');
+        setIsLoading(false);
         return;
       }
 
@@ -95,6 +102,12 @@ export default function LoginScreen({navigation}) {
       );
       console.log('User profiles saved successfully');
 
+      Toast.show({
+        type: 'success',
+        text1: 'Đăng nhập',
+        text2: 'Đăng nhập thành công',
+      });
+
       // Kiểm tra quyền của người dùng nếu là admin
       if (isAdmin) {
         // Đọc dữ liệu role từ Firestore
@@ -103,18 +116,28 @@ export default function LoginScreen({navigation}) {
         switch (role) {
           case 'admin':
             console.log('Chuyển sang screen khác');
+            setIsLoading(false);
+
             // Chuyển hướng đến màn hình khác sau khi đăng nhập thành công
-            navigation.navigate('AdminDashboardScreen');
+            setTimeout(() => {
+              navigation.navigate('AdminDashboardScreen');
+            }, 500); // Thời gian chờ
+
             return;
           case 'user':
           default:
             console.log('Bạn không có quyền truy cập');
             alert('Bạn không có quyền truy cập');
+            setIsLoading(false);
             return;
         }
       }
 
-      navigation.navigate('Trang chủ');
+      setTimeout(() => {
+        navigation.navigate('Trang chủ');
+      }, 500); // Thời gian chờ
+
+      setIsLoading(false);
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -145,9 +168,16 @@ export default function LoginScreen({navigation}) {
     }
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <SafeAreaView
-      style={{flex: 1, backgroundColor: 'white', alignItems: 'center'}}>
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        pointerEvents: isLoading ? 'none' : 'unset',
+      }}>
       <View style={{marginTop: 40}}>
         <Brand />
       </View>
@@ -234,7 +264,8 @@ export default function LoginScreen({navigation}) {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Checkbox value={isSaveAccount} onValueChange={setIsSaveAccount} />
             <Text style={{marginLeft: 10}}>
-              Lưu tài khoản {isSaveAccount ? '👍' : '👎'}
+              {/* Lưu tài khoản {isSaveAccount ? '👍' : '👎'} */}
+              Lưu tài khoản
             </Text>
           </View>
           <TouchableOpacity
@@ -247,8 +278,8 @@ export default function LoginScreen({navigation}) {
           <Button
             title={'Đăng nhập'}
             onPress={() => signInWithEmail(email.trim(), password.trim())}
-            // loading={loading.buttonLoading}
-            // disabled={loading.buttonLoading}
+            loading={isLoading}
+            disabled={isLoading}
             buttonStyleCustom={{
               borderRadius: '15%',
               paddingVertical: 16,
@@ -312,6 +343,7 @@ export default function LoginScreen({navigation}) {
           />
         </View>
       </KeyboardAvoidingView>
+      <Toast config={toastConfigMessage} />
     </SafeAreaView>
   );
 }
