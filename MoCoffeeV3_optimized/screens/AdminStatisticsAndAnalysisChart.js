@@ -304,7 +304,7 @@ export default function AdminStatisticsAndAnalysisChart({navigation}) {
               }}>
               <Text style={{fontSize: 14, fontWeight: '600'}}>ĐƠN HỦY</Text>
               <Text style={{fontSize: 18, fontWeight: '700', color: 'red'}}>
-                5
+                12
               </Text>
             </View>
           </View>
@@ -379,7 +379,8 @@ export default function AdminStatisticsAndAnalysisChart({navigation}) {
         />
 
         {/* ĐỆM DƯỚI */}
-        <View style={{height: 500, backgroundColor: 'grey'}} />
+        {/* <View style={{height: 500, backgroundColor: '#fff'}} /> */}
+        <View style={{height: 200, backgroundColor: '#fff'}} />
       </ScrollView>
     </SafeAreaProvider>
   );

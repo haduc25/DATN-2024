@@ -133,6 +133,25 @@ export default function AdminDashboardScreen({navigation}) {
                   Sản phẩm
                 </Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.itemsContainer, {marginBottom: 200}]}
+                onPress={() => navi.navigate('AdminUsers')}>
+                <Image
+                  style={{width: 125, height: 125}}
+                  source={{
+                    uri: 'https://cdn-icons-png.flaticon.com/512/6012/6012295.png',
+                  }}
+                />
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: 'gray',
+                    padding: 10,
+                    fontWeight: '600',
+                  }}>
+                  Người dùng
+                </Text>
+              </TouchableOpacity>
             </View>
             {/*  */}
           </View>

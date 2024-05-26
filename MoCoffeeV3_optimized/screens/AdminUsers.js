@@ -10,37 +10,22 @@ import {
 } from 'react-native';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Button from '../components/Button';
-
-import {AntDesign} from '@expo/vector-icons';
 import {db, getDocs, collection, deleteDoc, doc} from '../firebase';
 
 import {useNavigation, useIsFocused} from '@react-navigation/native';
-import {
-  convertFormattedDateToUnixTime,
-  getMinSizeAndPrice,
-} from '../utils/globalHelpers';
+import {translateRole} from '../utils/globalHelpers';
 
 // TOAST MESSAGE
 import Toast from 'react-native-toast-message';
 import {toastConfigMessage} from '../utils/globalCustomStyle';
 
-export default function AdminProductsCRUD({navigation}) {
+export default function AdminUsers({navigation}) {
   const renderItem = ({item, index}) => (
     <TouchableOpacity
-      onPress={() =>
-        navi.navigate('DetailScreen', {
-          item,
-          currentScreen: 'AdminProductsCRUD',
-        })
-      }
-      key={item.id}
+      key={item?.id | index}
       style={{
         width: 395,
         minHeight: 200,
-        //   paddingHorizontal: 20,
-        //   marginHorizontal: 10,
-
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginVertical: 4,
@@ -48,15 +33,7 @@ export default function AdminProductsCRUD({navigation}) {
         backgroundColor: '#fff',
         borderRadius: 10,
         margin: 10,
-        // marginBottom: 8,
-        // marginBottom: index === products.length - 1 ? 120 : 8, // Kiểm tra nếu là phần tử cuối cùng, thêm 120 vào marginBottom, nếu không thì thêm 8
-        marginBottom: sortRefresh
-          ? index === sortedProducts.length - 1
-            ? 120
-            : 8
-          : index === products.length - 1
-          ? 120
-          : 8,
+        marginBottom: index === products.length - 1 ? 120 : 8,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 10,
@@ -88,7 +65,7 @@ export default function AdminProductsCRUD({navigation}) {
             <Text
               numberOfLines={1}
               style={{fontSize: 16, fontWeight: '600', maxWidth: 245}}>
-              {item.name}
+              {item?.displayName}
             </Text>
             {/* desc */}
             <Text
@@ -99,47 +76,46 @@ export default function AdminProductsCRUD({navigation}) {
                 maxWidth: 245,
                 minWidth: 245,
               }}>
-              {item.description}
+              Email: {item?.email}
             </Text>
-            {/* price */}
+            {/* desc */}
             <Text
+              numberOfLines={1}
               style={{
-                color: '#ee4d2d',
+                color: 'gray',
                 fontWeight: '600',
-                fontSize: 18,
+                maxWidth: 245,
+                minWidth: 245,
               }}>
-              {/* {item.price} */}
-              {/* {minSizeAndMoney ? minSizeAndMoney.price : 'Đang cập nhật giá'} */}
-              {(item?.priceBySize !== undefined &&
-                item?.priceBySize !== null &&
-                getMinSizeAndPrice(item.priceBySize).price) ||
-                'Đang cập nhật giá'}
+              Ngày sinh: {item?.dob}
             </Text>
-            <View
+            {/* desc */}
+            <Text
+              numberOfLines={1}
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingTop: 12,
+                color: 'gray',
+                fontWeight: '600',
+                maxWidth: 245,
+                minWidth: 245,
               }}>
-              <View style={{flexDirection: 'row'}}>
-                <AntDesign name={'tago'} size={18} style={{paddingRight: 6}} />
-                <Text>Đã bán: {item.sold_count}</Text>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <AntDesign
-                  name={'hearto'}
-                  size={18}
-                  style={{paddingRight: 6}}
-                />
-                <Text>Lượt thích: {item.likes}</Text>
-              </View>
-            </View>
+              Địa chỉ: {item?.location}
+            </Text>
+            {/* desc */}
+            <Text
+              numberOfLines={1}
+              style={{
+                color: 'gray',
+                fontWeight: '600',
+                maxWidth: 245,
+                minWidth: 245,
+              }}>
+              Chức vụ: {translateRole(item?.role)}
+            </Text>
           </View>
           <Image
             style={{width: 100, height: 100, borderRadius: 8}}
             source={{
-              uri: item.featured_image[0],
-              // uri: 'https://firebasestorage.googleapis.com/v0/b/mo-coffee-tea.appspot.com/o/assets%2Fproducts%2Ftemp%2Fimages.jpg?alt=media&token=378984d7-948f-4240-8c8d-f41c31ca0b12',
+              uri: item?.photoURL,
             }}
           />
         </View>
@@ -153,8 +129,6 @@ export default function AdminProductsCRUD({navigation}) {
           right: 0,
           borderTopColor: '#ccc',
           borderTopWidth: 0.5,
-
-          // backgroundColor: 'red',
           backgroundColor: '#fff',
           height: 65,
           flexDirection: 'row',
@@ -182,7 +156,6 @@ export default function AdminProductsCRUD({navigation}) {
           <Text style={{fontWeight: '600'}}>Xem chi tiết</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          // onPress={() => console.log('item__L ', item)}
           onPress={() => navi.navigate('AdminEditItem', {thisItem: item})}
           style={{
             borderWidth: 1,
@@ -195,7 +168,7 @@ export default function AdminProductsCRUD({navigation}) {
           <Text style={{fontWeight: '600'}}>Sửa</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleRemoveItem(item.id)}
+          onPress={() => handleRemoveItem(item?.id)}
           style={{
             borderWidth: 1,
             height: 45,
@@ -218,20 +191,20 @@ export default function AdminProductsCRUD({navigation}) {
   // ############################# START: FECTHING DATA #############################
   const readMultiple = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'MenuMoC&T'));
+      const querySnapshot = await getDocs(collection(db, 'Users'));
       const products = [];
 
       querySnapshot.forEach(doc => {
         if (doc.exists()) {
           products.push({id: doc.id, ...doc.data()});
-          // console.log('Document data:', doc.id, doc.data());
+          //   console.log('Document data (USER):', doc.id, doc.data());
         } else {
           console.log('Document does not exist1:', doc.id);
         }
       });
 
       // Sắp xếp theo alphabet
-      products.sort((a, b) => a.name.localeCompare(b.name));
+      //   products.sort((a, b) => a.displayName.localeCompare(b.displayName));
 
       return products;
     } catch (error) {
@@ -243,6 +216,7 @@ export default function AdminProductsCRUD({navigation}) {
   const fetchData = async () => {
     try {
       const productsData = await readMultiple();
+      //   console.log('productsData: ', productsData);
       setProducts(productsData);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -264,8 +238,8 @@ export default function AdminProductsCRUD({navigation}) {
   const handleRemoveItem = itemId => {
     if (itemId) {
       Alert.alert(
-        'Xác nhận xóa sản phẩm',
-        'Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này không thể hoàn tác.',
+        'Xác nhận xóa người dùng',
+        'Bạn có chắc chắn muốn xóa người dùng này? Thao tác này không thể hoàn tác.',
         [
           {
             text: 'Hủy bỏ',
@@ -286,13 +260,13 @@ export default function AdminProductsCRUD({navigation}) {
   };
 
   const removeItemFromFirebase = itemId => {
-    deleteDoc(doc(db, 'MenuMoC&T', itemId))
+    deleteDoc(doc(db, 'Users', itemId))
       .then(() => {
-        console.log('Sản phẩm đã được xóa. ', itemId);
+        console.log('Nguời dùng đã được xóa. ', itemId);
         Toast.show({
           type: 'successHigher',
-          text1: 'Xóa sản phẩm',
-          text2: `Sản phẩm #${itemId} đã được xóa`,
+          text1: 'Xóa người dùng',
+          text2: `Người dùng #${itemId.slice(0, 15)} đã được xóa`,
         });
         setIsRefresh(!isRefresh);
       })
@@ -308,46 +282,6 @@ export default function AdminProductsCRUD({navigation}) {
     console.log('isRefresh: ', isRefresh);
     fetchData();
   }, [isRefresh]);
-
-  // ################### SORT ################### //
-  const [sortRefresh, setSortRefresh] = useState(false);
-  const [sortedProducts, setSortedProducts] = useState(products);
-
-  const sortOrder = orderBy => {
-    switch (orderBy) {
-      case 'newest':
-        const timestamps = products.map(order => ({
-          timestamp: convertFormattedDateToUnixTime(order.createdAt),
-          orderData: order,
-        }));
-        timestamps.sort((a, b) => b.timestamp - a.timestamp);
-        const newSortedOrders = timestamps.map(item => item.orderData);
-        setSortedProducts(newSortedOrders);
-        setSortRefresh(true);
-        break;
-      case 'coffee':
-        const categoryIsCoffee = products.filter(
-          product => product.category === 'coffee',
-        );
-        console.log('categoryIsCoffee: ', categoryIsCoffee);
-        setSortedProducts(categoryIsCoffee);
-        setSortRefresh(true);
-        break;
-      case 'milk-tea':
-        const categoryIsMilkTea = products.filter(
-          product => product.category === 'milk-tea',
-        );
-        console.log('categoryIsMilkTea: ', categoryIsMilkTea);
-        setSortedProducts(categoryIsMilkTea);
-        setSortRefresh(true);
-        break;
-      case 'a2z':
-      default:
-        // Đặt sortedOrders bằng products ban đầu
-        setSortedProducts(products);
-        setSortRefresh(false);
-    }
-  };
 
   return (
     <SafeAreaProvider>
@@ -366,7 +300,7 @@ export default function AdminProductsCRUD({navigation}) {
         }}
         arrowIconColor={'#000'}
         arrowIconBackgroundColor={'#fff'}
-        titleOfScreen={'Danh sách sản phẩm'}
+        titleOfScreen={'Danh sách người dùng'}
         onPressBack={data => console.log(data)}
         dataNavigation={{
           screen: 'AdminDashboardScreen',
@@ -384,10 +318,10 @@ export default function AdminProductsCRUD({navigation}) {
           style={{
             flex: 1,
             alignItems: 'center',
-            // backgroundColor: 'yellow',
           }}>
           {/* Chức năng SORT */}
           <ScrollView
+            scrollEnabled={false}
             horizontal
             showsHorizontalScrollIndicator={false}
             style={{
@@ -397,11 +331,8 @@ export default function AdminProductsCRUD({navigation}) {
               borderBottomWidth: 0.5,
               borderBottomColor: '#ccc',
             }}>
-            <TouchableOpacity
-              // onPress={sortOrdersByNewest}
-              onPress={() => sortOrder('allin')}
+            <View
               style={{
-                backgroundColor: '#7EC7E7',
                 marginLeft: 14,
                 height: 40,
                 minWidth: 80,
@@ -410,78 +341,15 @@ export default function AdminProductsCRUD({navigation}) {
                 borderRadius: 8,
                 padding: 4,
               }}>
-              <Text style={{color: '#fff', fontWeight: '600'}}>Tất cả</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              // onPress={sortOrdersByNewest}
-              onPress={() => sortOrder('newest')}
-              style={{
-                backgroundColor: '#8aacb8',
-                marginLeft: 14,
-                height: 40,
-                minWidth: 80,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 8,
-                padding: 4,
-              }}>
-              <Text style={{color: '#fff', fontWeight: '600'}}>Mới nhất</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => sortOrder('a2z')}
-              style={{
-                backgroundColor: '#737373',
-                marginLeft: 14,
-                height: 40,
-                minWidth: 80,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 8,
-                padding: 4,
-                paddingHorizontal: 8,
-              }}>
-              <Text style={{color: '#fff', fontWeight: '600'}}>A - Z</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => sortOrder('coffee')}
-              style={{
-                backgroundColor: '#4ca64c',
-                marginLeft: 14,
-                height: 40,
-                minWidth: 80,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 8,
-                padding: 4,
-                paddingHorizontal: 8,
-              }}>
-              <Text style={{color: '#fff', fontWeight: '600'}}>Cà phê</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => sortOrder('milk-tea')}
-              style={{
-                backgroundColor: '#ff4c4c',
-                marginLeft: 14,
-                height: 40,
-                minWidth: 80,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 8,
-                padding: 4,
-                paddingHorizontal: 8,
-              }}>
-              <Text style={{color: '#fff', fontWeight: '600'}}>Trà sữa</Text>
-            </TouchableOpacity>
+              <Text style={{color: '#000', fontWeight: '600'}}>
+                Tổng số người dùng: {products.length}
+              </Text>
+            </View>
           </ScrollView>
           {/* ITEMS */}
           <FlatList
             style={{width: '100%'}}
-            // data={products}
-            data={sortRefresh ? sortedProducts : products}
+            data={products}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
           />
@@ -494,49 +362,12 @@ export default function AdminProductsCRUD({navigation}) {
           bottom: 40,
           left: 0,
           right: 0,
-          // backgroundColor: 'yellow',
           flexDirection: 'row',
           justifyContent: 'center',
-          // paddingHorizontal: 20,
-          // paddingVertical: 10,
-          // backgroundColor: '#fff', // Change this to match your background color
           borderColor: '#ccc', // Change this to match your border color
           paddingHorizontal: 10,
           paddingVertical: 10,
-        }}>
-        {/* <TouchableOpacity
-          onPress={() => navi.navigate('Trang chủ')}
-          style={{
-            justifyContent: 'center',
-            // borderWidth: 1,
-            borderRadius: '15%',
-            width: '100%',
-            alignItems: 'center',
-            backgroundColor: '#000',
-          }}>
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: 16,
-              fontWeight: '600',
-            }}>
-            Trang chủ
-          </Text>
-        </TouchableOpacity> */}
-        <Button
-          title={'Thêm 1 sản phẩm mới'}
-          onPress={() => navi.navigate('AdminCRUDItem')}
-          // loading={loading.buttonLoading}
-          // disabled={loading.buttonLoading}
-          buttonStyleCustom={{
-            borderRadius: '15%',
-            paddingVertical: 16,
-            backgroundColor: '#ff4c4c',
-            width: '100%',
-          }}
-          textStyleInsideButtonCustom={{textTransform: 'uppercase'}}
-        />
-      </View>
+        }}></View>
       <Toast config={toastConfigMessage} />
     </SafeAreaProvider>
   );

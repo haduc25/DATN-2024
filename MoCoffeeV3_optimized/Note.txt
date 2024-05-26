@@ -86,7 +86,7 @@ Phần thêm sp => thêm trường là `_id` để lưu id => ok
 - (OPTIMIZED ONLY) ProfileScreen
 - (TOAST MESSAGE) ProfileScreen, Login, Register, AdminCRUDItem, AdminEditItem, AdminOrders, AdminProductsCRUD, CartScreen, DetailScreen, EditProfileScreen, DetailItemOrderedUser | 
 (passed - k can them toast msg) Products, AdminDashboardScreen, FavouriteScreen, ProductType, UploadImageToStorageDemo
-- Chỉnh lại DS SP ADMIN, THONG KE, QL NGUOI DUNG => ty lam
+- Chỉnh lại DS SP ADMIN (ok), THONG KE (ok), QL NGUOI DUNG (40%) => 2/3
 
 - User order => nếu là thanh toán tiền mặt (1) | nếu là thanh toán online (2)
 => (1) =>  Chờ duyệt (pendingApproval)  =>  Đã duyệt (approved) |  Đã hủy (cancelled)  => Đang xử lý (processing) => Đang giao hàng => Đã giao hàng (shipped) => ok

@@ -15,6 +15,15 @@ export const translateCategory = category => {
   return translations[category] || category;
 };
 
+export const translateRole = role => {
+  const translations = {
+    user: 'Người dùng',
+    admin: 'Quản trị viên',
+    staff: 'Nhân viên',
+  };
+  return translations[role] || role;
+};
+
 export const convertPriceStringToInteger = priceString => {
   if (priceString !== undefined) {
     // console.log('priceString: ', priceString);
