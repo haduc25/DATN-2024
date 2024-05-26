@@ -89,3 +89,9 @@ npx expo install expo-image-picker
 
 #Xem ảnh ở chế độ full màn hình
 `npm i react-native-image-viewing`
+
+#Dialog 
+`npm i react-native-alert-notification`
+
+#Toast Message
+`npm i react-native-toast-message`
