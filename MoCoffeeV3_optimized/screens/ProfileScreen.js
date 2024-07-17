@@ -189,7 +189,7 @@ export default function ProfileScreen() {
 
         <View style={styles.containerView}>
           <TouchableOpacity
-            onPress={() => alert('navigate to Cộng đồng MoCoffee&Tea')}
+            // onPress={() => alert('navigate to Cộng đồng MoCoffee&Tea')}
             style={styles.itemTouchableOpacity}>
             <View style={styles.itemIconContainer}>
               <AntDesign name='smileo' size={18} color='#000' />
@@ -225,7 +225,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => alert('navigate to Quản lý thẻ')}
+            // onPress={() => alert('navigate to Quản lý thẻ')}
             style={styles.itemTouchableOpacity}>
             <View style={styles.itemIconContainer}>
               <AntDesign name='creditcard' size={18} color='#000' />
@@ -235,7 +235,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => alert('navigate to Q&A')}
+            // onPress={() => alert('navigate to Q&A')}
             style={styles.itemTouchableOpacity}>
             <View style={styles.itemIconContainer}>
               <AntDesign name='questioncircleo' size={18} color='#000' />
@@ -245,7 +245,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => alert('navigate to Contact to MoCoffee&Tea')}
+            // onPress={() => alert('navigate to Contact to MoCoffee&Tea')}
             style={styles.itemTouchableOpacity}>
             <View style={styles.itemIconContainer}>
               <AntDesign name='phone' size={18} color='#000' />
@@ -256,7 +256,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity
             // onPress={() => alert('navigate to INFO MoCoffee&Tea')}
-            onPress={toggleOverlay}
+            // onPress={toggleOverlay}
             style={styles.itemTouchableOpacity}>
             <View style={styles.itemIconContainer}>
               <AntDesign name='infocirlceo' size={18} color='#000' />
